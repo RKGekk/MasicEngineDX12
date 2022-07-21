@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{9b20c173-cc40-4d32-8b23-18cc915a0ca4}</ProjectGuid>
+    <RootNamespace>MasicDX12</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)MasicDX12\includes;$(SolutionDir)MasicDX12\includes\directx_tex;$(SolutionDir)MasicDX12\includes\directx;$(SolutionDir)MasicDX12\includes\dxguids;$(SolutionDir)MasicDX12\includes\wsl;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)MasicDX12\libs\x64\Debug;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath);</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)MasicDX12\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)MasicDX12\libs\x64\Release;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath);</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessToFile>false</PreprocessToFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="actors\actor.cpp" />
+    <ClCompile Include="actors\actor_component.cpp" />
+    <ClCompile Include="actors\enemy_component.cpp" />
+    <ClCompile Include="actors\orientation_relation_component.cpp" />
+    <ClCompile Include="actors\particle_component.cpp" />
+    <ClCompile Include="actors\transform_component.cpp" />
+    <ClCompile Include="engine\engine.cpp" />
+    <ClCompile Include="engine\engine_options.cpp" />
+    <ClCompile Include="engine\level_manager.cpp" />
+    <ClCompile Include="actors\base_render_component.cpp" />
+    <ClCompile Include="engine\screen_element_scene.cpp" />
+    <ClCompile Include="events\evt_data_destroy_actor.cpp" />
+    <ClCompile Include="events\evt_data_modified_render_component.cpp" />
+    <ClCompile Include="events\evt_data_move_actor.cpp" />
+    <ClCompile Include="events\evt_data_new_particle_component.cpp" />
+    <ClCompile Include="events\evt_data_new_render_component.cpp" />
+    <ClCompile Include="events\evt_data_os_message.cpp" />
+    <ClCompile Include="engine\render_window_config.cpp" />
+    <ClCompile Include="events\base_event_data.cpp" />
+    <ClCompile Include="events\event_manager.cpp" />
+    <ClCompile Include="events\i_event_manager.cpp" />
+    <ClCompile Include="graphics\adapter_reader.cpp" />
+    <ClCompile Include="graphics\buffer.cpp" />
+    <ClCompile Include="graphics\byte_address_buffer.cpp" />
+    <ClCompile Include="graphics\command_list.cpp" />
+    <ClCompile Include="graphics\command_queue.cpp" />
+    <ClCompile Include="graphics\constant_buffer.cpp" />
+    <ClCompile Include="graphics\constant_buffer_view.cpp" />
+    <ClCompile Include="graphics\descriptor_allocation.cpp" />
+    <ClCompile Include="graphics\descriptor_allocator.cpp" />
+    <ClCompile Include="graphics\descriptor_allocator_page.cpp" />
+    <ClCompile Include="graphics\device.cpp" />
+    <ClCompile Include="graphics\dynamic_descriptor_heap.cpp" />
+    <ClCompile Include="graphics\effect_pso.cpp" />
+    <ClCompile Include="graphics\generate_mips_pso.cpp" />
+    <ClCompile Include="graphics\gui.cpp" />
+    <ClCompile Include="graphics\imgui\imgui.cpp" />
+    <ClCompile Include="graphics\imgui\imgui_draw.cpp" />
+    <ClCompile Include="graphics\imgui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="graphics\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="graphics\imgui\imgui_tables.cpp" />
+    <ClCompile Include="graphics\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="graphics\index_buffer.cpp" />
+    <ClCompile Include="graphics\material.cpp" />
+    <ClCompile Include="graphics\mesh.cpp" />
+    <ClCompile Include="graphics\pano_to_cubemap_pso.cpp" />
+    <ClCompile Include="graphics\pipeline_state_object.cpp" />
+    <ClCompile Include="graphics\render_target.cpp" />
+    <ClCompile Include="graphics\resource.cpp" />
+    <ClCompile Include="graphics\resource_state_tracker.cpp" />
+    <ClCompile Include="graphics\root_signature.cpp" />
+    <ClCompile Include="graphics\shader_resource_view.cpp" />
+    <ClCompile Include="graphics\structured_buffer.cpp" />
+    <ClCompile Include="graphics\swap_chain.cpp" />
+    <ClCompile Include="graphics\texture.cpp" />
+    <ClCompile Include="graphics\unordered_access_view.cpp" />
+    <ClCompile Include="graphics\upload_buffer.cpp" />
+    <ClCompile Include="graphics\vertex_buffer.cpp" />
+    <ClCompile Include="graphics\vertex_types.cpp" />
+    <ClCompile Include="graphics\window_surface.cpp" />
+    <ClCompile Include="nodes\light_manager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="engine\render_window.cpp" />
+    <ClCompile Include="graphics\d3d12_renderer.cpp" />
+    <ClCompile Include="nodes\camera_node.cpp" />
+    <ClCompile Include="nodes\frustum.cpp" />
+    <ClCompile Include="nodes\light_node.cpp" />
+    <ClCompile Include="nodes\material.cpp" />
+    <ClCompile Include="nodes\matrix_stack.cpp" />
+    <ClCompile Include="nodes\plane.cpp" />
+    <ClCompile Include="nodes\ray_cast.cpp" />
+    <ClCompile Include="nodes\root_node.cpp" />
+    <ClCompile Include="nodes\scene.cpp" />
+    <ClCompile Include="nodes\scene_node.cpp" />
+    <ClCompile Include="nodes\scene_node_properties.cpp" />
+    <ClCompile Include="nodes\shadow_manager.cpp" />
+    <ClCompile Include="physics\aero.cpp" />
+    <ClCompile Include="physics\aero_control.cpp" />
+    <ClCompile Include="physics\angled_aero.cpp" />
+    <ClCompile Include="physics\buoyancy.cpp" />
+    <ClCompile Include="physics\collision_data.cpp" />
+    <ClCompile Include="physics\collision_primitive.cpp" />
+    <ClCompile Include="physics\contact.cpp" />
+    <ClCompile Include="physics\contact_resolver.cpp" />
+    <ClCompile Include="physics\explosion.cpp" />
+    <ClCompile Include="physics\force_registry.cpp" />
+    <ClCompile Include="physics\geo_ground_contacts.cpp" />
+    <ClCompile Include="physics\gravity.cpp" />
+    <ClCompile Include="physics\ground_contacts.cpp" />
+    <ClCompile Include="physics\intersection_tests.cpp" />
+    <ClCompile Include="physics\joint.cpp" />
+    <ClCompile Include="physics\particle.cpp" />
+    <ClCompile Include="physics\particle_anchored_bungee.cpp" />
+    <ClCompile Include="physics\particle_anchored_spring.cpp" />
+    <ClCompile Include="physics\particle_bungee.cpp" />
+    <ClCompile Include="physics\particle_buoyancy.cpp" />
+    <ClCompile Include="physics\particle_cable.cpp" />
+    <ClCompile Include="physics\particle_cable_constraint.cpp" />
+    <ClCompile Include="physics\particle_constraint.cpp" />
+    <ClCompile Include="physics\particle_contact.cpp" />
+    <ClCompile Include="physics\particle_contact_resolver.cpp" />
+    <ClCompile Include="physics\particle_drag.cpp" />
+    <ClCompile Include="physics\particle_fake_spring.cpp" />
+    <ClCompile Include="physics\particle_force_registry.cpp" />
+    <ClCompile Include="physics\particle_geo_gravity.cpp" />
+    <ClCompile Include="physics\particle_gravity.cpp" />
+    <ClCompile Include="physics\particle_link.cpp" />
+    <ClCompile Include="physics\particle_rod.cpp" />
+    <ClCompile Include="physics\particle_rod_constraint.cpp" />
+    <ClCompile Include="physics\particle_sphere_contact.cpp" />
+    <ClCompile Include="physics\particle_sphere_contact_evet_gen.cpp" />
+    <ClCompile Include="physics\particle_spring.cpp" />
+    <ClCompile Include="physics\particle_world.cpp" />
+    <ClCompile Include="physics\rigid_body.cpp" />
+    <ClCompile Include="physics\spring.cpp" />
+    <ClCompile Include="processes\count_process.cpp" />
+    <ClCompile Include="processes\delay_process.cpp" />
+    <ClCompile Include="processes\exec_process.cpp" />
+    <ClCompile Include="processes\process.cpp" />
+    <ClCompile Include="processes\process_manager.cpp" />
+    <ClCompile Include="tools\dx12_utility.cpp" />
+    <ClCompile Include="tools\game_timer.cpp" />
+    <ClCompile Include="tools\math_utitity.cpp" />
+    <ClCompile Include="tools\mt_random.cpp" />
+    <ClCompile Include="tools\string_utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="actors\actor.h" />
+    <ClInclude Include="actors\actor_component.h" />
+    <ClInclude Include="actors\base_render_component.h" />
+    <ClInclude Include="actors\enemy_component.h" />
+    <ClInclude Include="actors\orientation_relation_component.h" />
+    <ClInclude Include="actors\particle_component.h" />
+    <ClInclude Include="actors\render_component_interface.h" />
+    <ClInclude Include="actors\transform_component.h" />
+    <ClInclude Include="engine\base_engine_logic.h" />
+    <ClInclude Include="engine\base_engine_state.h" />
+    <ClInclude Include="engine\engine_view_type.h" />
+    <ClInclude Include="engine\human_view.h" />
+    <ClInclude Include="engine\i_engine_physics.h" />
+    <ClInclude Include="engine\i_engine_view.h" />
+    <ClInclude Include="engine\i_keyboard_handler.h" />
+    <ClInclude Include="engine\i_pointer_handler.h" />
+    <ClInclude Include="engine\i_render_state.h" />
+    <ClInclude Include="engine\i_screen_element.h" />
+    <ClInclude Include="engine\level_manager.h" />
+    <ClInclude Include="engine\screen_element_scene.h" />
+    <ClInclude Include="events\events.h" />
+    <ClInclude Include="events\evt_data_destroy_actor.h" />
+    <ClInclude Include="events\evt_data_modified_render_component.h" />
+    <ClInclude Include="events\evt_data_move_actor.h" />
+    <ClInclude Include="events\evt_data_new_particle_component.h" />
+    <ClInclude Include="events\evt_data_new_render_component.h" />
+    <ClInclude Include="graphics\adapter_reader.h" />
+    <ClInclude Include="graphics\buffer.h" />
+    <ClInclude Include="graphics\byte_address_buffer.h" />
+    <ClInclude Include="graphics\command_list.h" />
+    <ClInclude Include="graphics\command_queue.h" />
+    <ClInclude Include="graphics\constant_buffer.h" />
+    <ClInclude Include="graphics\constant_buffer_types.h" />
+    <ClInclude Include="graphics\constant_buffer_view.h" />
+    <ClInclude Include="graphics\d3d12_renderer.h" />
+    <ClInclude Include="engine\engine.h" />
+    <ClInclude Include="graphics\descriptor_allocation.h" />
+    <ClInclude Include="graphics\descriptor_allocator.h" />
+    <ClInclude Include="graphics\descriptor_allocator_page.h" />
+    <ClInclude Include="graphics\device.h" />
+    <ClInclude Include="graphics\dynamic_descriptor_heap.h" />
+    <ClInclude Include="graphics\effect_pso.h" />
+    <ClInclude Include="graphics\generate_mips_pso.h" />
+    <ClInclude Include="graphics\gui.h" />
+    <ClInclude Include="graphics\light.h" />
+    <ClInclude Include="graphics\material.h" />
+    <ClInclude Include="graphics\mesh.h" />
+    <ClInclude Include="graphics\pano_to_cubemap_pso.h" />
+    <ClInclude Include="graphics\pipeline_state_object.h" />
+    <ClInclude Include="graphics\render_target.h" />
+    <ClInclude Include="graphics\resource_state_tracker.h" />
+    <ClInclude Include="graphics\root_signature.h" />
+    <ClInclude Include="graphics\shader_resource_view.h" />
+    <ClInclude Include="graphics\structured_buffer.h" />
+    <ClInclude Include="graphics\swap_chain.h" />
+    <ClInclude Include="graphics\texture.h" />
+    <ClInclude Include="graphics\unordered_access_view.h" />
+    <ClInclude Include="graphics\upload_buffer.h" />
+    <ClInclude Include="graphics\window_keycodes.h" />
+    <ClInclude Include="graphics\window_surface.h" />
+    <ClInclude Include="tools\defines.h" />
+    <ClInclude Include="graphics\imgui\imconfig.h" />
+    <ClInclude Include="graphics\imgui\imgui.h" />
+    <ClInclude Include="graphics\imgui\imgui_impl_dx12.h" />
+    <ClInclude Include="graphics\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="graphics\imgui\imgui_internal.h" />
+    <ClInclude Include="graphics\imgui\imstb_rectpack.h" />
+    <ClInclude Include="graphics\imgui\imstb_textedit.h" />
+    <ClInclude Include="graphics\imgui\imstb_truetype.h" />
+    <ClInclude Include="graphics\index_buffer.h" />
+    <ClInclude Include="graphics\i_renderer.h" />
+    <ClInclude Include="engine\os_message_data.h" />
+    <ClInclude Include="engine\renderer_enum.h" />
+    <ClInclude Include="engine\render_window.h" />
+    <ClInclude Include="engine\render_window_config.h" />
+    <ClInclude Include="engine\engine_options.h" />
+    <ClInclude Include="events\base_event_data.h" />
+    <ClInclude Include="events\event_manager.h" />
+    <ClInclude Include="events\evt_data_os_message.h" />
+    <ClInclude Include="events\i_event_data.h" />
+    <ClInclude Include="events\i_event_manager.h" />
+    <ClInclude Include="engine\i_engine_logic.h" />
+    <ClInclude Include="graphics\material_shader.h" />
+    <ClInclude Include="graphics\resource.h" />
+    <ClInclude Include="graphics\vertex_buffer.h" />
+    <ClInclude Include="graphics\vertex_types.h" />
+    <ClInclude Include="nodes\alpha_scene_node.h" />
+    <ClInclude Include="nodes\alpha_type.h" />
+    <ClInclude Include="nodes\camera_node.h" />
+    <ClInclude Include="nodes\frustum.h" />
+    <ClInclude Include="nodes\i_scene_node.h" />
+    <ClInclude Include="nodes\light_manager.h" />
+    <ClInclude Include="nodes\light_node.h" />
+    <ClInclude Include="nodes\light_properties.h" />
+    <ClInclude Include="nodes\light_type.h" />
+    <ClInclude Include="nodes\material.h" />
+    <ClInclude Include="nodes\material_dx.h" />
+    <ClInclude Include="nodes\matrix_stack.h" />
+    <ClInclude Include="nodes\plane.h" />
+    <ClInclude Include="nodes\point.h" />
+    <ClInclude Include="nodes\ray_cast.h" />
+    <ClInclude Include="nodes\render_pass.h" />
+    <ClInclude Include="nodes\root_node.h" />
+    <ClInclude Include="nodes\scene.h" />
+    <ClInclude Include="nodes\scene_node.h" />
+    <ClInclude Include="nodes\scene_node_properties.h" />
+    <ClInclude Include="nodes\shadow_manager.h" />
+    <ClInclude Include="physics\aero.h" />
+    <ClInclude Include="physics\aero_control.h" />
+    <ClInclude Include="physics\angled_aero.h" />
+    <ClInclude Include="physics\buoyancy.h" />
+    <ClInclude Include="physics\collision_box.h" />
+    <ClInclude Include="physics\collision_data.h" />
+    <ClInclude Include="physics\collision_plane.h" />
+    <ClInclude Include="physics\collision_primitive.h" />
+    <ClInclude Include="physics\collision_sphere.h" />
+    <ClInclude Include="physics\contact.h" />
+    <ClInclude Include="physics\contact_generator.h" />
+    <ClInclude Include="physics\contact_resolver.h" />
+    <ClInclude Include="physics\explosion.h" />
+    <ClInclude Include="physics\force_generator.h" />
+    <ClInclude Include="physics\force_registry.h" />
+    <ClInclude Include="physics\geo_ground_contacts.h" />
+    <ClInclude Include="physics\gravity.h" />
+    <ClInclude Include="physics\ground_contacts.h" />
+    <ClInclude Include="physics\intersection_tests.h" />
+    <ClInclude Include="physics\joint.h" />
+    <ClInclude Include="physics\particle.h" />
+    <ClInclude Include="physics\particle_anchored_bungee.h" />
+    <ClInclude Include="physics\particle_anchored_spring.h" />
+    <ClInclude Include="physics\particle_bungee.h" />
+    <ClInclude Include="physics\particle_buoyancy.h" />
+    <ClInclude Include="physics\particle_cable.h" />
+    <ClInclude Include="physics\particle_cable_constraint.h" />
+    <ClInclude Include="physics\particle_constraint.h" />
+    <ClInclude Include="physics\particle_contact.h" />
+    <ClInclude Include="physics\particle_contact_generator.h" />
+    <ClInclude Include="physics\particle_contact_resolver.h" />
+    <ClInclude Include="physics\particle_drag.h" />
+    <ClInclude Include="physics\particle_fake_spring.h" />
+    <ClInclude Include="physics\particle_force_generator.h" />
+    <ClInclude Include="physics\particle_force_registry.h" />
+    <ClInclude Include="physics\particle_geo_gravity.h" />
+    <ClInclude Include="physics\particle_gravity.h" />
+    <ClInclude Include="physics\particle_link.h" />
+    <ClInclude Include="physics\particle_rod.h" />
+    <ClInclude Include="physics\particle_rod_constraint.h" />
+    <ClInclude Include="physics\particle_sphere_contact.h" />
+    <ClInclude Include="physics\particle_sphere_contact_evet_gen.h" />
+    <ClInclude Include="physics\particle_spring.h" />
+    <ClInclude Include="physics\particle_world.h" />
+    <ClInclude Include="physics\rigid_body.h" />
+    <ClInclude Include="physics\spring.h" />
+    <ClInclude Include="processes\count_process.h" />
+    <ClInclude Include="processes\delay_process.h" />
+    <ClInclude Include="processes\exec_process.h" />
+    <ClInclude Include="processes\process.h" />
+    <ClInclude Include="processes\process_manager.h" />
+    <ClInclude Include="tools\com_exception.h" />
+    <ClInclude Include="tools\delegate.h" />
+    <ClInclude Include="tools\dx12_utility.h" />
+    <ClInclude Include="tools\game_timer.h" />
+    <ClInclude Include="tools\generic_object_factory.h" />
+    <ClInclude Include="tools\hash_utility.h" />
+    <ClInclude Include="tools\intersection.h" />
+    <ClInclude Include="tools\math_utitity.h" />
+    <ClInclude Include="tools\memory_utility.h" />
+    <ClInclude Include="tools\mt_random.h" />
+    <ClInclude Include="tools\optional.hpp" />
+    <ClInclude Include="tools\signals.hpp" />
+    <ClInclude Include="tools\string_utility.h" />
+    <ClInclude Include="tools\thread_safe_queue.h" />
+    <ClInclude Include="tools\thread_utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\fonts\comic_sans_ms_16.sprite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\fonts\mefont.spritefont">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\cube.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\loading.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\logo.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\plane.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\planet1.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\pointer.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\printer.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\uplane.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="engine_options.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\actors\BasicTransformComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\ContactGeneratorComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\ForceGeneratorComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\LightRenderComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\MeshParticleRenderComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\MeshParticleRenderLightComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\MeshRenderComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\MeshRenderLightComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\actors\SkyRenderComponent.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="world.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\objects\cube.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\loading.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\logo.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\plane.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\planet1.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\pointer.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\printer.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\objects\uplane.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="data\shaders\Base_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Basic_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Decal_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\GenerateMips_CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\geometry_shader_smoke.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\ImGUI_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\ImGUI_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Lighting_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\logo_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\logo_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\PanoToCubemap_CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_alpha.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_basic_clip.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_basic_light_alpha.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_basic_light_alpha2.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_light.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_light_basic.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_light_inv_ny.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_light_nlswsp.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_light_nlswsp_inv_ny.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_shadow.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_sky.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\pixel_shader_smoke.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Unlit_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\vertex_shader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\vertex_shader_light.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\vertex_shader_light_nlswsp.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\vertex_shader_shadow.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\vertex_shader_sky.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\textures\10.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\11.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\12.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\daemon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\death_knight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\dragon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\elven_archer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\fireatlas.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\footman.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\goblin_sappers.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\grunt.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\gryphon_rider.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\knight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\loading3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\logo5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\mage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\ogre.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\peasant.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\peasant_with_gold.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\peasant_with_wood.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\peon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\peon_with_gold.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\peon_with_wood.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\pinksquare.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\planet1_None_BaseColor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\planet1_None_Normal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\planet1_None_OcclusionRoughnessMetallic.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\skeleton.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\textures\troll.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

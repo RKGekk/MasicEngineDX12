@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<World>
+  <Actors>
+    <Actor name="pers_spawn" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="0.0" y="0.0" z="0.0" />
+        <YawPitchRoll x="0.0" y="0.0" z="0.0" />
+        <Scale x="1.0" y="1.0" z="1.0" />
+      </TransformComponent>
+      <SpawnComponent>
+        <SpawnType>Sphere</SpawnType>
+        <SpawnRadius>1.0</SpawnRadius>
+      </SpawnComponent>
+    </Actor>
+
+    <Actor name="human1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="0.15000" y="0.15000" z="0.15000" />
+      </TransformComponent>
+      <MeshRenderLightComponent>
+        <Color r="0.500000" g="0.500000" b="0.500000" a="1.000000" />
+        <AlphaBlend>true</AlphaBlend>
+        <DiffuseTextureAddressModeU>mirror</DiffuseTextureAddressModeU>
+        <PixelShader>pixel_shader_basic_light_alpha2.cso</PixelShader>
+        <VertexShader>vertex_shader_light.cso</VertexShader>
+        <Radius>auto</Radius>
+      </MeshRenderLightComponent>
+      <MeshComponent>
+        <Obj>data\objects\uplane.obj</Obj>
+      </MeshComponent>
+      <ParticleComponent>
+        <Velocity x="1.000000" y="0.000000" z="1.000000" />
+        <Acceleration x="0.000000" y="0.000000" z="0.000000" />
+        <Mass>100.0</Mass>
+        <Damping>0.4</Damping>
+        <Radius>0.15</Radius>
+        <IsSleep>true</IsSleep>
+        <CanSleep>false</CanSleep>
+      </ParticleComponent>
+      <OrientationRelationComponent>
+        <RelateTo>ground</RelateTo>
+      </OrientationRelationComponent>
+      <TextureAnimStateComponent>
+        <AtlasWidth>5</AtlasWidth>
+        <AtlasHeight>13</AtlasHeight>
+        <Frame Type="WalkLeft"          VerticalImageFlip="false" HorizontalImageFlip="true"  Data="7,12,17,22"   FrameTime="0.1" />
+        <Frame Type="WalkRight"         VerticalImageFlip="false" HorizontalImageFlip="false" Data="7,12,17,22"   FrameTime="0.1" />
+        <Frame Type="WalkToward"        VerticalImageFlip="false" HorizontalImageFlip="false" Data="9,14,19,24"   FrameTime="0.1" />
+        <Frame Type="WalkOutward"       VerticalImageFlip="false" HorizontalImageFlip="false" Data="5,10,15,20"   FrameTime="0.1" />
+        <Frame Type="WalkLeftToward"    VerticalImageFlip="false" HorizontalImageFlip="true"  Data="8,13,18,23"   FrameTime="0.1" />
+        <Frame Type="WalkRightToward"   VerticalImageFlip="false" HorizontalImageFlip="false" Data="8,13,18,23"   FrameTime="0.1" />
+        <Frame Type="WalkLeftOutward"   VerticalImageFlip="false" HorizontalImageFlip="true"  Data="6,11,16,21"   FrameTime="0.1" />
+        <Frame Type="WalkRightOutward"  VerticalImageFlip="false" HorizontalImageFlip="false" Data="6,11,16,21"   FrameTime="0.1" />
+        
+        <Frame Type="JumpLeft"          VerticalImageFlip="false" HorizontalImageFlip="true"  Data="7,12,17,22"   FrameTime="0.1" />
+        <Frame Type="JumpRight"         VerticalImageFlip="false" HorizontalImageFlip="false" Data="7,12,17,22"   FrameTime="0.1" />
+        <Frame Type="JumpToward"        VerticalImageFlip="false" HorizontalImageFlip="false" Data="9,14,19,24"   FrameTime="0.1" />
+        <Frame Type="JumpOutward"       VerticalImageFlip="false" HorizontalImageFlip="false" Data="5,10,15,20"   FrameTime="0.1" />
+        <Frame Type="JumpLeftToward"    VerticalImageFlip="false" HorizontalImageFlip="true"  Data="8,13,18,23"   FrameTime="0.1" />
+        <Frame Type="JumpRightToward"   VerticalImageFlip="false" HorizontalImageFlip="false" Data="8,13,18,23"   FrameTime="0.1" />
+        <Frame Type="JumpLeftOutward"   VerticalImageFlip="false" HorizontalImageFlip="true"  Data="6,11,16,21"   FrameTime="0.1" />
+        <Frame Type="JumpRightOutward"  VerticalImageFlip="false" HorizontalImageFlip="false" Data="6,11,16,21"   FrameTime="0.1" />
+        
+        <Frame Type="IdleLeft"          VerticalImageFlip="false" HorizontalImageFlip="true"  Data="2"            FrameTime="0.1" />
+        <Frame Type="IdleRight"         VerticalImageFlip="false" HorizontalImageFlip="false" Data="2"            FrameTime="0.1" />
+        <Frame Type="IdleToward"        VerticalImageFlip="false" HorizontalImageFlip="false" Data="4"            FrameTime="0.1" />
+        <Frame Type="IdleOutward"       VerticalImageFlip="false" HorizontalImageFlip="false" Data="0"            FrameTime="0.1" />
+        <Frame Type="IdleLeftToward"    VerticalImageFlip="false" HorizontalImageFlip="true"  Data="3"            FrameTime="0.1" />
+        <Frame Type="IdleRightToward"   VerticalImageFlip="false" HorizontalImageFlip="false" Data="3"            FrameTime="0.1" />
+        <Frame Type="IdleLeftOutward"   VerticalImageFlip="false" HorizontalImageFlip="true"  Data="1"            FrameTime="0.1" />
+        <Frame Type="IdleRightOutward"  VerticalImageFlip="false" HorizontalImageFlip="false" Data="1"            FrameTime="0.1" />
+        
+        <Frame Type="FireLeft"          VerticalImageFlip="false" HorizontalImageFlip="true"  Data="27,32,37,42"  FrameTime="0.1" />
+        <Frame Type="FireRight"         VerticalImageFlip="false" HorizontalImageFlip="false" Data="27,32,37,42"  FrameTime="0.1" />
+        <Frame Type="FireToward"        VerticalImageFlip="false" HorizontalImageFlip="false" Data="29,34,39,44"  FrameTime="0.1" />
+        <Frame Type="FireOutward"       VerticalImageFlip="false" HorizontalImageFlip="false" Data="25,30,35,40"  FrameTime="0.1" />
+        <Frame Type="FireLeftToward"    VerticalImageFlip="false" HorizontalImageFlip="true"  Data="28,33,38,43"  FrameTime="0.1" />
+        <Frame Type="FireRightToward"   VerticalImageFlip="false" HorizontalImageFlip="false" Data="28,33,38,43"  FrameTime="0.1" />
+        <Frame Type="FireLeftOutward"   VerticalImageFlip="false" HorizontalImageFlip="true"  Data="26,31,36,41"  FrameTime="0.1" />
+        <Frame Type="FireRightOutward"  VerticalImageFlip="false" HorizontalImageFlip="false" Data="26,31,36,41"  FrameTime="0.1" />
+        
+        <Frame Type="DieLeft"           VerticalImageFlip="false" HorizontalImageFlip="true"  Data="47,52,57,62"  FrameTime="0.1" />
+        <Frame Type="DieRight"          VerticalImageFlip="false" HorizontalImageFlip="false" Data="47,52,57,62"  FrameTime="0.1" />
+        <Frame Type="DieToward"         VerticalImageFlip="false" HorizontalImageFlip="false" Data="49,54,59,64"  FrameTime="0.1" />
+        <Frame Type="DieOutward"        VerticalImageFlip="false" HorizontalImageFlip="false" Data="45,50,55,60"  FrameTime="0.1" />
+        <Frame Type="DieLeftToward"     VerticalImageFlip="false" HorizontalImageFlip="true"  Data="48,53,58,63"  FrameTime="0.1" />
+        <Frame Type="DieRightToward"    VerticalImageFlip="false" HorizontalImageFlip="false" Data="48,53,58,63"  FrameTime="0.1" />
+        <Frame Type="DieLeftOutward"    VerticalImageFlip="false" HorizontalImageFlip="true"  Data="46,51,56,61"  FrameTime="0.1" />
+        <Frame Type="DieRightOutward"   VerticalImageFlip="false" HorizontalImageFlip="false" Data="46,51,56,61"  FrameTime="0.1" />
+      </TextureAnimStateComponent>
+      <SpawnRelationComponent>
+        <RelateTo>pers_spawn</RelateTo>
+      </SpawnRelationComponent>
+    </Actor>
+
+    <Actor name="ground" type="MeshRenderLightComponent" resource="data\actors\MeshRenderLightComponent.xml">
+      <TransformComponent>
+        <Position x="0.000000" y="0.000000" z="10.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="6.000000" y="6.000000" z="6.000000" />
+      </TransformComponent>
+      <MeshRenderLightComponent>
+        <Color r="0.400000" g="0.400000" b="0.400000" a="1.000000" />
+        <PixelShader>pixel_shader_light.cso</PixelShader>
+        <VertexShader>vertex_shader_light.cso</VertexShader>
+        <Radius>auto</Radius>
+      </MeshRenderLightComponent>
+      <MeshComponent>
+        <Obj>data\objects\planet1.obj</Obj>
+      </MeshComponent>
+      <ParticleContactGeneratorComponent>
+        <ContactGeneratorTypeName>GeoGroundContact</ContactGeneratorTypeName>
+        <GroundLevel>6.0</GroundLevel>
+        <Restitution>0.2</Restitution>
+      </ParticleContactGeneratorComponent>
+      <ParticleForceGeneratorComponent>
+        <ForceGeneratorTypeName>GeoGravity</ForceGeneratorTypeName>
+        <Gravity>9.8</Gravity>
+      </ParticleForceGeneratorComponent>
+    </Actor>
+
+    <Actor name="directLight1" type="LightRenderComponent" resource="data\actors\LightRenderComponent.xml">
+      <TransformComponent>
+        <Position x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <LightRenderComponent>
+        <Color r="0.9" g="0.9" b="0.9" a="1.0"/>
+        <Light type="DirectionalLight" lantern="false">
+          <Ambient r="0.05" g="0.05" b="0.05" a="1.0" />
+          <Diffuse r="0.945" g="0.98" b="1.0" a="1.0" />
+          <Specular r="0.2" g="0.2" b="0.2" a="1.0" />
+          <Attenuation const="0.1" linear="0.0" exp="0.0" />
+          <Shape range="100.0" spot="24.0"/>
+        </Light>
+      </LightRenderComponent>
+    </Actor>
+    
+  </Actors>
+</World>

@@ -1,0 +1,11 @@
+<Actor type="ForceGeneratorComponent" resource="ForceGeneratorComponent.xml">
+  <TransformComponent>
+    <Position x="0.000000" y="-1.000000" z="0.000000" />
+    <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+    <Scale x="1.000000" y="1.000000" z="1.000000" />
+  </TransformComponent>
+  <ParticleForceGeneratorComponent>
+    <ForceGeneratorTypeName>Gravity</ForceGeneratorTypeName>
+    <Gravity>9.8</Gravity>
+  </ParticleForceGeneratorComponent>
+</Actor>
