@@ -2,20 +2,15 @@
 
 #include <chrono>
 
-class GameTimer {
+using GameClock = std::chrono::steady_clock;
+using GameClockDuration = GameClock::duration;
+using GameTimePoint = GameClock::time_point;
+
+const GameClockDuration ZERO_DURATION = GameClockDuration(0);
+
+class GameTimerDelta {
 public:
-    using gameClock = std::chrono::steady_clock;
-    using gameClockDuration = gameClock::duration;
-    using gameTimePoint = gameClock::time_point;
-
-    const gameClockDuration ZERO_DURATION = gameClockDuration(0);
-
-    GameTimer();
-
-    void Tick();
-    void Start();
-    void Stop();
-    void Reset();
+    GameTimerDelta(GameClockDuration delta_time, GameClockDuration total_time);
 
     double GetDeltaNanoseconds() const;
     double GetDeltaMicroseconds() const;
@@ -27,7 +22,7 @@ public:
     float fGetDeltaMilliseconds() const;
     float fGetDeltaSeconds() const;
 
-    gameClockDuration GetDeltaDuration() const;
+    GameClockDuration GetDeltaDuration() const;
 
     double GetTotalNanoseconds() const;
     double GetTotalMicroseconds() const;
@@ -39,17 +34,28 @@ public:
     float fGetTotalMilliSeconds() const;
     float fGetTotalSeconds() const;
 
-    gameClockDuration GetTotalDuration() const;
+    GameClockDuration GetTotalDuration() const;
+
+protected:
+    GameClockDuration m_delta_time_duration;
+    GameClockDuration m_total_time;
+};
+
+class GameTimer : public GameTimerDelta {
+public:
+    GameTimer();
+
+    void Tick();
+    void Start();
+    void Stop();
+    void Reset();
 
 private:
-    gameTimePoint m_curent_time;
-    gameTimePoint m_base_time;
-    gameClockDuration m_paused_time;
-    gameTimePoint m_stop_time;
-    gameTimePoint m_prev_time;
-
-    gameClockDuration m_delta_time_duration;
-    gameClockDuration m_total_time;
+    GameTimePoint m_curent_time;
+    GameTimePoint m_base_time;
+    GameClockDuration m_paused_time;
+    GameTimePoint m_stop_time;
+    GameTimePoint m_prev_time;
 
     bool m_stopped;
 };

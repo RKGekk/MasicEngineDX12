@@ -1,11 +1,11 @@
 #include "render_window_config.h"
 
-#include "../tools/string_utility.h"
+#include "tools/string_utility.h"
 
-RenderWindowConfig::RenderWindowConfig(const EngineOptions& opt) {
-	width = opt.m_screen_width;
-	height = opt.m_screen_height;
-	is_windowed_mode = !opt.m_full_screen;
+RenderWindowConfig::RenderWindowConfig(const ApplicationOptions& opt) {
+	width = opt.ScreenWidth;
+	height = opt.ScreenHeight;
+	is_windowed_mode = !opt.FullScreen;
 	options = opt;
 }
 

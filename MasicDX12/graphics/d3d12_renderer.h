@@ -33,7 +33,7 @@ class D3DRenderer12 : public IRenderer {
 public:
 	D3DRenderer12();
 
-	virtual bool Initialize(const RenderWindow& rw) override;
+	virtual bool Initialize(const WindowSurface& rw) override;
 
 	virtual void VSetBackgroundColor(DirectX::PackedVector::XMCOLOR color) override;
 	virtual void VSetBackgroundColor4f(const DirectX::XMFLOAT4& color) override;
@@ -48,7 +48,7 @@ public:
 	//virtual void VPushRenderTarget(UINT NumViews, Microsoft::WRL::ComPtr<ID3D12Resource> render_target_view, Microsoft::WRL::ComPtr<ID3D12Resource> depth_stencil_view);
 	virtual void VPopRenderTarget();
 
-	virtual HRESULT VOnRestore(const RenderWindow& rw);
+	virtual HRESULT VOnRestore(const WindowSurface& rw);
 	virtual void VShutdown();
 	
 	ID3D12Device* GetDevice();
@@ -67,7 +67,7 @@ protected:
 	std::string printErrorMessages();
 
 	void CreateCommandObjects();
-	void CreateSwapChain(const RenderWindow& rw);
+	void CreateSwapChain(const WindowSurface& rw);
 	void CreateRtvAndDsvDescriptorHeaps();
 
 	void FlushCommandQueue();

@@ -5,7 +5,9 @@
 #include <DirectXColors.h>
 #include <DirectXPackedVector.h>
 
-#include "render_window.h"
+#include "../application_options.h"
+#include "../render_window_config.h"
+#include "../window_surface.h"
 #include "../tools/game_timer.h"
 #include "base_engine_logic.h"
 //#include "i_screen_element.h"
@@ -13,6 +15,7 @@
 #include "../graphics/i_renderer.h"
 #include "../events/event_manager.h"
 //#include "human_view.h"
+#include "../graphics/adapter_reader.h"
 
 class Engine {
 public:
@@ -31,8 +34,8 @@ public:
 	LRESULT OnAltEnter();
 	LRESULT OnNcCreate(LPCREATESTRUCT cs);
 
-	EngineOptions& GetConfig();
-	const RenderWindow& GetRenderWindow();
+	ApplicationOptions& GetConfig();
+	const WindowSurface& GetRenderWindow();
 	static Renderer GetRendererImpl();
 
 	BaseEngineLogic* GetGameLogic();
@@ -57,19 +60,15 @@ protected:
 	void OSMessageDelegate(IEventDataPtr pEventData);
 
 private:
-	bool m_is_running = false;
-	bool m_is_editor_running = false;
-	bool m_is_quit_requested = false;
-	bool m_is_quitting = false;
-	int m_has_modal_dialog = false;
 
-	EngineOptions m_options;
-	RenderWindow m_render_window;
-	GameTimer m_timer;
+	ApplicationOptions m_options;
+	WindowSurface m_render_window;
+	std::shared_ptr<AdapterReader> m_adapter_reader;
+	AdapterData::AdapterDataPtr m_adapter;
 
-	std::unique_ptr<EventManager> m_event_manager;
+
+
 	std::unique_ptr<IRenderer> m_renderer;
-
 	std::unique_ptr<BaseEngineLogic> m_game;
 
 	static std::unique_ptr<Engine> m_pEngine;

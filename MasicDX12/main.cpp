@@ -34,7 +34,8 @@
 #include <Shlwapi.h>
 #include <dxgidebug.h>
 
-#include "engine/engine_options.h"
+#include "application_options.h"
+#include "application.h"
 #include "engine/render_window_config.h"
 #include "engine/render_window.h"
 #include "engine/engine.h"
@@ -60,9 +61,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		SetCurrentDirectoryW(path);
 	}
 
+	ApplicationOptions opt("EngineOptions.xml"s);
+	Application::Create(hModule, opt);
+
 	Engine* pEngine = Engine::GetEngine();
 	bool can_run = pEngine->Initialize(
-		RenderWindowConfig{ EngineOptions("EngineOptions.xml"s) }
+		RenderWindowConfig{ ApplicationOptions("EngineOptions.xml"s) }
 			.set_hInstance(hInstance)
 			.set_window_title("CG2_2")
 			.set_window_class("MyTestWindowsClass")
@@ -70,6 +74,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	if (can_run) {
 		pEngine->Run();
 	}
+
+	atexit(&ReportLiveObjects);
 
 	return retCode;
 }

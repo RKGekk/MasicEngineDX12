@@ -16,7 +16,7 @@ public:
 	virtual ~IEventData() = default;
 
 	virtual EventTypeId VGetEventType() const = 0;
-	virtual gameTimePoint GetTimeStamp() const = 0;
+	virtual GameTimePoint GetTimeStamp() const = 0;
 	virtual void VSerialize(std::ostream& out) const = 0;
 	virtual void VDeserialize(std::istream& in) = 0;
 	virtual IEventDataPtr VCopy(void) const = 0;

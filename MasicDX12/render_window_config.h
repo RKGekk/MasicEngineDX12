@@ -4,12 +4,12 @@
 
 #include <string>
 
-#include "engine_options.h"
+#include "application_options.h"
 
 class RenderWindowConfig {
 public:
 	RenderWindowConfig() = default;
-	RenderWindowConfig(const EngineOptions& opt);
+	RenderWindowConfig(const ApplicationOptions& opt);
 
 	RenderWindowConfig& set_hInstance(HINSTANCE hInstance);
 	RenderWindowConfig& set_window_title(std::string title);
@@ -31,5 +31,5 @@ public:
 
 	bool is_windowed_mode;
 
-	EngineOptions options;
+	ApplicationOptions options;
 };

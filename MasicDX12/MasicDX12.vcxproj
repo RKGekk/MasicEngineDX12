@@ -154,21 +154,40 @@
     <ClCompile Include="actors\orientation_relation_component.cpp" />
     <ClCompile Include="actors\particle_component.cpp" />
     <ClCompile Include="actors\transform_component.cpp" />
+    <ClCompile Include="application.cpp" />
     <ClCompile Include="engine\engine.cpp" />
-    <ClCompile Include="engine\engine_options.cpp" />
+    <ClCompile Include="application_options.cpp" />
     <ClCompile Include="engine\level_manager.cpp" />
     <ClCompile Include="actors\base_render_component.cpp" />
     <ClCompile Include="engine\screen_element_scene.cpp" />
     <ClCompile Include="events\evt_data_destroy_actor.cpp" />
+    <ClCompile Include="events\evt_data_key_pressed_event.cpp" />
+    <ClCompile Include="events\evt_data_key_released_event.cpp" />
+    <ClCompile Include="events\evt_data_maximize_window.cpp" />
     <ClCompile Include="events\evt_data_modified_render_component.cpp" />
     <ClCompile Include="events\evt_data_move_actor.cpp" />
     <ClCompile Include="events\evt_data_new_particle_component.cpp" />
     <ClCompile Include="events\evt_data_new_render_component.cpp" />
     <ClCompile Include="events\evt_data_os_message.cpp" />
-    <ClCompile Include="engine\render_window_config.cpp" />
+    <ClCompile Include="events\evt_data_minimize_window.cpp" />
+    <ClCompile Include="events\evt_data_restore_window.cpp" />
+    <ClCompile Include="events\key_event_args.cpp" />
+    <ClCompile Include="events\mouse_button_event_args.cpp" />
+    <ClCompile Include="events\mouse_motion_event_args.cpp" />
+    <ClCompile Include="events\resize_event_args.cpp" />
+    <ClCompile Include="events\evt_data_mouse_button_released.cpp" />
+    <ClCompile Include="events\mouse_wheel_event_args.cpp" />
+    <ClCompile Include="render_window_config.cpp" />
     <ClCompile Include="events\base_event_data.cpp" />
     <ClCompile Include="events\event_manager.cpp" />
     <ClCompile Include="events\i_event_manager.cpp" />
+    <ClCompile Include="events\evt_data_update_tick.cpp" />
+    <ClCompile Include="events\evt_data_dpi_scale.cpp" />
+    <ClCompile Include="events\evt_data_window_close.cpp" />
+    <ClCompile Include="events\evt_data_mouse_motion.cpp" />
+    <ClCompile Include="events\evt_data_mouse_button_pressed.cpp" />
+    <ClCompile Include="events\evt_data_mouse_wheel.cpp" />
+    <ClCompile Include="events\evt_data_resize_window.cpp" />
     <ClCompile Include="graphics\adapter_reader.cpp" />
     <ClCompile Include="graphics\buffer.cpp" />
     <ClCompile Include="graphics\byte_address_buffer.cpp" />
@@ -207,10 +226,9 @@
     <ClCompile Include="graphics\upload_buffer.cpp" />
     <ClCompile Include="graphics\vertex_buffer.cpp" />
     <ClCompile Include="graphics\vertex_types.cpp" />
-    <ClCompile Include="graphics\window_surface.cpp" />
+    <ClCompile Include="window_surface.cpp" />
     <ClCompile Include="nodes\light_manager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\render_window.cpp" />
     <ClCompile Include="graphics\d3d12_renderer.cpp" />
     <ClCompile Include="nodes\camera_node.cpp" />
     <ClCompile Include="nodes\frustum.cpp" />
@@ -283,6 +301,7 @@
     <ClInclude Include="actors\particle_component.h" />
     <ClInclude Include="actors\render_component_interface.h" />
     <ClInclude Include="actors\transform_component.h" />
+    <ClInclude Include="application.h" />
     <ClInclude Include="engine\base_engine_logic.h" />
     <ClInclude Include="engine\base_engine_state.h" />
     <ClInclude Include="engine\engine_view_type.h" />
@@ -295,12 +314,28 @@
     <ClInclude Include="engine\i_screen_element.h" />
     <ClInclude Include="engine\level_manager.h" />
     <ClInclude Include="engine\screen_element_scene.h" />
-    <ClInclude Include="events\events.h" />
     <ClInclude Include="events\evt_data_destroy_actor.h" />
+    <ClInclude Include="events\evt_data_key_pressed_event.h" />
+    <ClInclude Include="events\evt_data_key_released_event.h" />
+    <ClInclude Include="events\evt_data_maximize_window.h" />
     <ClInclude Include="events\evt_data_modified_render_component.h" />
     <ClInclude Include="events\evt_data_move_actor.h" />
     <ClInclude Include="events\evt_data_new_particle_component.h" />
     <ClInclude Include="events\evt_data_new_render_component.h" />
+    <ClInclude Include="events\evt_data_restore_window.h" />
+    <ClInclude Include="events\evt_data_update_tick.h" />
+    <ClInclude Include="events\evt_data_dpi_scale.h" />
+    <ClInclude Include="events\evt_data_window_close.h" />
+    <ClInclude Include="events\evt_data_mouse_motion.h" />
+    <ClInclude Include="events\evt_data_mouse_button_pressed.h" />
+    <ClInclude Include="events\evt_data_mouse_wheel.h" />
+    <ClInclude Include="events\evt_data_resize_window.h" />
+    <ClInclude Include="events\evt_data_minimize_window.h" />
+    <ClInclude Include="events\key_event_args.h" />
+    <ClInclude Include="events\mouse_button_event_args.h" />
+    <ClInclude Include="events\mouse_motion_event_args.h" />
+    <ClInclude Include="events\resize_event_args.h" />
+    <ClInclude Include="events\evt_data_mouse_button_released.h" />
     <ClInclude Include="graphics\adapter_reader.h" />
     <ClInclude Include="graphics\buffer.h" />
     <ClInclude Include="graphics\byte_address_buffer.h" />
@@ -333,8 +368,9 @@
     <ClInclude Include="graphics\texture.h" />
     <ClInclude Include="graphics\unordered_access_view.h" />
     <ClInclude Include="graphics\upload_buffer.h" />
-    <ClInclude Include="graphics\window_keycodes.h" />
-    <ClInclude Include="graphics\window_surface.h" />
+    <ClInclude Include="events\mouse_wheel_event_args.h" />
+    <ClInclude Include="window_keycodes.h" />
+    <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />
     <ClInclude Include="graphics\imgui\imconfig.h" />
     <ClInclude Include="graphics\imgui\imgui.h" />
@@ -348,9 +384,8 @@
     <ClInclude Include="graphics\i_renderer.h" />
     <ClInclude Include="engine\os_message_data.h" />
     <ClInclude Include="engine\renderer_enum.h" />
-    <ClInclude Include="engine\render_window.h" />
-    <ClInclude Include="engine\render_window_config.h" />
-    <ClInclude Include="engine\engine_options.h" />
+    <ClInclude Include="render_window_config.h" />
+    <ClInclude Include="application_options.h" />
     <ClInclude Include="events\base_event_data.h" />
     <ClInclude Include="events\event_manager.h" />
     <ClInclude Include="events\evt_data_os_message.h" />
@@ -474,13 +509,10 @@
     <None Include="data\objects\pointer.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\objects\printer.mtl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="data\objects\uplane.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="engine_options.xml">
+    <None Include="application_options.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -533,9 +565,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\objects\pointer.obj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\objects\printer.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\objects\uplane.obj">
@@ -725,64 +754,16 @@
     <None Include="data\textures\12.dds">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\textures\daemon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="data\textures\death_knight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\textures\dragon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\elven_archer.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="data\textures\fireatlas.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\footman.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\goblin_sappers.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\grunt.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\gryphon_rider.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\knight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\textures\loading3.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\textures\logo5.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\mage.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\ogre.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\peasant.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\peasant_with_gold.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\peasant_with_wood.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\peon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\peon_with_gold.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\peon_with_wood.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\textures\pinksquare.jpg">
@@ -795,12 +776,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\textures\planet1_None_OcclusionRoughnessMetallic.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\skeleton.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\textures\troll.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

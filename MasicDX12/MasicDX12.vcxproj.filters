@@ -93,10 +93,10 @@
     <ClCompile Include="engine\engine.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\engine_options.cpp">
+    <ClCompile Include="application_options.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\render_window_config.cpp">
+    <ClCompile Include="render_window_config.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
     <ClCompile Include="tools\string_utility.cpp">
@@ -122,9 +122,6 @@
     </ClCompile>
     <ClCompile Include="events\i_event_manager.cpp">
       <Filter>Source Files\events</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\render_window.cpp">
-      <Filter>Source Files\engine</Filter>
     </ClCompile>
     <ClCompile Include="graphics\imgui\imgui.cpp">
       <Filter>Source Files\graphics\imgui</Filter>
@@ -360,106 +357,163 @@
     <ClCompile Include="actors\actor.cpp">
       <Filter>Source Files\actors</Filter>
     </ClCompile>
-    <ClCompile Include="events\evt_data_new_particle_component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="actors\enemy_component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="graphics\buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="graphics\resource.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\byte_address_buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="graphics\vertex_types.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="graphics\vertex_buffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\command_list.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\command_queue.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\constant_buffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\constant_buffer_view.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\descriptor_allocation.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\descriptor_allocator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\descriptor_allocator_page.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\device.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\dynamic_descriptor_heap.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\effect_pso.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="actors\enemy_component.cpp">
+      <Filter>Source Files\actors</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_new_particle_component.cpp">
+      <Filter>Source Files\events</Filter>
     </ClCompile>
     <ClCompile Include="graphics\generate_mips_pso.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\gui.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\index_buffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\material.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\mesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\pano_to_cubemap_pso.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\pipeline_state_object.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\render_target.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\resource.cpp">
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\resource_state_tracker.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\root_signature.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\shader_resource_view.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\structured_buffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\swap_chain.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\texture.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\unordered_access_view.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\upload_buffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\vertex_buffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\vertex_types.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="window_surface.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\window_surface.cpp">
+    <ClCompile Include="events\evt_data_update_tick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_dpi_scale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_window_close.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_key_pressed_event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_mouse_motion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_mouse_button_pressed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_mouse_wheel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_resize_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_minimize_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\resize_event_args.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_maximize_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_restore_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\key_event_args.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_key_released_event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\mouse_motion_event_args.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\mouse_button_event_args.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_mouse_button_released.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\mouse_wheel_event_args.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -467,13 +521,7 @@
     <ClInclude Include="engine\engine.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engine_options.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\render_window.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\render_window_config.h">
+    <ClInclude Include="render_window_config.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\renderer_enum.h">
@@ -851,201 +899,210 @@
     <ClInclude Include="engine\screen_element_scene.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="actors\orientation_relation_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="actors\transform_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="actors\particle_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="events\evt_data_new_particle_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="actors\enemy_component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tools\thread_utility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tools\hash_utility.h">
+    <ClInclude Include="application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\byte_address_buffer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\command_list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\vertex_types.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\command_queue.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\constant_buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tools\defines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tools\thread_safe_queue.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\constant_buffer_view.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\defines.h">
+      <Filter>Header Files\tools</Filter>
     </ClInclude>
     <ClInclude Include="graphics\descriptor_allocation.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\descriptor_allocator.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\descriptor_allocator_page.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\device.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\dynamic_descriptor_heap.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\effect_pso.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="events\events.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="actors\enemy_component.h">
+      <Filter>Header Files\actors</Filter>
     </ClInclude>
-    <ClInclude Include="tools\signals.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tools\optional.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\window_keycodes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\generate_mips_pso.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="events\evt_data_new_particle_component.h">
+      <Filter>Header Files\events</Filter>
     </ClInclude>
     <ClInclude Include="graphics\gui.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\generate_mips_pso.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="application_options.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\hash_utility.h">
+      <Filter>Header Files\tools</Filter>
     </ClInclude>
     <ClInclude Include="graphics\light.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\material.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\mesh.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\particle_component.h">
+      <Filter>Header Files\actors</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\optional.hpp">
+      <Filter>Header Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\orientation_relation_component.h">
+      <Filter>Header Files\actors</Filter>
     </ClInclude>
     <ClInclude Include="graphics\pano_to_cubemap_pso.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\pipeline_state_object.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\render_target.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\resource.h">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\resource_state_tracker.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\root_signature.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\shader_resource_view.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\signals.hpp">
+      <Filter>Header Files\tools</Filter>
     </ClInclude>
     <ClInclude Include="graphics\structured_buffer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\swap_chain.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\texture.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\thread_utility.h">
+      <Filter>Header Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\thread_safe_queue.h">
+      <Filter>Header Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\transform_component.h">
+      <Filter>Header Files\actors</Filter>
     </ClInclude>
     <ClInclude Include="graphics\unordered_access_view.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\upload_buffer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\vertex_types.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="window_keycodes.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="window_surface.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_update_tick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\window_surface.h">
+    <ClInclude Include="events\evt_data_dpi_scale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_window_close.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_key_pressed_event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_mouse_motion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_mouse_button_pressed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_mouse_wheel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_resize_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_minimize_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\resize_event_args.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_maximize_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_restore_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\key_event_args.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_key_released_event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\mouse_motion_event_args.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\mouse_button_event_args.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_mouse_button_released.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\mouse_wheel_event_args.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine_options.xml">
+    <None Include="application_options.xml">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="data\textures\daemon.png">
-      <Filter>Resource Files\textures</Filter>
     </None>
     <None Include="data\textures\death_knight.png">
       <Filter>Resource Files\textures</Filter>
     </None>
-    <None Include="data\textures\dragon.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\elven_archer.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
     <None Include="data\textures\fireatlas.jpg">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\footman.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\goblin_sappers.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\grunt.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\gryphon_rider.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\knight.png">
       <Filter>Resource Files\textures</Filter>
     </None>
     <None Include="data\textures\loading3.jpg">
       <Filter>Resource Files\textures</Filter>
     </None>
     <None Include="data\textures\logo5.jpg">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\mage.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\ogre.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\peasant.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\peasant_with_gold.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\peasant_with_wood.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\peon.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\peon_with_gold.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\peon_with_wood.png">
       <Filter>Resource Files\textures</Filter>
     </None>
     <None Include="data\textures\pinksquare.jpg">
@@ -1058,12 +1115,6 @@
       <Filter>Resource Files\textures</Filter>
     </None>
     <None Include="data\textures\planet1_None_OcclusionRoughnessMetallic.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\skeleton.png">
-      <Filter>Resource Files\textures</Filter>
-    </None>
-    <None Include="data\textures\troll.png">
       <Filter>Resource Files\textures</Filter>
     </None>
     <None Include="data\textures\10.dds">
@@ -1144,12 +1195,6 @@
     <None Include="data\objects\pointer.obj">
       <Filter>Resource Files\models</Filter>
     </None>
-    <None Include="data\objects\printer.mtl">
-      <Filter>Resource Files\models</Filter>
-    </None>
-    <None Include="data\objects\printer.obj">
-      <Filter>Resource Files\models</Filter>
-    </None>
     <None Include="data\objects\uplane.mtl">
       <Filter>Resource Files\models</Filter>
     </None>
@@ -1227,16 +1272,38 @@
     <FxCompile Include="data\shaders\vertex_shader_sky.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
-    <FxCompile Include="data\shaders\Base_PS.hlsl" />
-    <FxCompile Include="data\shaders\Basic_VS.hlsl" />
-    <FxCompile Include="data\shaders\Decal_PS.hlsl" />
-    <FxCompile Include="data\shaders\GenerateMips_CS.hlsl" />
-    <FxCompile Include="data\shaders\ImGUI_PS.hlsl" />
-    <FxCompile Include="data\shaders\ImGUI_VS.hlsl" />
-    <FxCompile Include="data\shaders\Lighting_PS.hlsl" />
-    <FxCompile Include="data\shaders\PanoToCubemap_CS.hlsl" />
-    <FxCompile Include="data\shaders\PixelShader.hlsl" />
-    <FxCompile Include="data\shaders\Unlit_PS.hlsl" />
-    <FxCompile Include="data\shaders\VertexShader.hlsl" />
+    <FxCompile Include="data\shaders\Base_PS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Basic_VS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Decal_PS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\GenerateMips_CS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\ImGUI_PS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\ImGUI_VS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Lighting_PS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\PanoToCubemap_CS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\PixelShader.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\Unlit_PS.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="data\shaders\VertexShader.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

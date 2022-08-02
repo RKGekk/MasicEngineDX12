@@ -4,6 +4,37 @@
 #include <functional>
 #include <utility>
 
+#include "signals.hpp"
+
+template<typename Func>
+class Delegate;
+
+template<typename R, typename... Args>
+class Delegate<R(Args...)> {
+public:
+    using slot = sig::slot<R(Args...)>;
+    using signal = sig::signal<R(Args...)>;
+    using connection = sig::connection;
+    using scoped_connection = sig::scoped_connection;
+
+    template<typename Func>
+    connection operator+=(Func&& f) {
+        return m_Callbacks.connect(std::forward<Func>(f));
+    }
+
+    template<typename Func>
+    std::size_t operator-=(Func&& f) {
+        return m_Callbacks.disconnect(std::forward<Func>(f));
+    }
+
+    opt::optional<R> operator()(Args... args) {
+        return m_Callbacks(std::forward<Args>(args)...);
+    }
+
+private:
+    signal m_Callbacks;
+};
+
 template<typename... Type>
 struct type_list {
     using type = type_list;

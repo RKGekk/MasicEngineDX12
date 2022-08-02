@@ -8,6 +8,7 @@ EventTypeId EvtData_Move_Actor::VGetEventType() const {
 
 EvtData_Move_Actor::EvtData_Move_Actor() {
     m_id = 0;
+    DirectX::XMStoreFloat4x4(&m_matrix, DirectX::XMMatrixIdentity());
 }
 
 EvtData_Move_Actor::EvtData_Move_Actor(ActorId id, const DirectX::XMFLOAT4X4& matrix) {

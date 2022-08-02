@@ -1,9 +1,9 @@
 #include "base_event_data.h"
 
-BaseEventData::BaseEventData(const gameTimePoint timeStamp) : m_timeStamp(timeStamp) {}
+BaseEventData::BaseEventData(const GameTimer::gameTimePoint time_stamp) : m_time_stamp(time_stamp) {}
 
-gameTimePoint BaseEventData::GetTimeStamp() const {
-	return m_timeStamp;
+GameTimer::gameTimePoint BaseEventData::GetTimeStamp() const {
+	return m_time_stamp;
 }
 
 void BaseEventData::VSerialize(std::ostream& out) const {}

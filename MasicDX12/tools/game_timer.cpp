@@ -2,7 +2,7 @@
 
 #include <ratio>
 
-GameTimer::GameTimer() : m_delta_time_duration(ZERO_DURATION), m_total_time(ZERO_DURATION), m_paused_time(ZERO_DURATION) {
+GameTimer::GameTimer() : GameTimerDelta(ZERO_DURATION, ZERO_DURATION), m_paused_time(ZERO_DURATION) {
     gameTimePoint start_time = gameClock::now();
     m_curent_time = start_time;
     m_base_time = start_time;
@@ -68,72 +68,74 @@ void GameTimer::Reset() {
     m_paused_time = ZERO_DURATION;
 }
 
-double GameTimer::GetDeltaNanoseconds() const {
+GameTimerDelta::GameTimerDelta(gameClockDuration delta_time, gameClockDuration total_time) : m_delta_time_duration(delta_time), m_total_time(total_time) {}
+
+double GameTimerDelta::GetDeltaNanoseconds() const {
     return std::chrono::duration<double, std::nano>(m_delta_time_duration).count();
 }
-double GameTimer::GetDeltaMicroseconds() const {
+double GameTimerDelta::GetDeltaMicroseconds() const {
     return std::chrono::duration<double, std::micro>(m_delta_time_duration).count();
 }
 
-double GameTimer::GetDeltaMilliseconds() const {
+double GameTimerDelta::GetDeltaMilliseconds() const {
     return std::chrono::duration<double, std::milli>(m_delta_time_duration).count();
 }
 
-double GameTimer::GetDeltaSeconds() const {
+double GameTimerDelta::GetDeltaSeconds() const {
     return std::chrono::duration<double>(m_delta_time_duration).count();
 }
 
-float GameTimer::fGetDeltaNanoseconds() const {
+float GameTimerDelta::fGetDeltaNanoseconds() const {
     return std::chrono::duration<float, std::nano>(m_delta_time_duration).count();
 }
-float GameTimer::fGetDeltaMicroseconds() const {
+float GameTimerDelta::fGetDeltaMicroseconds() const {
     return std::chrono::duration<float, std::micro>(m_delta_time_duration).count();
 }
 
-float GameTimer::fGetDeltaMilliseconds() const {
+float GameTimerDelta::fGetDeltaMilliseconds() const {
     return std::chrono::duration<float, std::milli>(m_delta_time_duration).count();
 }
 
-float GameTimer::fGetDeltaSeconds() const {
+float GameTimerDelta::fGetDeltaSeconds() const {
     return std::chrono::duration<float>(m_delta_time_duration).count();
 }
 
-GameTimer::gameClockDuration GameTimer::GetDeltaDuration() const {
+gameClockDuration GameTimerDelta::GetDeltaDuration() const {
     return m_delta_time_duration;
 }
 
-double GameTimer::GetTotalNanoseconds() const {
+double GameTimerDelta::GetTotalNanoseconds() const {
     return std::chrono::duration<double, std::nano>(m_total_time).count();
 }
 
-double GameTimer::GetTotalMicroseconds() const {
+double GameTimerDelta::GetTotalMicroseconds() const {
     return std::chrono::duration<double, std::micro>(m_total_time).count();
 }
 
-double GameTimer::GetTotalMilliSeconds() const {
+double GameTimerDelta::GetTotalMilliSeconds() const {
     return std::chrono::duration<double, std::milli>(m_total_time).count();
 }
 
-double GameTimer::GetTotalSeconds() const {
+double GameTimerDelta::GetTotalSeconds() const {
     return std::chrono::duration<double>(m_total_time).count();
 }
 
-float GameTimer::fGetTotalNanoseconds() const {
+float GameTimerDelta::fGetTotalNanoseconds() const {
     return std::chrono::duration<float, std::nano>(m_total_time).count();
 }
 
-float GameTimer::fGetTotalMicroseconds() const {
+float GameTimerDelta::fGetTotalMicroseconds() const {
     return std::chrono::duration<float, std::micro>(m_total_time).count();
 }
 
-float GameTimer::fGetTotalMilliSeconds() const {
+float GameTimerDelta::fGetTotalMilliSeconds() const {
     return std::chrono::duration<float, std::milli>(m_total_time).count();
 }
 
-float GameTimer::fGetTotalSeconds() const {
+float GameTimerDelta::fGetTotalSeconds() const {
     return std::chrono::duration<float>(m_total_time).count();
 }
 
-GameTimer::gameClockDuration GameTimer::GetTotalDuration() const {
+gameClockDuration GameTimerDelta::GetTotalDuration() const {
     return m_total_time;
 }

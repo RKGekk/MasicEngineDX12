@@ -6,15 +6,22 @@
 #include <string>
 
 #include "i_event_manager.h"
+#include "../tools/thread_safe_queue.h"
+#include "../tools/game_timer.h"
 
 const unsigned int EVENTMANAGER_NUM_QUEUES = 2;
+const GameClockDuration MAX_DURATION = std::chrono::milliseconds(33);
 
 class EventManager : public IEventManager {
-	std::unordered_map<EventTypeId, std::list<EventListenerDelegate>> m_eventListeners;
-	const std::string m_eventManagerName;
+	using EventListenerMap = std::unordered_map<EventTypeId, std::list<EventListenerDelegate>>;
+	using EventListenerList = std::list<IEventDataPtr>;
+	using ThreadSafeEventQueue = ThreadSafeQueue<IEventDataPtr>;
 
-	std::list<IEventDataPtr> m_queues[EVENTMANAGER_NUM_QUEUES];
-	int m_activeQueue;
+	EventListenerMap m_event_listeners;
+	EventListenerList m_queues[EVENTMANAGER_NUM_QUEUES];
+	ThreadSafeEventQueue m_realtime_event_queue;
+	int m_active_queue;
+	const std::string m_event_manager_name;
 
 public:
 	explicit EventManager(const std::string& pName, bool setAsGlobal);
@@ -24,6 +31,7 @@ public:
 
 	bool VTriggerEvent(const IEventDataPtr& pEvent) const override;
 	bool VQueueEvent(const IEventDataPtr& pEvent) override;
+	bool VThreadSafeQueueEvent(const IEventDataPtr& pEvent);
 	bool VUpdate() override;
 	bool VAbortEvent(const EventTypeId& inType, bool allOfType) override;
 

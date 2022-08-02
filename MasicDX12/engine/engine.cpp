@@ -11,10 +11,15 @@ Engine::Engine() {}
 Engine::~Engine() {}
 
 bool Engine::Initialize(const RenderWindowConfig& cfg) {
-	HRESULT hr = CoInitialize(nullptr);
-	COM_ERROR_IF_FAILED(hr, "Failed to initializes the COM library on the current thread and identify the concurrency model as single-thread apartment(STA).");
+	if (!DirectX::XMVerifyCPUSupport()) {
+		MessageBoxA(NULL, "Failed to verify DirectX Math library support.", "Error", MB_OK | MB_ICONERROR);
+		return false;
+	}
+#if defined( _DEBUG )
+	Device::EnableDebugLayer();
+#endif
 
-	m_timer.Start();
+
 	m_options = cfg.options;
 
 	m_event_manager = std::make_unique<EventManager>("GameCodeApp Event Mgr", true);
