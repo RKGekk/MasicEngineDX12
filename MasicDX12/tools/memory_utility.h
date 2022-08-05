@@ -52,8 +52,8 @@ struct SortBy_SharedPtr_Content {
 #define ReleaseCom(x) { if(x){ x->Release(); x = 0; } }
 #endif
 
-#ifndef ThrowIfFailed
-#define ThrowIfFailed(x)                                              \
+#ifndef ThrowIfFailedDX
+#define ThrowIfFailedDX(x)                                            \
 {                                                                     \
     HRESULT hr__ = (x);                                               \
     std::wstring wfn = s2ws(__FILE__);                       \

@@ -6,7 +6,7 @@
 
 #include "../actors/actor.h"
 #include "render_pass.h"
-#include "material.h"
+#include "../graphics/material.h"
 #include "alpha_type.h"
 
 class SceneNodeProperties {

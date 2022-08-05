@@ -36,8 +36,8 @@
 
 #include "application_options.h"
 #include "application.h"
-#include "engine/render_window_config.h"
-#include "engine/render_window.h"
+#include "render_window_config.h"
+#include "window_surface.h"
 #include "engine/engine.h"
 #include "events/event_manager.h"
 
@@ -61,19 +61,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 		SetCurrentDirectoryW(path);
 	}
 
-	ApplicationOptions opt("EngineOptions.xml"s);
-	Application::Create(hModule, opt);
+	RenderWindowConfig cfg(ApplicationOptions("application_options.xml"s));
+	cfg.set_hInstance(hInstance);
+	cfg.set_window_title("CG2_2");
+	cfg.set_window_class("MyTestWindowsClass");
 
-	Engine* pEngine = Engine::GetEngine();
-	bool can_run = pEngine->Initialize(
-		RenderWindowConfig{ ApplicationOptions("EngineOptions.xml"s) }
-			.set_hInstance(hInstance)
-			.set_window_title("CG2_2")
-			.set_window_class("MyTestWindowsClass")
-	);
+	Application::Create(hModule, cfg.options);
+	std::shared_ptr<Engine> pEngine = Engine::GetEngine();
+	bool can_run = pEngine->Initialize(cfg);
 	if (can_run) {
-		pEngine->Run();
+		Application::Get().Run(pEngine, cfg);
 	}
+	Application::Destroy();
 
 	atexit(&ReportLiveObjects);
 

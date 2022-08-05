@@ -4,12 +4,12 @@
 #include "../tools/game_timer.h"
 
 class BaseEventData : public IEventData {
-	const GameTimer::gameTimePoint m_time_stamp;
+	const GameTimePoint m_time_stamp;
 
 public:
-	explicit BaseEventData(const GameTimer::gameTimePoint timeStamp = GameTimer::gameClock::now());
+	explicit BaseEventData(const GameTimePoint timeStamp = GameClock::now());
 
-	GameTimer::gameTimePoint GetTimeStamp() const override;
+	GameTimePoint GetTimeStamp() const override;
 
 	virtual void VSerialize(std::ostream& out) const override;
 	virtual void VDeserialize(std::istream& in) override;

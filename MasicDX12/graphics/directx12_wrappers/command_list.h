@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vertex_types.h"
+#include "../vertex_types.h"
 #include "../tools/defines.h"
 
 #include <DirectXMath.h>

@@ -4,7 +4,7 @@
 #include "command_list.h"
 #include "command_queue.h"
 #include "device.h"
-#include "gui.h"
+#include "../gui.h"
 #include "render_target.h"
 #include "resource_state_tracker.h"
 #include "texture.h"

@@ -8,3 +8,6 @@
 *.db-shm
 *.db
 *.suo
+*.tlog
+/MasicDX12/x64/Debug
+/x64/Debug

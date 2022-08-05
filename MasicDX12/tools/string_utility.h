@@ -94,6 +94,8 @@ bool ntobool(const pugi::xml_node node_with_bool);
 bool ntobool(const pugi::xml_node node_with_bool, bool def);
 float ntofloat(const pugi::xml_node node_with_float);
 float ntofloat(const pugi::xml_node node_with_float, float def);
+int ntoint(const pugi::xml_node node_with_int);
+int ntoint(const pugi::xml_node node_with_int, int def);
 float attrtofloat(const pugi::xml_attribute attr_with_float);
 float attrtofloat(const pugi::xml_attribute attr_with_float, float def);
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "application.h"
 #include "render_window_config.h"
 #include "tools/game_timer.h"
 #include "events/i_event_manager.h"
@@ -17,6 +16,8 @@
 #include <string>
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+class Application;
 
 class WindowSurface {
 public:
@@ -46,7 +47,7 @@ public:
     WindowSurface& operator=(const WindowSurface& right) = delete;
 
     virtual ~WindowSurface();
-    bool Initialize(Application& windowContainer, const RenderWindowConfig& cfg);
+    bool Initialize(const RenderWindowConfig& cfg);
     bool ProcessMessages();
 
     virtual void OnDPIScaleChanged(float dpi_scale);
@@ -66,6 +67,7 @@ public:
     virtual void OnMouseWheel(MouseWheelEventArgs& e);
 
     virtual void VRegisterEvents();
+    virtual void OnWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 protected:
     void RegisterWindowClass();

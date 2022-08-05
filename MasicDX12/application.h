@@ -17,13 +17,11 @@
 
 #include "application_options.h"
 #include "events/event_manager.h"
-#include "graphics/adapter_reader.h"
-#include "graphics/device.h"
 #include "tools/game_timer.h"
 #include "render_window_config.h"
+#include "engine/engine.h"
 
 class WindowSurface;
-class EngineImpl;
 
 class Application {
 public:
@@ -32,15 +30,15 @@ public:
     static Application& Get();
 
     std::shared_ptr<WindowSurface> CreateRenderWindow(const RenderWindowConfig& cfg);
-    std::shared_ptr<WindowSurface> GetWindowByName(const std::wstring& window_name);
+    static std::shared_ptr<WindowSurface> GetWindowByName(const std::wstring& window_name);
+    static std::shared_ptr<WindowSurface> GetWindowByHWND(HWND hwnd);
+    static std::shared_ptr<WindowSurface> DestroyWindowByHWND(HWND hwnd);
 
-    int Run(std::shared_ptr<EngineImpl> pEngine);
+    bool Run(std::shared_ptr<Engine> pEngine, const RenderWindowConfig& cfg);
     void Quit(int exit_code = 0);
     void Stop();
     
-    GameTimer& GetTimer();
-
-    virtual LRESULT OnWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    const GameTimer& GetTimer();
 
 protected:
     Application(HINSTANCE hInst);

@@ -1,11 +1,10 @@
 #pragma once
 
+#include <Windows.h>
 #include <comdef.h>
 #include <exception>
 
 #include "string_utility.h"
-
-#define COM_ERROR_IF_FAILED( hr, msg ) if( FAILED( hr ) ) throw COMException( hr, msg, __FILE__, __FUNCTION__, __LINE__ )
 
 class COMException {
 public:
@@ -23,6 +22,8 @@ public:
 private:
 	std::wstring m_whatmsg;
 };
+
+#define COM_ERROR_IF_FAILED( hr, msg ) if( FAILED( hr ) ) throw COMException( hr, msg, __FILE__, __FUNCTION__, __LINE__ )
 
 inline void ThrowIfFailed(HRESULT hr) {
 	if (FAILED(hr)) {

@@ -10,6 +10,7 @@ public:
 	static const EventTypeId sk_EventType = 0xf0f5d183;
 	static const std::string sk_EventName;
 
+	EvtData_Update_Tick();
 	explicit EvtData_Update_Tick(GameClockDuration delta_time, GameClockDuration total_time);
 	explicit EvtData_Update_Tick(GameTimerDelta delta_time);
 

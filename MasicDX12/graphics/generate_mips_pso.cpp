@@ -1,7 +1,7 @@
 #include "generate_mips_pso.h"
 
-#include "device.h"
-#include "root_signature.h"
+#include "directx12_wrappers/device.h"
+#include "directx12_wrappers/root_signature.h"
 #include "../tools/com_exception.h"
 
 #include <d3dx12.h>

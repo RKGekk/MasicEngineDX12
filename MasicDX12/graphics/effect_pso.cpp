@@ -1,10 +1,10 @@
 #include "effect_pso.h"
 
-#include "command_list.h"
-#include "device.h"
+#include "directx12_wrappers/command_list.h"
+#include "directx12_wrappers/device.h"
 #include "material.h"
-#include "pipeline_state_object.h"
-#include "root_signature.h"
+#include "directx12_wrappers/pipeline_state_object.h"
+#include "directx12_wrappers/root_signature.h"
 #include "vertex_types.h"
 #include "../tools/com_exception.h"
 

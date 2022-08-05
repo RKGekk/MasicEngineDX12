@@ -31,8 +31,8 @@ bool ApplicationOptions::Init(const std::string& xml_file_name) {
 		FullScreenMax = ntobool(graphics_node.child("FullScreenMax"), FullScreenMax);
 		FullScreen = ntobool(graphics_node.child("FullScreen"), FullScreen);
 		RunFullSpeed = ntobool(graphics_node.child("RunFullSpeed"), RunFullSpeed);
-		ScreenHeight = ntofloat(graphics_node.child("Height"), ScreenHeight);
-		ScreenWidth = ntofloat(graphics_node.child("Width"), ScreenWidth);
+		ScreenHeight = ntoint(graphics_node.child("Height"), ScreenHeight);
+		ScreenWidth = ntoint(graphics_node.child("Width"), ScreenWidth);
 
 		pugi::xml_node renderer_node = graphics_node.child("Renderer");
 		if (renderer_node) {

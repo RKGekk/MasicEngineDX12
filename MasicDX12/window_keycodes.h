@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 enum class WindowKey {
 	None = 0x00, // No key was pressed
 	LButton = 0x01, // Left mouse button

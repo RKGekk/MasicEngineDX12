@@ -2,6 +2,8 @@
 
 const std::string EvtData_Update_Tick::sk_EventName = "EvtData_Update_Tick";
 
+EvtData_Update_Tick::EvtData_Update_Tick() : GameTimerDelta(ZERO_DURATION, ZERO_DURATION) {}
+
 EvtData_Update_Tick::EvtData_Update_Tick(GameClockDuration delta_time, GameClockDuration total_time) : GameTimerDelta(delta_time, total_time) {}
 
 EvtData_Update_Tick::EvtData_Update_Tick(GameTimerDelta delta_time) : GameTimerDelta(delta_time) {}

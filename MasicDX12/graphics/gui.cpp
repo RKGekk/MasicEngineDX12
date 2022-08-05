@@ -1,12 +1,12 @@
 #include "gui.h"
 
-#include "command_list.h"
-#include "command_queue.h"
-#include "device.h"
-#include "render_target.h"
-#include "root_signature.h"
-#include "shader_resource_view.h"
-#include "texture.h"
+#include "directx12_wrappers/command_list.h"
+#include "directx12_wrappers/command_queue.h"
+#include "directx12_wrappers/device.h"
+#include "directx12_wrappers/render_target.h"
+#include "directx12_wrappers/root_signature.h"
+#include "directx12_wrappers/shader_resource_view.h"
+#include "directx12_wrappers/texture.h"
 #include "../tools/com_exception.h"
 
 #include <../graphics/imgui/imgui_impl_win32.h>

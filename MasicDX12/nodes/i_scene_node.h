@@ -8,7 +8,6 @@
 #include <Windows.h>
 
 #include "scene_node_properties.h"
-#include "ray_cast.h"
 #include "../actors/actor.h"
 
 class Scene;
@@ -48,7 +47,6 @@ public:
 	virtual bool VAddChild(std::shared_ptr<ISceneNode> kid) = 0;
 	virtual bool VRemoveChild(ActorId aid, ComponentId cid) = 0;
 	virtual HRESULT VOnLostDevice(Scene* pScene) = 0;
-	virtual HRESULT VPick(Scene* pScene, RayCast* pRayCast) = 0;
 
 	virtual ISceneNode* VGetParent() = 0;
 

@@ -10,7 +10,7 @@ EvtData_Mouse_Button_Released::EvtData_Mouse_Button_Released() {}
 
 EvtData_Mouse_Button_Released::EvtData_Mouse_Button_Released(MBEventArgs e) : m_state(e) {}
 
-EvtData_Mouse_Button_Released::EvtData_Mouse_Button_Released(MouseButtonSide button, MKState state, bool left_button, bool middle_button, bool right_button, bool control, bool shift, int x, int y) : m_button(button), m_state(state), m_left_button(left_button), m_middle_button(middle_button), m_right_button(right_button), m_control(control), m_shift(shift), m_x(x), m_y(y) {}
+EvtData_Mouse_Button_Released::EvtData_Mouse_Button_Released(MouseButtonSide button, MKState state, bool left_button, bool middle_button, bool right_button, bool control, bool shift, int x, int y) : m_state(button, state, left_button, middle_button, right_button, control, shift, x, y) {}
 
 void EvtData_Mouse_Button_Released::VSerialize(std::ostream& out) const {}
 

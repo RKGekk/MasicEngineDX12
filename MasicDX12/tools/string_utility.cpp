@@ -120,6 +120,24 @@ float ntofloat(const pugi::xml_node node_with_float, float def) {
 	return res;
 }
 
+int ntoint(const pugi::xml_node node_with_int) {
+	int res = 0;
+	if (node_with_int) {
+		std::string s(node_with_int.first_child().value());
+		res = std::stoi(s);
+	}
+	return res;
+}
+
+int ntoint(const pugi::xml_node node_with_int, int def) {
+	int res = def;
+	if (node_with_int) {
+		std::string s(node_with_int.first_child().value());
+		res = std::stoi(s);
+	}
+	return res;
+}
+
 float attrtofloat(const pugi::xml_attribute attr_with_float) {
 	float res = 0.0f;
 	if (attr_with_float) {

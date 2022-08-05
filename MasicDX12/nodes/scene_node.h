@@ -7,7 +7,6 @@
 #include "../actors/actor.h"
 #include "i_scene_node.h"
 #include "../actors/base_render_component.h"
-#include "ray_cast.h"
 #include "../tools/memory_utility.h"
 
 using SceneNodeList = std::vector<std::shared_ptr<ISceneNode>>;
@@ -50,7 +49,6 @@ public:
 	virtual bool VAddChild(std::shared_ptr<ISceneNode> kid) override;
 	virtual bool VRemoveChild(ActorId aid, ComponentId cid) override;
 	virtual HRESULT VOnLostDevice(Scene* pScene) override;
-	virtual HRESULT VPick(Scene* pScene, RayCast* pRayCast) override;
 
 	virtual ISceneNode* VGetParent() override;
 

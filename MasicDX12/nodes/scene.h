@@ -71,8 +71,6 @@ public:
 
 	void AddAlphaSceneNode(AlphaSceneNode* asn);
 
-	HRESULT Pick(RayCast* pRayCast);
-
 	IRenderer* GetRenderer();
 	RootNode* GetRootNode();
 };

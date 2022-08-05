@@ -1,8 +1,8 @@
 #include "mesh.h"
 
-#include "command_list.h"
-#include "index_buffer.h"
-#include "vertex_buffer.h"
+#include "directx12_wrappers/command_list.h"
+#include "directx12_wrappers/index_buffer.h"
+#include "directx12_wrappers/vertex_buffer.h"
 
 Mesh::Mesh() : m_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST) {}
 

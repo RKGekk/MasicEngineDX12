@@ -1,8 +1,8 @@
 #include "base_event_data.h"
 
-BaseEventData::BaseEventData(const GameTimer::gameTimePoint time_stamp) : m_time_stamp(time_stamp) {}
+BaseEventData::BaseEventData(const GameTimePoint time_stamp) : m_time_stamp(time_stamp) {}
 
-GameTimer::gameTimePoint BaseEventData::GetTimeStamp() const {
+GameTimePoint BaseEventData::GetTimeStamp() const {
 	return m_time_stamp;
 }
 

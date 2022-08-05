@@ -2,6 +2,8 @@
 
 #include "../tools/com_exception.h"
 
+#include <dxgidebug.h>
+
 AdapterReader::AdapterReader() : m_gpu_preference(DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE), m_use_warp(false) {}
 
 AdapterReader::AdapterReader(DXGI_GPU_PREFERENCE gpu_preference) : m_gpu_preference(gpu_preference), m_use_warp(false) {}

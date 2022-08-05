@@ -102,7 +102,7 @@
     <ClCompile Include="tools\string_utility.cpp">
       <Filter>Source Files\tools</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\adapter_reader.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\adapter_reader.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="events\base_event_data.cpp">
@@ -288,9 +288,6 @@
     <ClCompile Include="nodes\frustum.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
-    <ClCompile Include="nodes\material.cpp">
-      <Filter>Source Files\nodes</Filter>
-    </ClCompile>
     <ClCompile Include="nodes\plane.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
@@ -336,9 +333,6 @@
     <ClCompile Include="nodes\light_node.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
-    <ClCompile Include="nodes\ray_cast.cpp">
-      <Filter>Source Files\nodes</Filter>
-    </ClCompile>
     <ClCompile Include="engine\screen_element_scene.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
@@ -357,37 +351,37 @@
     <ClCompile Include="actors\actor.cpp">
       <Filter>Source Files\actors</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\buffer.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\byte_address_buffer.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\byte_address_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\command_list.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\command_list.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\command_queue.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\command_queue.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\constant_buffer.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\constant_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\constant_buffer_view.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\constant_buffer_view.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\descriptor_allocation.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\descriptor_allocation.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\descriptor_allocator.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\descriptor_allocator.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\descriptor_allocator_page.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\descriptor_allocator_page.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\device.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\device.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\dynamic_descriptor_heap.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\dynamic_descriptor_heap.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\effect_pso.cpp">
@@ -405,7 +399,7 @@
     <ClCompile Include="graphics\gui.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\index_buffer.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\index_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\material.cpp">
@@ -417,40 +411,40 @@
     <ClCompile Include="graphics\pano_to_cubemap_pso.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\pipeline_state_object.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\pipeline_state_object.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\render_target.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\render_target.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\resource.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\resource.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\resource_state_tracker.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\resource_state_tracker.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\root_signature.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\root_signature.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\shader_resource_view.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\shader_resource_view.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\structured_buffer.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\structured_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\swap_chain.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\swap_chain.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\texture.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\texture.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\unordered_access_view.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\unordered_access_view.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\upload_buffer.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\upload_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\vertex_buffer.cpp">
+    <ClCompile Include="graphics\directx12_wrappers\vertex_buffer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\vertex_types.cpp">
@@ -530,7 +524,7 @@
     <ClInclude Include="tools\string_utility.h">
       <Filter>Header Files\tools</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\adapter_reader.h">
+    <ClInclude Include="graphics\directx12_wrappers\adapter_reader.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="events\base_event_data.h">
@@ -803,12 +797,6 @@
     <ClInclude Include="nodes\i_scene_node.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="nodes\material.h">
-      <Filter>Header Files\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="nodes\material_dx.h">
-      <Filter>Header Files\nodes</Filter>
-    </ClInclude>
     <ClInclude Include="tools\memory_utility.h">
       <Filter>Header Files\tools</Filter>
     </ClInclude>
@@ -836,13 +824,10 @@
     <ClInclude Include="nodes\point.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="nodes\ray_cast.h">
-      <Filter>Header Files\nodes</Filter>
-    </ClInclude>
     <ClInclude Include="nodes\scene.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\vertex_buffer.h">
+    <ClInclude Include="graphics\directx12_wrappers\vertex_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="engine\i_render_state.h">
@@ -857,7 +842,7 @@
     <ClInclude Include="nodes\root_node.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\constant_buffer_types.h">
+    <ClInclude Include="graphics\directx12_wrappers\constant_buffer_types.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="events\evt_data_destroy_actor.h">
@@ -890,7 +875,7 @@
     <ClInclude Include="nodes\shadow_manager.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\index_buffer.h">
+    <ClInclude Include="graphics\directx12_wrappers\index_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="tools\intersection.h">
@@ -902,40 +887,40 @@
     <ClInclude Include="application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\buffer.h">
+    <ClInclude Include="graphics\directx12_wrappers\buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\byte_address_buffer.h">
+    <ClInclude Include="graphics\directx12_wrappers\byte_address_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\command_list.h">
+    <ClInclude Include="graphics\directx12_wrappers\command_list.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\command_queue.h">
+    <ClInclude Include="graphics\directx12_wrappers\command_queue.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\constant_buffer.h">
+    <ClInclude Include="graphics\directx12_wrappers\constant_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\constant_buffer_view.h">
+    <ClInclude Include="graphics\directx12_wrappers\constant_buffer_view.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="tools\defines.h">
       <Filter>Header Files\tools</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\descriptor_allocation.h">
+    <ClInclude Include="graphics\directx12_wrappers\descriptor_allocation.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\descriptor_allocator.h">
+    <ClInclude Include="graphics\directx12_wrappers\descriptor_allocator.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\descriptor_allocator_page.h">
+    <ClInclude Include="graphics\directx12_wrappers\descriptor_allocator_page.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\device.h">
+    <ClInclude Include="graphics\directx12_wrappers\device.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\dynamic_descriptor_heap.h">
+    <ClInclude Include="graphics\directx12_wrappers\dynamic_descriptor_heap.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\effect_pso.h">
@@ -980,34 +965,34 @@
     <ClInclude Include="graphics\pano_to_cubemap_pso.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\pipeline_state_object.h">
+    <ClInclude Include="graphics\directx12_wrappers\pipeline_state_object.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\render_target.h">
+    <ClInclude Include="graphics\directx12_wrappers\render_target.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\resource.h">
+    <ClInclude Include="graphics\directx12_wrappers\resource.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\resource_state_tracker.h">
+    <ClInclude Include="graphics\directx12_wrappers\resource_state_tracker.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\root_signature.h">
+    <ClInclude Include="graphics\directx12_wrappers\root_signature.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\shader_resource_view.h">
+    <ClInclude Include="graphics\directx12_wrappers\shader_resource_view.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="tools\signals.hpp">
       <Filter>Header Files\tools</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\structured_buffer.h">
+    <ClInclude Include="graphics\directx12_wrappers\structured_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\swap_chain.h">
+    <ClInclude Include="graphics\directx12_wrappers\swap_chain.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\texture.h">
+    <ClInclude Include="graphics\directx12_wrappers\texture.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="tools\thread_utility.h">
@@ -1019,10 +1004,10 @@
     <ClInclude Include="actors\transform_component.h">
       <Filter>Header Files\actors</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\unordered_access_view.h">
+    <ClInclude Include="graphics\directx12_wrappers\unordered_access_view.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\upload_buffer.h">
+    <ClInclude Include="graphics\directx12_wrappers\upload_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\vertex_types.h">

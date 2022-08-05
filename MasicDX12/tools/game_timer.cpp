@@ -3,7 +3,7 @@
 #include <ratio>
 
 GameTimer::GameTimer() : GameTimerDelta(ZERO_DURATION, ZERO_DURATION), m_paused_time(ZERO_DURATION) {
-    gameTimePoint start_time = gameClock::now();
+    GameTimePoint start_time = GameClock::now();
     m_curent_time = start_time;
     m_base_time = start_time;
     m_stop_time = start_time;
@@ -18,7 +18,7 @@ void GameTimer::Tick() {
         return;
     }
 
-    m_curent_time = gameClock::now();
+    m_curent_time = GameClock::now();
     m_delta_time_duration = m_curent_time - m_prev_time;
     m_prev_time = m_curent_time;
 
@@ -35,7 +35,7 @@ void GameTimer::Tick() {
 }
 
 void GameTimer::Start() {
-    gameTimePoint start_time = gameClock::now();
+    GameTimePoint start_time = GameClock::now();
 
     if (m_stopped) {
         m_paused_time += (start_time - m_stop_time);
@@ -51,13 +51,13 @@ void GameTimer::Start() {
 
 void GameTimer::Stop() {
     if (!m_stopped) {
-        m_stop_time = gameClock::now();
+        m_stop_time = GameClock::now();
         m_stopped = true;
     }
 }
 
 void GameTimer::Reset() {
-    gameTimePoint start_time = gameClock::now();
+    GameTimePoint start_time = GameClock::now();
     m_base_time = start_time;
     m_prev_time = start_time;
     m_stop_time = start_time;
@@ -68,7 +68,7 @@ void GameTimer::Reset() {
     m_paused_time = ZERO_DURATION;
 }
 
-GameTimerDelta::GameTimerDelta(gameClockDuration delta_time, gameClockDuration total_time) : m_delta_time_duration(delta_time), m_total_time(total_time) {}
+GameTimerDelta::GameTimerDelta(GameClockDuration delta_time, GameClockDuration total_time) : m_delta_time_duration(delta_time), m_total_time(total_time) {}
 
 double GameTimerDelta::GetDeltaNanoseconds() const {
     return std::chrono::duration<double, std::nano>(m_delta_time_duration).count();
@@ -100,7 +100,7 @@ float GameTimerDelta::fGetDeltaSeconds() const {
     return std::chrono::duration<float>(m_delta_time_duration).count();
 }
 
-gameClockDuration GameTimerDelta::GetDeltaDuration() const {
+GameClockDuration GameTimerDelta::GetDeltaDuration() const {
     return m_delta_time_duration;
 }
 
@@ -136,6 +136,6 @@ float GameTimerDelta::fGetTotalSeconds() const {
     return std::chrono::duration<float>(m_total_time).count();
 }
 
-gameClockDuration GameTimerDelta::GetTotalDuration() const {
+GameClockDuration GameTimerDelta::GetTotalDuration() const {
     return m_total_time;
 }

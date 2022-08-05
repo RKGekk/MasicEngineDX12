@@ -11,6 +11,7 @@
 #include "events/evt_data_mouse_button_released.h"
 #include "events/evt_data_mouse_motion.h"
 #include "events/evt_data_mouse_wheel.h"
+#include "events/evt_data_os_message.h"
 #include "events/evt_data_resize_window.h"
 #include "events/evt_data_restore_window.h"
 #include "events/evt_data_update_tick.h"
@@ -19,7 +20,9 @@
 #include <cassert>
 #include <algorithm>
 
-WindowSurface::WindowSurface() : m_hwnd(), m_name(), m_title(), m_client_width(1u), m_client_height(1u), m_previous_mouse_x(0), m_previous_mouse_y(0), m_is_fullscreen(false), m_is_minimized(false), m_is_maximized(false) {}
+static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+WindowSurface::WindowSurface() : m_dpi_scaling(1.0f), m_hInstance(), m_hwnd(), m_name(), m_title(), m_client_width(1u), m_client_height(1u), m_previous_mouse_x(0), m_previous_mouse_y(0), m_is_fullscreen(false), m_is_minimized(false), m_is_maximized(false) {}
 
 WindowSurface::~WindowSurface() {
     DestroyWindow(m_hwnd);
@@ -28,7 +31,7 @@ WindowSurface::~WindowSurface() {
     m_hInstance = NULL;
 }
 
-bool WindowSurface::Initialize(Application& windowContainer, const RenderWindowConfig& cfg) {
+bool WindowSurface::Initialize(const RenderWindowConfig& cfg) {
     m_hInstance = cfg.hInstance;
     m_dpi_scaling = GetDpiForWindow(m_hwnd) / 96.0f;
 
@@ -87,6 +90,27 @@ bool WindowSurface::Initialize(Application& windowContainer, const RenderWindowC
     if (!hWnd) {
         MessageBoxA(NULL, "Could not create the render window.", "Error", MB_OK | MB_ICONERROR);
         return false;
+    }
+
+    return true;
+}
+
+bool WindowSurface::ProcessMessages() {
+    MSG msg;
+
+    ZeroMemory(&msg, sizeof(MSG));
+
+    while (PeekMessage(&msg, m_hwnd, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    if (msg.message == WM_NULL) {
+        if (!IsWindow(m_hwnd)) {
+            m_hwnd = NULL;
+            UnregisterClass(m_name.c_str(), m_hInstance);
+            return false;
+        }
     }
 
     return true;
@@ -208,37 +232,18 @@ void WindowSurface::VRegisterEvents() {
     REGISTER_EVENT(EvtData_Mouse_Button_Pressed);
     REGISTER_EVENT(EvtData_Mouse_Button_Released);
     REGISTER_EVENT(EvtData_Mouse_Wheel);
+    REGISTER_EVENT(EvtData_OS_Message);
 }
 
-LRESULT CALLBACK HandleMsgRedirect(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    Application* const pWindow = reinterpret_cast<Application*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-    return pWindow->OnWndProc(hwnd, uMsg, wParam, lParam);
-}
-
-LRESULT CALLBACK HandleMessageSetup(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    switch (uMsg) {
-        case WM_NCCREATE:
-        {
-            const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
-            Application* pWindow = reinterpret_cast<Application*>(pCreate->lpCreateParams);
-            if (!pWindow) {
-                throw("Error: pointer to window container is null during WM_NCCREATE.");
-                exit(-1);
-            }
-            SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWindow));
-            SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HandleMsgRedirect));
-
-            return pWindow->OnWndProc(hwnd, uMsg, wParam, lParam);
-        }
-        default:
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
+void WindowSurface::OnWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    std::shared_ptr<EvtData_OS_Message> pEvent(new EvtData_OS_Message({ hWnd, msg, wParam, lParam }));
+    IEventManager::Get()->VTriggerEvent(pEvent);
 }
 
 void WindowSurface::RegisterWindowClass() {
     WNDCLASSEX wc;
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    wc.lpfnWndProc = HandleMessageSetup;
+    wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = m_hInstance;
@@ -322,4 +327,249 @@ void WindowSurface::SetFullscreen(bool fullscreen) {
 
 void WindowSurface::ToggleFullscreen() {
     SetFullscreen(!m_is_fullscreen);
+}
+
+static MouseButtonSide DecodeMouseButton(UINT messageID) {
+    MouseButtonSide mouseButton = MouseButtonSide::None;
+    switch (messageID) {
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_LBUTTONDBLCLK:
+        {
+            mouseButton = MouseButtonSide::Left;
+        }
+        break;
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+        case WM_RBUTTONDBLCLK:
+        {
+            mouseButton = MouseButtonSide::Right;
+        }
+        break;
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+        case WM_MBUTTONDBLCLK:
+        {
+            mouseButton = MouseButtonSide::Middle;
+        }
+        break;
+    }
+
+    return mouseButton;
+}
+
+static MKState DecodeButtonState(UINT messageID) {
+    MKState buttonState = MKState::Pressed;
+
+    switch (messageID) {
+        case WM_LBUTTONUP:
+        case WM_RBUTTONUP:
+        case WM_MBUTTONUP:
+        case WM_XBUTTONUP:
+            buttonState = MKState::Released;
+            break;
+        case WM_LBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+        case WM_MBUTTONDOWN:
+        case WM_XBUTTONDOWN:
+            buttonState = MKState::Pressed;
+            break;
+    }
+
+    return buttonState;
+}
+
+static WindowState DecodeWindowState(WPARAM wParam) {
+    WindowState windowState = WindowState::Restored;
+
+    switch (wParam) {
+        case SIZE_RESTORED:
+            windowState = WindowState::Restored;
+            break;
+        case SIZE_MINIMIZED:
+            windowState = WindowState::Minimized;
+            break;
+        case SIZE_MAXIMIZED:
+            windowState = WindowState::Maximized;
+            break;
+        default:
+            break;
+    }
+
+    return windowState;
+}
+
+static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    std::shared_ptr<WindowSurface> pWindow = Application::GetWindowByHWND(hwnd);
+
+    if (pWindow) {
+        pWindow->OnWndProc(hwnd, message, wParam, lParam);
+
+        switch (message) {
+            case WM_DPICHANGED : {
+                float dpi_scaling = HIWORD(wParam) / 96.0f;
+                pWindow->OnDPIScaleChanged(dpi_scaling);
+            }
+            break;
+            case WM_PAINT : {
+                const GameTimer gt = Application::Get().GetTimer();
+                std::shared_ptr<EvtData_Update_Tick> pEvent(new EvtData_Update_Tick(gt.GetDeltaDuration(), gt.GetTotalDuration()));
+                IEventManager::Get()->VTriggerEvent(pEvent);
+            }
+            break;
+            case WM_SYSKEYDOWN :
+            case WM_KEYDOWN : {
+                MSG charMsg;
+                unsigned int c = 0;
+                if (PeekMessage(&charMsg, hwnd, 0, 0, PM_NOREMOVE) && charMsg.message == WM_CHAR) {
+                    c = static_cast<unsigned int>(charMsg.wParam);
+                }
+
+                bool shift = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+                bool control = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+                bool alt = (GetAsyncKeyState(VK_MENU) & 0x8000) != 0;
+
+                WindowKey key = (WindowKey)wParam;
+                KeyEventArgs key_event_args(key, c, KeyState::Pressed, control, shift, alt);
+                pWindow->OnKeyPressed(key_event_args);
+            }
+            break;
+            case WM_SYSKEYUP :
+            case WM_KEYUP : {
+                bool shift = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+                bool control = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+                bool alt = (GetAsyncKeyState(VK_MENU) & 0x8000) != 0;
+
+                WindowKey key = (WindowKey)wParam;
+                unsigned int c = 0;
+                unsigned int scanCode = (lParam & 0x00FF0000) >> 16;
+
+                unsigned char keyboard_state[256];
+                GetKeyboardState(keyboard_state);
+                wchar_t translated_characters[4];
+                if (int result = ToUnicodeEx((UINT)wParam, scanCode, keyboard_state, translated_characters, 4, 0, NULL) > 0) {
+                    c = translated_characters[0];
+                }
+
+                KeyEventArgs key_event_args(key, c, KeyState::Released, control, shift, alt);
+                pWindow->OnKeyReleased(key_event_args);
+            }
+            break;
+            case WM_SYSCHAR :
+                break;
+            case WM_KILLFOCUS :
+                break;
+            case WM_SETFOCUS :
+                break;
+            case WM_MOUSEMOVE : {
+                bool lButton = (wParam & MK_LBUTTON) != 0;
+                bool rButton = (wParam & MK_RBUTTON) != 0;
+                bool mButton = (wParam & MK_MBUTTON) != 0;
+                bool shift = (wParam & MK_SHIFT) != 0;
+                bool control = (wParam & MK_CONTROL) != 0;
+
+                int x = ((int)(short)LOWORD(lParam));
+                int y = ((int)(short)HIWORD(lParam));
+
+                MouseMotionEventArgs mouse_motion_event_args(lButton, mButton, rButton, control, shift, x, y, 0, 0);
+                pWindow->OnMouseMoved(mouse_motion_event_args);
+            }
+            break;
+            case WM_LBUTTONDOWN :
+            case WM_RBUTTONDOWN :
+            case WM_MBUTTONDOWN : {
+                bool lButton = (wParam & MK_LBUTTON) != 0;
+                bool rButton = (wParam & MK_RBUTTON) != 0;
+                bool mButton = (wParam & MK_MBUTTON) != 0;
+                bool shift = (wParam & MK_SHIFT) != 0;
+                bool control = (wParam & MK_CONTROL) != 0;
+
+                int x = ((int)(short)LOWORD(lParam));
+                int y = ((int)(short)HIWORD(lParam));
+
+                SetCapture(hwnd);
+
+                MBEventArgs mouse_button_event_args(DecodeMouseButton(message), MKState::Pressed, lButton, mButton, rButton, control, shift, x, y);
+                pWindow->OnMouseButtonPressed(mouse_button_event_args);
+            }
+            break;
+            case WM_LBUTTONUP :
+            case WM_RBUTTONUP :
+            case WM_MBUTTONUP : {
+                bool lButton = (wParam & MK_LBUTTON) != 0;
+                bool rButton = (wParam & MK_RBUTTON) != 0;
+                bool mButton = (wParam & MK_MBUTTON) != 0;
+                bool shift = (wParam & MK_SHIFT) != 0;
+                bool control = (wParam & MK_CONTROL) != 0;
+
+                int x = ((int)(short)LOWORD(lParam));
+                int y = ((int)(short)HIWORD(lParam));
+
+                ReleaseCapture();
+
+                MBEventArgs mouse_button_event_args(DecodeMouseButton(message), MKState::Released, lButton, mButton, rButton, control, shift, x, y);
+                pWindow->OnMouseButtonReleased(mouse_button_event_args);
+            }
+            break;
+            case WM_MOUSEWHEEL : {
+                float zDelta = ((int)(short)HIWORD(wParam)) / (float)WHEEL_DELTA;
+                short key_states = (short)LOWORD(wParam);
+
+                bool lButton = (key_states & MK_LBUTTON) != 0;
+                bool rButton = (key_states & MK_RBUTTON) != 0;
+                bool mButton = (key_states & MK_MBUTTON) != 0;
+                bool shift = (key_states & MK_SHIFT) != 0;
+                bool control = (key_states & MK_CONTROL) != 0;
+
+                int x = ((int)(short)LOWORD(lParam));
+                int y = ((int)(short)HIWORD(lParam));
+
+                POINT screen_to_client_point;
+                screen_to_client_point.x = x;
+                screen_to_client_point.y = y;
+                ::ScreenToClient(hwnd, &screen_to_client_point);
+
+                MouseWheelEventArgs mouse_wheel_event_args(zDelta, lButton, mButton, rButton, control, shift, (int)screen_to_client_point.x, (int)screen_to_client_point.y);
+                pWindow->OnMouseWheel(mouse_wheel_event_args);
+            }
+            break;
+            case WM_CAPTURECHANGED :
+                break;
+            case WM_MOUSEACTIVATE :
+                break;
+            case WM_MOUSELEAVE :
+                break;
+            case WM_SIZE: {
+                WindowState window_state = DecodeWindowState(wParam);
+
+                int width = ((int)(short)LOWORD(lParam));
+                int height = ((int)(short)HIWORD(lParam));
+
+                ResizeEventArgs resize_event_args(width, height, window_state);
+                pWindow->OnResize(resize_event_args);
+            }
+            break;
+            case WM_CLOSE: {
+                pWindow->OnClose(true);
+                pWindow->Hide();
+            }
+            break;
+            case WM_DESTROY: {
+                Application::Get().DestroyWindowByHWND(hwnd);
+            }
+            break;
+            default:
+                return ::DefWindowProcW(hwnd, message, wParam, lParam);
+        }
+    }
+    else {
+        switch (message) {
+            case WM_CREATE:
+                break;
+            default:
+                return ::DefWindowProcW(hwnd, message, wParam, lParam);
+        }
+    }
+
+    return 0;
 }

@@ -7,7 +7,7 @@
 #include "constant_buffer.h"
 #include "constant_buffer_view.h"
 #include "descriptor_allocator.h"
-#include "gui.h"
+#include "../gui.h"
 #include "index_buffer.h"
 #include "pipeline_state_object.h"
 #include "resource_state_tracker.h"

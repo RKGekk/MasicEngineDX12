@@ -3,6 +3,7 @@
 #include <string>
 
 #include <DirectXMath.h>
+#include <pugixml/pugixml.hpp>
 
 #include "engine/renderer_enum.h"
 
