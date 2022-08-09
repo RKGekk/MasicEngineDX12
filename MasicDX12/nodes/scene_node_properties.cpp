@@ -23,6 +23,12 @@ const DirectX::XMFLOAT4X4& SceneNodeProperties::ToWorld4x4() const {
 	return m_to_world;
 }
 
+const DirectX::XMFLOAT4X4& SceneNodeProperties::ToWorld4x4T() const {
+	DirectX::XMFLOAT4X4 res;
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(ToWorld()));
+	return res;
+}
+
 DirectX::XMMATRIX SceneNodeProperties::ToWorld() const {
 	return DirectX::XMLoadFloat4x4(&m_to_world);
 }
@@ -54,12 +60,18 @@ float SceneNodeProperties::MaxScale() const {
 	return scale;
 }
 
+DirectX::XMMATRIX SceneNodeProperties::FromWorld() const {
+	return DirectX::XMLoadFloat4x4(&m_from_world);
+}
+
 const DirectX::XMFLOAT4X4& SceneNodeProperties::FromWorld4x4() const {
 	return m_from_world;
 }
 
-DirectX::XMMATRIX SceneNodeProperties::FromWorld() const {
-	return DirectX::XMLoadFloat4x4(&m_from_world);
+const DirectX::XMFLOAT4X4& SceneNodeProperties::FromWorld4x4T() const {
+	DirectX::XMFLOAT4X4 res;
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(FromWorld()));
+	return res;
 }
 
 const char* SceneNodeProperties::NameCstr() const {

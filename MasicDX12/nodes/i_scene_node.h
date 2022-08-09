@@ -25,7 +25,7 @@ public:
 	virtual DirectX::XMFLOAT4X4 VGetTransform4x4() = 0;
 	virtual DirectX::XMFLOAT4X4 VGetTransform4x4T() = 0;
 
-	virtual HRESULT VOnUpdate(float elapsed_seconds) = 0;
+	virtual HRESULT VOnUpdate() = 0;
 	virtual HRESULT VOnRestore() = 0;
 	virtual HRESULT VOnLostDevice() = 0;
 

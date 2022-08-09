@@ -1,7 +1,7 @@
 #include "material.h"
 
 #include "material.h"
-#include "texture.h"
+#include "directx12_wrappers/texture.h"
 
 static MaterialProperties* NewMaterialProperties(const MaterialProperties& props) {
     MaterialProperties* material_properties = (MaterialProperties*)_aligned_malloc(sizeof(MaterialProperties), 16);
@@ -17,6 +17,15 @@ static void DeleteMaterialProperties(MaterialProperties* p) {
 Material::Material(const MaterialProperties& material_properties) : m_material_properties(NewMaterialProperties(material_properties), &DeleteMaterialProperties) {}
 
 Material::Material(const Material& copy) : m_material_properties(NewMaterialProperties(*copy.m_material_properties), &DeleteMaterialProperties), m_textures(copy.m_textures) {}
+
+Material& Material::operator=(const Material& right) {
+    if (this == &right) {
+        return *this;
+    }
+    m_material_properties.reset(NewMaterialProperties(*right.m_material_properties));
+    m_textures = right.m_textures;
+    return *this;
+}
 
 const DirectX::XMFLOAT4& Material::GetAmbientColor() const {
     return m_material_properties->Ambient;

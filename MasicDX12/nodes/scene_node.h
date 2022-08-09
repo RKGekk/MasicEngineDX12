@@ -29,9 +29,12 @@ public:
 
 	virtual void VSetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld) override;
 	virtual void VSetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from) override;
+	virtual DirectX::XMMATRIX VGetTransform() override;
+	virtual DirectX::XMFLOAT4X4 VGetTransform4x4() override;
+	virtual DirectX::XMFLOAT4X4 VGetTransform4x4T() override;
 
 	virtual HRESULT VOnRestore() override;
-	virtual HRESULT VOnUpdate(float elapsedSeconds) override;
+	virtual HRESULT VOnUpdate() override;
 
 	virtual bool VAddChild(std::shared_ptr<ISceneNode> kid) override;
 	virtual bool VRemoveChild(std::shared_ptr<ISceneNode> cid) override;
@@ -53,10 +56,10 @@ public:
 	DirectX::XMFLOAT3 GetWorldPosition3() const;
 	DirectX::XMVECTOR GetWorldPosition() const;
 
-	DirectX::XMFLOAT3 GetDirection3f() const;
 	DirectX::XMVECTOR GetDirection() const;
-	DirectX::XMFLOAT3 GetUp3f() const;
+	DirectX::XMFLOAT3 GetDirection3f() const;
 	DirectX::XMVECTOR GetUp() const;
+	DirectX::XMFLOAT3 GetUp3f() const;
 
 	const DirectX::XMFLOAT3& GetScale3f() const;
 	DirectX::XMVECTOR GetScale() const;
@@ -64,5 +67,7 @@ public:
 	void SetScale(DirectX::XMVECTOR scale);
 	void SetMaterial(const Material& mat);
 
-	virtual ActorId VFindMyActor();
+private:
+	void SetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from);
+	void SetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld);
 };

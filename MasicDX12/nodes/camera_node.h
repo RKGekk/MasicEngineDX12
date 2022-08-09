@@ -37,6 +37,10 @@ public:
 	const DirectX::XMFLOAT4X4& GetProjection4x4f();
 	DirectX::XMFLOAT4X4 GetProjection4x4fT();
 
+	DirectX::XMMATRIX GetView();
+	const DirectX::XMFLOAT4X4& GetView4x4f();
+	DirectX::XMFLOAT4X4 GetView4x4fT();
+
 protected:
 	DirectX::BoundingFrustum m_frustum;
 	DirectX::XMFLOAT4X4 m_projection;

@@ -27,8 +27,9 @@ protected:
 public:
 	SceneNodeProperties();
 
-	const DirectX::XMFLOAT4X4& ToWorld4x4() const;
 	DirectX::XMMATRIX ToWorld() const;
+	const DirectX::XMFLOAT4X4& ToWorld4x4() const;
+	const DirectX::XMFLOAT4X4& ToWorld4x4T() const;
 
 	DirectX::XMFLOAT4 Position4() const;
 	DirectX::XMFLOAT3 Position3() const;
@@ -38,8 +39,9 @@ public:
 	DirectX::XMVECTOR Scale() const;
 	float MaxScale() const;
 
-	const DirectX::XMFLOAT4X4& FromWorld4x4() const;
 	DirectX::XMMATRIX FromWorld() const;
+	const DirectX::XMFLOAT4X4& FromWorld4x4() const;
+	const DirectX::XMFLOAT4X4& FromWorld4x4T() const;
 
 	const char* NameCstr() const;
 	const std::string& Name() const;

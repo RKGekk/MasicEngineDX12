@@ -96,6 +96,8 @@ public:
 
 	~Material() = default;
 
+	Material& operator=(const Material& right);
+
 	const DirectX::XMFLOAT4& GetAmbientColor() const;
 	void SetAmbientColor(const DirectX::XMFLOAT4& ambient);
 

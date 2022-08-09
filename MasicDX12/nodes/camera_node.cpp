@@ -36,7 +36,6 @@ CameraNode::CameraNode(const std::string& name, DirectX::FXMMATRIX view, DirectX
 }
 
 HRESULT CameraNode::VOnRestore() {
-	SceneNode::VOnRestore();
 	float new_aspect = Application::Get().GetApplicationOptions().GetAspect();
 	if(m_aspect == new_aspect) return S_OK;
 
@@ -45,6 +44,9 @@ HRESULT CameraNode::VOnRestore() {
 	m_frustum = DirectX::BoundingFrustum(DirectX::XMLoadFloat4x4(&m_projection));
 	const DirectX::XMFLOAT4X4& view_xm = m_props.FromWorld4x4();
 	m_frustum.Origin = DirectX::XMFLOAT3(view_xm._41, view_xm._42, view_xm._43);
+
+	SceneNode::VOnRestore();
+
 	return S_OK;
 }
 
@@ -138,4 +140,16 @@ DirectX::XMFLOAT4X4 CameraNode::GetProjection4x4fT() {
 	DirectX::XMFLOAT4X4 t4x4;
 	DirectX::XMStoreFloat4x4(&t4x4, t);
 	return t4x4;
+}
+
+DirectX::XMMATRIX CameraNode::GetView() {
+	return VGet().FromWorld();
+}
+
+const DirectX::XMFLOAT4X4& CameraNode::GetView4x4f() {
+	return VGet().FromWorld4x4();
+}
+
+DirectX::XMFLOAT4X4 CameraNode::GetView4x4fT() {
+	return VGet().FromWorld4x4T();
 }
