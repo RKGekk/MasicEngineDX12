@@ -285,9 +285,6 @@
     <ClCompile Include="nodes\camera_node.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
-    <ClCompile Include="nodes\frustum.cpp">
-      <Filter>Source Files\nodes</Filter>
-    </ClCompile>
     <ClCompile Include="nodes\plane.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
@@ -323,9 +320,6 @@
     </ClCompile>
     <ClCompile Include="events\evt_data_new_render_component.cpp">
       <Filter>Source Files\events</Filter>
-    </ClCompile>
-    <ClCompile Include="nodes\light_manager.cpp">
-      <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="nodes\shadow_manager.cpp">
       <Filter>Source Files\graphics</Filter>
@@ -791,9 +785,6 @@
     <ClInclude Include="nodes\camera_node.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="nodes\frustum.h">
-      <Filter>Header Files\nodes</Filter>
-    </ClInclude>
     <ClInclude Include="nodes\i_scene_node.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
@@ -801,9 +792,6 @@
       <Filter>Header Files\tools</Filter>
     </ClInclude>
     <ClInclude Include="nodes\plane.h">
-      <Filter>Header Files\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="nodes\render_pass.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
     <ClInclude Include="nodes\scene_node.h">
@@ -856,9 +844,6 @@
     </ClInclude>
     <ClInclude Include="events\evt_data_new_render_component.h">
       <Filter>Header Files\events</Filter>
-    </ClInclude>
-    <ClInclude Include="nodes\light_manager.h">
-      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="nodes\light_node.h">
       <Filter>Header Files\nodes</Filter>
@@ -943,9 +928,6 @@
     </ClInclude>
     <ClInclude Include="tools\hash_utility.h">
       <Filter>Header Files\tools</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\light.h">
-      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\material.h">
       <Filter>Header Files\graphics</Filter>
@@ -1071,6 +1053,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="events\mouse_wheel_event_args.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\point_light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\spot_light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directional_light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\visitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

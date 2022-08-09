@@ -227,11 +227,9 @@
     <ClCompile Include="graphics\directx12_wrappers\vertex_buffer.cpp" />
     <ClCompile Include="graphics\vertex_types.cpp" />
     <ClCompile Include="window_surface.cpp" />
-    <ClCompile Include="nodes\light_manager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="graphics\d3d12_renderer.cpp" />
     <ClCompile Include="nodes\camera_node.cpp" />
-    <ClCompile Include="nodes\frustum.cpp" />
     <ClCompile Include="nodes\light_node.cpp" />
     <ClCompile Include="nodes\matrix_stack.cpp" />
     <ClCompile Include="nodes\plane.cpp" />
@@ -334,6 +332,7 @@
     <ClInclude Include="events\mouse_motion_event_args.h" />
     <ClInclude Include="events\resize_event_args.h" />
     <ClInclude Include="events\evt_data_mouse_button_released.h" />
+    <ClInclude Include="graphics\directional_light.h" />
     <ClInclude Include="graphics\directx12_wrappers\adapter_reader.h" />
     <ClInclude Include="graphics\directx12_wrappers\buffer.h" />
     <ClInclude Include="graphics\directx12_wrappers\byte_address_buffer.h" />
@@ -352,7 +351,6 @@
     <ClInclude Include="graphics\effect_pso.h" />
     <ClInclude Include="graphics\generate_mips_pso.h" />
     <ClInclude Include="graphics\gui.h" />
-    <ClInclude Include="graphics\light.h" />
     <ClInclude Include="graphics\material.h" />
     <ClInclude Include="graphics\mesh.h" />
     <ClInclude Include="graphics\pano_to_cubemap_pso.h" />
@@ -367,6 +365,9 @@
     <ClInclude Include="graphics\directx12_wrappers\unordered_access_view.h" />
     <ClInclude Include="graphics\directx12_wrappers\upload_buffer.h" />
     <ClInclude Include="events\mouse_wheel_event_args.h" />
+    <ClInclude Include="graphics\point_light.h" />
+    <ClInclude Include="graphics\spot_light.h" />
+    <ClInclude Include="nodes\visitor.h" />
     <ClInclude Include="window_keycodes.h" />
     <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />
@@ -397,16 +398,13 @@
     <ClInclude Include="nodes\alpha_scene_node.h" />
     <ClInclude Include="nodes\alpha_type.h" />
     <ClInclude Include="nodes\camera_node.h" />
-    <ClInclude Include="nodes\frustum.h" />
     <ClInclude Include="nodes\i_scene_node.h" />
-    <ClInclude Include="nodes\light_manager.h" />
     <ClInclude Include="nodes\light_node.h" />
     <ClInclude Include="nodes\light_properties.h" />
     <ClInclude Include="nodes\light_type.h" />
     <ClInclude Include="nodes\matrix_stack.h" />
     <ClInclude Include="nodes\plane.h" />
     <ClInclude Include="nodes\point.h" />
-    <ClInclude Include="nodes\render_pass.h" />
     <ClInclude Include="nodes\root_node.h" />
     <ClInclude Include="nodes\scene.h" />
     <ClInclude Include="nodes\scene_node.h" />

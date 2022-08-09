@@ -4,7 +4,7 @@
 #include "../actors/transform_component.h"
 #include "camera_node.h"
 
-SceneNode::SceneNode(WeakBaseRenderComponentPtr renderComponent, RenderPass renderPass, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from, bool calulate_from) {
+SceneNode::SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from, bool calulate_from) {
 	DirectX::XMFLOAT4X4 to4x4;
 	if (to == nullptr) {
 		DirectX::XMStoreFloat4x4(&to4x4, DirectX::XMMatrixIdentity());
@@ -14,32 +14,15 @@ SceneNode::SceneNode(WeakBaseRenderComponentPtr renderComponent, RenderPass rend
 	}
 
 	VSetTransform4x4(&to4x4, from);
-	SetRadius(0);
-	m_RenderComponent = renderComponent;
 
-	m_pParent = nullptr;
-
-	m_Props.m_ActorId = (renderComponent) ? renderComponent->GetOwnerId() : 0;
-	m_Props.m_Name = (renderComponent) ? renderComponent->VGetName() : "SceneNode";
-	m_Props.m_RenderPass = renderPass;
+	m_Props.m_Name = name;
 	m_Props.m_AlphaType = AlphaType::AlphaOpaque;
-
-	m_self_transform = false;
 }
 
-SceneNode::SceneNode(WeakBaseRenderComponentPtr renderComponent, RenderPass renderPass, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from) {
+SceneNode::SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from) {
 	VSetTransform(to, from, calulate_from);
-	SetRadius(0);
-	m_RenderComponent = renderComponent;
-
-	m_pParent = nullptr;
-
-	m_Props.m_ActorId = (renderComponent) ? renderComponent->GetOwnerId() : 0;
-	m_Props.m_Name = (renderComponent) ? renderComponent->VGetName() : "SceneNode";
-	m_Props.m_RenderPass = renderPass;
+	m_Props.m_Name = name;
 	m_Props.m_AlphaType = AlphaType::AlphaOpaque;
-
-	m_self_transform = false;
 }
 
 SceneNode::~SceneNode() {}
@@ -85,108 +68,6 @@ HRESULT SceneNode::VOnUpdate(Scene* pScene, float elapsedSeconds) {
 		(*i)->VOnUpdate(pScene, elapsedSeconds);
 		++i;
 	}
-	return S_OK;
-}
-
-HRESULT SceneNode::VPreRender(Scene* pScene) {
-	StrongActorPtr pActor = MakeStrongPtr(g_pApp->GetGameLogic()->VGetActor(m_Props.m_ActorId));
-	if (pActor && !m_self_transform) {
-		std::shared_ptr<TransformComponent> pTc = MakeStrongPtr(pActor->GetComponent<TransformComponent>("TransformComponent"));
-		if (pTc) {
-			m_Props.m_ToWorld = pTc->GetTransform4x4f();
-		}
-	}
-
-	pScene->PushAndSetMatrix4x4(m_Props.m_ToWorld);
-	return S_OK;
-}
-
-bool SceneNode::VIsVisible(Scene* pScene) const {
-	if (!m_Props.m_active) { return false; }
-	DirectX::XMMATRIX toWorld = pScene->GetCamera()->VGet().ToWorld();
-	DirectX::XMMATRIX fromWorld = pScene->GetCamera()->VGet().FromWorld();
-
-	DirectX::XMVECTOR pos = DirectX::XMVectorSetW(GetWorldPosition(), 1.0f);
-	DirectX::XMVECTOR fromWorldPos = DirectX::XMVector4Transform(pos, fromWorld);
-	//DirectX::XMVECTOR fromWorldPos = DirectX::XMVector4Transform(pos, fromWorld);
-
-	Frustum const& frustum = pScene->GetCamera()->GetFrustum();
-
-	bool isVisible = frustum.Inside(fromWorldPos, VGet().Radius());
-	return isVisible;
-}
-
-HRESULT SceneNode::VRender(Scene* pScene) {
-	return S_OK;
-}
-
-HRESULT SceneNode::VRenderChildren(Scene* pScene) {
-	SceneNodeList::iterator i = m_Children.begin();
-	SceneNodeList::iterator end = m_Children.end();
-
-	while (i != end) {
-		if ((*i)->VPreRender(pScene) == S_OK) {
-			if ((*i)->VIsVisible(pScene)) {
-				float alpha = (*i)->VGet().m_Material.GetAlpha();
-				if (alpha == 1.0f) {
-					(*i)->VRender(pScene);
-				}
-				else if (alpha != 0.0f) {
-					AlphaSceneNode* asn = new AlphaSceneNode;
-					asn->m_pNode = *i;
-					asn->m_Concat = pScene->GetTopMatrix4x4f();
-					DirectX::XMVECTOR worldPos = DirectX::XMVectorSet(asn->m_Concat._41, asn->m_Concat._42, asn->m_Concat._43, asn->m_Concat._44);
-					DirectX::XMMATRIX fromWorld = pScene->GetCamera()->VGet().FromWorld();
-					DirectX::XMVECTOR screenPos = DirectX::XMVector4Transform(worldPos, fromWorld);
-
-					asn->m_ScreenZ = DirectX::XMVectorGetZ(screenPos);
-
-					pScene->AddAlphaSceneNode(asn);
-				}
-				(*i)->VRenderChildren(pScene);
-			}
-		}
-		(*i)->VPostRender(pScene);
-		++i;
-	}
-
-	return S_OK;
-}
-
-HRESULT SceneNode::VPostRender(Scene* pScene) {
-	pScene->PopMatrix();
-	return S_OK;
-}
-
-HRESULT SceneNode::VShadowPreRender(Scene* pScene) {
-	return SceneNode::VPreRender(pScene);
-	//return VPreRender(pScene);
-}
-
-HRESULT SceneNode::VShadowRender(Scene* pScene) {
-	return S_OK;
-}
-
-HRESULT SceneNode::VShadowRenderChildren(Scene* pScene) {
-	SceneNodeList::iterator i = m_Children.begin();
-	SceneNodeList::iterator end = m_Children.end();
-
-	while (i != end) {
-		if ((*i)->VShadowPreRender(pScene) == S_OK) {
-			if ((*i)->VIsVisible(pScene)) {
-				(*i)->VShadowRender(pScene);
-				(*i)->VShadowRenderChildren(pScene);
-			}
-		}
-		(*i)->VShadowPostRender(pScene);
-		++i;
-	}
-
-	return S_OK;
-}
-
-HRESULT SceneNode::VShadowPostRender(Scene* pScene) {
-	pScene->PopMatrix();
 	return S_OK;
 }
 
@@ -245,17 +126,8 @@ HRESULT SceneNode::VOnLostDevice(Scene* pScene) {
 	return S_OK;
 }
 
-HRESULT SceneNode::VPick(Scene* pScene, RayCast* pRayCast) {
-	for (SceneNodeList::const_iterator i = m_Children.begin(); i != m_Children.end(); ++i) {
-		HRESULT hr = (*i)->VPick(pScene, pRayCast);
-		if (hr == E_FAIL) { return E_FAIL; }
-	}
-
-	return S_OK;
-}
-
-ISceneNode* SceneNode::VGetParent() {
-	return m_pParent;
+std::shared_ptr<ISceneNode> SceneNode::VGetParent() {
+	return m_pParent.lock();
 }
 
 void SceneNode::SetAlpha(float alpha) {
@@ -364,14 +236,6 @@ DirectX::XMFLOAT3 SceneNode::GetUp3f() const {
 DirectX::XMVECTOR SceneNode::GetUp() const {
 	DirectX::XMFLOAT3 res = GetUp3f();
 	return DirectX::XMLoadFloat3(&res);
-}
-
-float SceneNode::GetRadius() const {
-	return m_Props.m_Radius;
-}
-
-void SceneNode::SetRadius(const float radius) {
-	m_Props.m_Radius = radius;
 }
 
 const DirectX::XMFLOAT3& SceneNode::GetScale3f() const {

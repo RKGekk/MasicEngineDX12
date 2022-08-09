@@ -22,6 +22,16 @@ using StrongActorComponentPtr = std::shared_ptr<ActorComponent>;
 using WeakActorComponentPtr = std::weak_ptr<ActorComponent>;
 using ActorComponents = std::unordered_map<ComponentId, StrongActorComponentPtr>;
 
+struct actor_component_hash {
+    std::size_t operator () (const std::pair<ActorId, ComponentId>& p) const {
+        return std::hash<ActorId>{}(p.first) ^ p.second;
+        //return (p.first << 16U) + p.second;
+    }
+};
+
+typedef std::unordered_map<std::pair<ActorId, ComponentId>, std::shared_ptr<ISceneNode>, actor_component_hash> SceneActorMap;
+typedef std::unordered_map<ActorId, std::unordered_set<ComponentId>> ActorComponentMap;
+
 class Actor {
 private:
     std::string m_resource_name;

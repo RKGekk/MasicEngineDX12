@@ -27,4 +27,6 @@ struct ApplicationOptions {
 	~ApplicationOptions();
 
 	bool Init(const std::string& xmlFilePath);
+
+	float GetAspect() const;
 };

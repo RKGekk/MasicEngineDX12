@@ -145,6 +145,10 @@ void Application::Stop() {
     m_request_quit = true;
 }
 
+const ApplicationOptions& Application::GetApplicationOptions() {
+    return m_options;
+}
+
 const GameTimer& Application::GetTimer() {
     return m_timer;
 }

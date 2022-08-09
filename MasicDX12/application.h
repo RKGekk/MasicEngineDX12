@@ -38,6 +38,7 @@ public:
     void Quit(int exit_code = 0);
     void Stop();
     
+    const ApplicationOptions& GetApplicationOptions();
     const GameTimer& GetTimer();
 
 protected:

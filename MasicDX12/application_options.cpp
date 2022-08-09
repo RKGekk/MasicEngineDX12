@@ -53,3 +53,9 @@ bool ApplicationOptions::Init(const std::string& xml_file_name) {
 	
 	return true;
 }
+
+float ApplicationOptions::GetAspect() {
+	float sw = (float)ScreenWidth;
+	float sh = (float)ScreenHeight;
+	return sw / sh;
+}

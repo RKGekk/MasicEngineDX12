@@ -5,7 +5,6 @@
 #include <DirectXMath.h>
 
 #include "../actors/actor.h"
-#include "render_pass.h"
 #include "../graphics/material.h"
 #include "alpha_type.h"
 
@@ -13,26 +12,20 @@ class SceneNodeProperties {
 	friend class SceneNode;
 
 protected:
-	ActorId m_ActorId;
-	ComponentId m_ComponentId;
-	std::string m_Name;
-	DirectX::XMFLOAT4X4 m_ToWorld;
-	DirectX::XMFLOAT4X4 m_FromWorld;
+	std::string m_name;
+	DirectX::XMFLOAT4X4 m_to_world;
+	DirectX::XMFLOAT4X4 m_from_world;
 	DirectX::XMFLOAT3 m_scale;
-	float m_Radius;
+	
 	bool m_active;
 
-	RenderPass m_RenderPass;
-	Material m_Material;
-	AlphaType m_AlphaType;
+	Material m_material;
+	AlphaType m_alpha_type;
 
 	void SetAlpha(const float alpha);
 
 public:
 	SceneNodeProperties();
-
-	const ActorId ActorId() const;
-	const ComponentId ComponentId() const;
 
 	const DirectX::XMFLOAT4X4& ToWorld4x4() const;
 	DirectX::XMMATRIX ToWorld() const;
@@ -54,9 +47,6 @@ public:
 	bool HasAlpha() const;
 	float Alpha() const;
 	AlphaType AlphaType() const;
-
-	RenderPass RenderPass() const;
-	float Radius() const;
 
 	const Material& GetMaterial() const;
 };

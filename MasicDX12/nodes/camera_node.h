@@ -3,53 +3,43 @@
 #include <memory>
 
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 
 #include "scene_node.h"
-#include "frustum.h"
-#include "../actors/actor.h"
-#include "render_pass.h"
 
 class CameraNode : public SceneNode {
 public:
-	CameraNode(const DirectX::XMFLOAT4X4& t, const Frustum& frustum);
-	CameraNode(DirectX::FXMMATRIX t, const Frustum& frustum);
+	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& view, float fovy, float aspect, float near_clip, float far_clip);
+	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& proj);
+	CameraNode(const std::string& name, DirectX::FXMMATRIX view, float fovy, float aspect, float near_clip, float far_clip);
+	CameraNode(const std::string& name, DirectX::FXMMATRIX view, DirectX::CXMMATRIX proj);
 
-	virtual HRESULT VRender(Scene* pScene) override;
-	virtual HRESULT VOnRestore(Scene* pScene) override;
-	virtual bool VIsVisible(Scene* pScene) const override;
+	virtual HRESULT VOnRestore() override;
 
-	Frustum& GetFrustum();
-	void SetTarget(std::shared_ptr<SceneNode> pTarget);
-	void ClearTarget();
-	std::shared_ptr<SceneNode> GetTarget();
+	const DirectX::BoundingFrustum& GetFrustum() const;
+	void SetFovYRad(float fovy);
+	void SetFovYDeg(float fovy);
+	float GetFovYRad();
+	float GetFovYDeg();
 
-	DirectX::XMMATRIX GetWorldViewProjection(Scene* pScene);
-	DirectX::XMMATRIX GetWorldViewProjection(DirectX::XMMATRIX world);
-	DirectX::XMFLOAT4X4 GetWorldViewProjection4x4(Scene* pScene);
-	DirectX::XMFLOAT4X4 GetWorldViewProjection4x4T(Scene* pScene);
+	DirectX::XMMATRIX GetWorldViewProjection(DirectX::FXMMATRIX world);
+	DirectX::XMMATRIX GetWorldViewProjection(const DirectX::XMFLOAT4X4& world);
+	DirectX::XMFLOAT4X4 GetWorldViewProjection4x4(DirectX::XMMATRIX world);
 	DirectX::XMFLOAT4X4 GetWorldViewProjection4x4T(DirectX::XMMATRIX world);
+	DirectX::XMFLOAT4X4 GetWorldViewProjection4x4(const DirectX::XMFLOAT4X4& world);
+	DirectX::XMFLOAT4X4 GetWorldViewProjection4x4T(const DirectX::XMFLOAT4X4& world);
+
 	DirectX::XMMATRIX GetViewProjection();
 	DirectX::XMFLOAT4X4 GetViewProjection4x4();
 	DirectX::XMFLOAT4X4 GetViewProjection4x4T();
-	HRESULT SetViewTransform(Scene* pScene);
 
 	DirectX::XMMATRIX GetProjection();
 	const DirectX::XMFLOAT4X4& GetProjection4x4f();
 	DirectX::XMFLOAT4X4 GetProjection4x4fT();
-	DirectX::XMMATRIX GetView();
-	const DirectX::XMFLOAT4X4& GetView4x4();
-	DirectX::XMFLOAT4X4 GetView4x4T();
-	DirectX::XMFLOAT3 GetViewPos3();
-	DirectX::XMVECTOR GetViewPos();
-
-	void SetCameraOffset(const DirectX::XMFLOAT4& cameraOffset);
 
 protected:
-	Frustum m_Frustum;
-	DirectX::XMFLOAT4X4 m_Projection;
-	DirectX::XMFLOAT4X4 m_View;
-	bool m_bActive;
-	bool m_DebugCamera;
-	std::shared_ptr<SceneNode> m_pTarget;
-	DirectX::XMFLOAT4 m_CamOffsetVector;
+	DirectX::BoundingFrustum m_frustum;
+	DirectX::XMFLOAT4X4 m_projection;
+	float m_fovy;
+	float m_aspect;
 };

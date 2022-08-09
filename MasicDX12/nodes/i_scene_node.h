@@ -8,47 +8,30 @@
 #include <Windows.h>
 
 #include "scene_node_properties.h"
-#include "../actors/actor.h"
+#include "visitor.h"
 
 class Scene;
 class ISceneNode;
-
-struct actor_component_hash {
-	std::size_t operator () (const std::pair<ActorId, ComponentId>& p) const {
-		return std::hash<ActorId>{}(p.first) ^ p.second;
-		//return (p.first << 16U) + p.second;
-	}
-};
-
-typedef std::unordered_map<std::pair<ActorId, ComponentId>, std::shared_ptr<ISceneNode>, actor_component_hash> SceneActorMap;
-typedef std::unordered_map<ActorId, std::unordered_set<ComponentId>> ActorComponentMap;
 
 class ISceneNode {
 public:
 	virtual const SceneNodeProperties& VGet() const = 0;
 
-	virtual void VSetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from) = 0;
-	virtual void VSetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld) = 0;
+	virtual void Accept(Visitor& visitor) = 0;
 
-	virtual HRESULT VOnUpdate(Scene* pScene, float elapsedSeconds) = 0;
-	virtual HRESULT VOnRestore(Scene* pScene) = 0;
+	virtual void VSetTransform(DirectX::FXMMATRIX to_world, DirectX::CXMMATRIX from_world, bool calulate_from) = 0;
+	virtual void VSetTransform4x4(const DirectX::XMFLOAT4X4* to_world, const DirectX::XMFLOAT4X4* from_world) = 0;
+	virtual DirectX::XMMATRIX VGetTransform() = 0;
+	virtual DirectX::XMFLOAT4X4 VGetTransform4x4() = 0;
+	virtual DirectX::XMFLOAT4X4 VGetTransform4x4T() = 0;
 
-	virtual HRESULT VPreRender(Scene* pScene) = 0;
-	virtual bool VIsVisible(Scene* pScene) const = 0;
-	virtual HRESULT VRender(Scene* pScene) = 0;
-	virtual HRESULT VRenderChildren(Scene* pScene) = 0;
-	virtual HRESULT VPostRender(Scene* pScene) = 0;
-
-	virtual HRESULT VShadowPreRender(Scene* pScene) = 0;
-	virtual HRESULT VShadowRender(Scene* pScene) = 0;
-	virtual HRESULT VShadowRenderChildren(Scene* pScene) = 0;
-	virtual HRESULT VShadowPostRender(Scene* pScene) = 0;
+	virtual HRESULT VOnUpdate(float elapsed_seconds) = 0;
+	virtual HRESULT VOnRestore() = 0;
+	virtual HRESULT VOnLostDevice() = 0;
 
 	virtual bool VAddChild(std::shared_ptr<ISceneNode> kid) = 0;
-	virtual bool VRemoveChild(ActorId aid, ComponentId cid) = 0;
-	virtual HRESULT VOnLostDevice(Scene* pScene) = 0;
-
-	virtual ISceneNode* VGetParent() = 0;
+	virtual bool VRemoveChild(std::shared_ptr<ISceneNode>) = 0;
+	virtual std::shared_ptr<ISceneNode> VGetParent() = 0;
 
 	virtual ~ISceneNode() {};
 };
