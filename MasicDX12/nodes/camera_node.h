@@ -42,6 +42,8 @@ public:
 	DirectX::XMFLOAT4X4 GetView4x4fT();
 
 protected:
+	void SetData(DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj);
+
 	DirectX::BoundingFrustum m_frustum;
 	DirectX::XMFLOAT4X4 m_projection;
 	float m_fovy;
