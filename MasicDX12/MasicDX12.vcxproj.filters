@@ -785,9 +785,6 @@
     <ClInclude Include="nodes\camera_node.h">
       <Filter>Header Files\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="nodes\i_scene_node.h">
-      <Filter>Header Files\nodes</Filter>
-    </ClInclude>
     <ClInclude Include="tools\memory_utility.h">
       <Filter>Header Files\tools</Filter>
     </ClInclude>

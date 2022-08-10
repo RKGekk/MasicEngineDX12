@@ -1,17 +1,18 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include <DirectXMath.h>
 
-#include "../actors/actor.h"
-#include "i_scene_node.h"
-#include "../actors/base_render_component.h"
+#include "scene_node_properties.h"
+#include "visitor.h"
 #include "../tools/memory_utility.h"
 
-using SceneNodeList = std::vector<std::shared_ptr<ISceneNode>>;
+class SceneNode;
+using SceneNodeList = std::vector<std::shared_ptr<SceneNode>>;
 
-class SceneNode : public ISceneNode {
+class SceneNode : public std::enable_shared_from_this<SceneNode> {
 	friend class Scene;
 
 protected:
@@ -25,22 +26,24 @@ public:
 
 	virtual ~SceneNode();
 
-	virtual const SceneNodeProperties& VGet() const override;
+	virtual const SceneNodeProperties& VGet() const;
 
-	virtual void VSetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld) override;
-	virtual void VSetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from) override;
-	virtual DirectX::XMMATRIX VGetTransform() override;
-	virtual DirectX::XMFLOAT4X4 VGetTransform4x4() override;
-	virtual DirectX::XMFLOAT4X4 VGetTransform4x4T() override;
+	virtual void Accept(Visitor& visitor);
 
-	virtual HRESULT VOnRestore() override;
-	virtual HRESULT VOnUpdate() override;
+	virtual void VSetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld);
+	virtual void VSetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from);
+	virtual DirectX::XMMATRIX VGetTransform();
+	virtual DirectX::XMFLOAT4X4 VGetTransform4x4();
+	virtual DirectX::XMFLOAT4X4 VGetTransform4x4T();
 
-	virtual bool VAddChild(std::shared_ptr<ISceneNode> kid) override;
-	virtual bool VRemoveChild(std::shared_ptr<ISceneNode> cid) override;
-	virtual HRESULT VOnLostDevice() override;
+	virtual HRESULT VOnRestore();
+	virtual HRESULT VOnUpdate();
 
-	virtual std::shared_ptr<ISceneNode> VGetParent() override;
+	virtual bool VAddChild(std::shared_ptr<SceneNode> kid);
+	virtual bool VRemoveChild(std::shared_ptr<SceneNode> cid);
+	virtual HRESULT VOnLostDevice();
+
+	virtual std::shared_ptr<SceneNode> VGetParent();
 
 	void SetAlpha(float alpha);
 	float GetAlpha() const;

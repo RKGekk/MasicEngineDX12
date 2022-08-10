@@ -4,6 +4,8 @@
 #include "../actors/transform_component.h"
 #include "camera_node.h"
 
+#include <algorithm>
+
 SceneNode::SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from) {
 	SetTransform4x4(to, from);
 	m_props.m_name = name;
@@ -20,6 +22,13 @@ SceneNode::~SceneNode() {}
 
 const SceneNodeProperties& SceneNode::VGet() const {
 	return m_props;
+}
+
+void SceneNode::Accept(Visitor& visitor) {
+	visitor.Visit(*this);
+	for (auto& child : m_children) {
+		child->Accept(visitor);
+	}
 }
 
 void SceneNode::VSetTransform4x4(const DirectX::XMFLOAT4X4* to_world, const DirectX::XMFLOAT4X4* from_world) {
@@ -62,19 +71,27 @@ HRESULT SceneNode::VOnUpdate() {
 	return S_OK;
 }
 
-bool SceneNode::VAddChild(std::shared_ptr<ISceneNode> ikid) {
+bool SceneNode::VAddChild(std::shared_ptr<SceneNode> ikid) {
+	if (!ikid) return false;
+
+	SceneNodeList::iterator iter = std::find(m_children.begin(), m_children.end(), ikid);
+	if (iter != m_children.end()) return false;
+
+	ikid->m_pParent = shared_from_this();
 	m_children.push_back(ikid);
 	return true;
 }
 
-bool SceneNode::VRemoveChild(std::shared_ptr<ISceneNode> cid) {
-	for (SceneNodeList::iterator i = m_children.begin(); i != m_children.end(); ++i) {
-		if (*i == cid) {
-			i = m_children.erase(i);
-			return true;
-		}
-	}
-	return false;
+bool SceneNode::VRemoveChild(std::shared_ptr<SceneNode> cid) {
+	if (!cid) return false;
+
+	SceneNodeList::iterator iter = std::find(m_children.begin(), m_children.end(), cid);
+	if (iter == m_children.end()) return false;
+
+	cid->m_pParent.reset();
+	m_children.erase(iter);
+
+	return true;
 }
 
 HRESULT SceneNode::VOnLostDevice() {
@@ -87,7 +104,7 @@ HRESULT SceneNode::VOnLostDevice() {
 	return S_OK;
 }
 
-std::shared_ptr<ISceneNode> SceneNode::VGetParent() {
+std::shared_ptr<SceneNode> SceneNode::VGetParent() {
 	return m_pParent.lock();
 }
 
@@ -206,19 +223,6 @@ void SceneNode::SetScale(DirectX::XMVECTOR scale) {
 
 void SceneNode::SetMaterial(const Material& mat) {
 	m_props.m_material = mat;
-}
-
-ActorId SceneNode::VFindMyActor() {
-	ActorId act = VGet().ActorId();
-	if (act != 0) { return act; }
-
-	ISceneNode* parent = m_pParent;
-	while (parent) {
-		act = parent->VGet().ActorId();
-		if (act != 0) { return act; }
-		parent = parent->VGetParent();
-	}
-	return 0;
 }
 
 void SceneNode::SetTransform(DirectX::FXMMATRIX to_world, DirectX::CXMMATRIX from_world, bool calulate_from) {

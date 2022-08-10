@@ -9,10 +9,10 @@
 
 class CameraNode : public SceneNode {
 public:
-	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& view, float fovy, float aspect, float near_clip, float far_clip);
-	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& proj);
-	CameraNode(const std::string& name, DirectX::FXMMATRIX view, float fovy, float aspect, float near_clip, float far_clip);
-	CameraNode(const std::string& name, DirectX::FXMMATRIX view, DirectX::CXMMATRIX proj);
+	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, float fovy, float aspect, float near_clip, float far_clip);
+	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, const DirectX::XMFLOAT4X4& proj);
+	CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, float fovy, float aspect, float near_clip, float far_clip);
+	CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj);
 
 	virtual HRESULT VOnRestore() override;
 

@@ -398,7 +398,6 @@
     <ClInclude Include="nodes\alpha_scene_node.h" />
     <ClInclude Include="nodes\alpha_type.h" />
     <ClInclude Include="nodes\camera_node.h" />
-    <ClInclude Include="nodes\i_scene_node.h" />
     <ClInclude Include="nodes\light_node.h" />
     <ClInclude Include="nodes\light_properties.h" />
     <ClInclude Include="nodes\light_type.h" />
