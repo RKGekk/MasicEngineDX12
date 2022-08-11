@@ -6,19 +6,19 @@
 #include "../tools/memory_utility.h"
 
 CameraNode::CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, float fovy, float aspect, float near_clip, float far_clip) : SceneNode(name, &camera_transform), m_fovy(fovy), m_aspect(aspect) {
-	SetData(DirectX::XMLoadFloat4x4(&camera_transform), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovy), aspect, near_clip, far_clip));
 }
 
 CameraNode::CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, const DirectX::XMFLOAT4X4& proj) : SceneNode(name, &camera_transform) {
-	SetData(DirectX::XMLoadFloat4x4(&camera_transform), DirectX::XMLoadFloat4x4(&proj));
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMLoadFloat4x4(&proj));
 }
 
 CameraNode::CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, float fovy, float aspect, float near_clip, float far_clip) : SceneNode(name, camera_transform, DirectX::XMMatrixIdentity(), true), m_fovy(fovy), m_aspect(aspect) {
-	SetData(camera_transform, DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovy), aspect, near_clip, far_clip));
 }
 
 CameraNode::CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj) : SceneNode(name, camera_transform, DirectX::XMMatrixIdentity(), true) {
-	SetData(camera_transform, proj);
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), proj);
 }
 
 HRESULT CameraNode::VOnRestore() {
@@ -26,7 +26,7 @@ HRESULT CameraNode::VOnRestore() {
 	if(m_aspect == new_aspect) return S_OK;
 
 	m_aspect = new_aspect;
-	SetData(m_props.ToWorld(), DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
+	SetData(m_props.CumulativeToWorld(), DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(m_fovy), m_aspect, m_frustum.Near, m_frustum.Far));
 
 	SceneNode::VOnRestore();
 
@@ -38,26 +38,26 @@ const DirectX::BoundingFrustum& CameraNode::GetFrustum() const {
 }
 
 void CameraNode::SetFovYRad(float fovy) {
-	if(m_fovy == fovy) return;
-
-	m_fovy = fovy;
-	SetData(m_props.ToWorld(), DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
+	SetFovYDeg(DirectX::XMConvertToDegrees(fovy));
 }
 
 void CameraNode::SetFovYDeg(float fovy) {
-	SetFovYRad(DirectX::XMConvertToRadians(fovy));
+	if (m_fovy == fovy) return;
+
+	m_fovy = fovy;
+	SetData(m_props.CumulativeToWorld(), DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(m_fovy), m_aspect, m_frustum.Near, m_frustum.Far));
 }
 
 float CameraNode::GetFovYRad() {
-	return atanf(m_frustum.TopSlope / m_frustum.Near);
+	return DirectX::XMConvertToRadians(m_fovy);
 }
 
 float CameraNode::GetFovYDeg() {
-	return DirectX::XMConvertToDegrees(GetFovYRad());
+	return m_fovy;
 }
 
 DirectX::XMMATRIX CameraNode::GetWorldViewProjection(DirectX::FXMMATRIX world) {
-	DirectX::XMMATRIX view = VGet().FromWorld();
+	DirectX::XMMATRIX view = Get().CumulativeFromWorld();
 	DirectX::XMMATRIX world_view = DirectX::XMMatrixMultiply(world, view);
 	return DirectX::XMMatrixMultiply(world_view, DirectX::XMLoadFloat4x4(&m_projection));
 }
@@ -92,7 +92,7 @@ DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4T(const DirectX::XMFLOA
 }
 
 DirectX::XMMATRIX CameraNode::GetViewProjection() {
-	DirectX::XMMATRIX view = VGet().FromWorld();
+	DirectX::XMMATRIX view = Get().CumulativeFromWorld();
 	return DirectX::XMMatrixMultiply(view, DirectX::XMLoadFloat4x4(&m_projection));
 }
 
@@ -124,15 +124,15 @@ DirectX::XMFLOAT4X4 CameraNode::GetProjection4x4fT() {
 }
 
 DirectX::XMMATRIX CameraNode::GetView() {
-	return VGet().FromWorld();
+	return Get().CumulativeFromWorld();
 }
 
 const DirectX::XMFLOAT4X4& CameraNode::GetView4x4f() {
-	return VGet().FromWorld4x4();
+	return Get().CumulativeFromWorld4x4();
 }
 
 DirectX::XMFLOAT4X4 CameraNode::GetView4x4fT() {
-	return VGet().FromWorld4x4T();
+	return Get().CumulativeFromWorld4x4T();
 }
 
 void CameraNode::SetData(DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj) {
@@ -142,6 +142,6 @@ void CameraNode::SetData(DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX
 	DirectX::XMStoreFloat4x4(&camera_transform_xm, camera_transform);
 	m_frustum.Origin = DirectX::XMFLOAT3(camera_transform_xm._41, camera_transform_xm._42, camera_transform_xm._43);
 	DirectX::XMStoreFloat4(&m_frustum.Orientation, DirectX::XMQuaternionRotationMatrix(camera_transform));
-	m_fovy = 2.0f * atanf(1.0f / m_projection.m[1][1]);
+	m_fovy = DirectX::XMConvertToDegrees(2.0f * atanf(1.0f / m_projection.m[1][1]));
 	m_aspect = m_projection.m[1][1] / m_projection.m[0][0];
 }
