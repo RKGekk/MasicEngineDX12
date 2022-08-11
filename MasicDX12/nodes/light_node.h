@@ -33,7 +33,7 @@ public:
 
 	const LightProperties& VGetLight() const;
 
-	SpotLight GetSpotLight();
+	SpotLight GetSpotLight(DirectX::FXMMATRIX view);
 	PointLight GetPointLight();
 	DirectionalLight GetDirectionalLight();
 

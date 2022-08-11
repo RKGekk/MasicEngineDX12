@@ -34,9 +34,15 @@ const LightProperties& LightNode::VGetLight() const {
 	return m_light_props;
 }
 
-SpotLight LightNode::GetSpotLight() {
-	SpotLight res();
-	return SpotLight();
+SpotLight LightNode::GetSpotLight(DirectX::FXMMATRIX view, DirectX::CXMMATRIX world) {
+	SpotLight res = SpotLight();
+	
+	DirectX::XMVECTOR PositionWS_xm = GetWorldPosition();
+	DirectX::XMStoreFloat4(&res.PositionWS, PositionWS_xm);
+	DirectX::XMStoreFloat4(&res.PositionVS, DirectX::XMVector4Transform(PositionWS_xm, view));
+
+
+	return res;
 }
 
 void LightNode::SetLightProps(const SpotLight& spot_light) {

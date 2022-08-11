@@ -18,6 +18,7 @@ class SceneNode : public std::enable_shared_from_this<SceneNode> {
 protected:
 	SceneNodeList m_children;
 	std::weak_ptr<SceneNode> m_pParent;
+	std::weak_ptr<SceneNode> m_pRoot;
 	SceneNodeProperties m_props;
 
 public:
@@ -26,51 +27,30 @@ public:
 
 	virtual ~SceneNode();
 
-	virtual const SceneNodeProperties& VGet() const;
-
 	virtual void Accept(Visitor& visitor);
-
-	virtual void VSetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld);
-	virtual void VSetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from);
-	virtual DirectX::XMMATRIX VGetTransform();
-	virtual DirectX::XMFLOAT4X4 VGetTransform4x4();
-	virtual DirectX::XMFLOAT4X4 VGetTransform4x4T();
-
+	virtual bool VIsVisible() const = 0;
 	virtual HRESULT VOnRestore();
 	virtual HRESULT VOnUpdate();
+	virtual HRESULT VOnLostDevice();
 
 	virtual bool VAddChild(std::shared_ptr<SceneNode> kid);
 	virtual bool VRemoveChild(std::shared_ptr<SceneNode> cid);
-	virtual HRESULT VOnLostDevice();
 
-	virtual std::shared_ptr<SceneNode> VGetParent();
+	const SceneNodeProperties& Get() const;
+
+	void UpdateCumulativeTransform();
+	void UpdateCumulativeScale();
+	void SetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld);
+	void SetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from);
+
+	void SetParent(std::shared_ptr<SceneNode> parent_node);
+	std::shared_ptr<SceneNode> GetParent();
 
 	void SetAlpha(float alpha);
-	float GetAlpha() const;
-
 	void SetName(std::string name);
-	const std::string& GetName() const;
-
-	DirectX::XMVECTOR GetPosition() const;
-	DirectX::XMFLOAT3 GetPosition3() const;
-	DirectX::XMFLOAT4 GetPosition4() const;
 	void SetPosition3(const DirectX::XMFLOAT3& pos);
 
-	DirectX::XMFLOAT3 GetWorldPosition3() const;
-	DirectX::XMVECTOR GetWorldPosition() const;
-
-	DirectX::XMVECTOR GetDirection() const;
-	DirectX::XMFLOAT3 GetDirection3f() const;
-	DirectX::XMVECTOR GetUp() const;
-	DirectX::XMFLOAT3 GetUp3f() const;
-
-	const DirectX::XMFLOAT3& GetScale3f() const;
-	DirectX::XMVECTOR GetScale() const;
 	void SetScale(const DirectX::XMFLOAT3& scale);
 	void SetScale(DirectX::XMVECTOR scale);
-	void SetMaterial(const Material& mat);
-
-private:
-	void SetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from);
-	void SetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld);
+	void SetMaterial(const Material& mat);	
 };
