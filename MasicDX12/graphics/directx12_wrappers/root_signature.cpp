@@ -10,8 +10,20 @@ RootSignature::RootSignature(Device& device, const D3D12_ROOT_SIGNATURE_DESC1& r
     SetRootSignatureDesc(root_signature_desc);
 }
 
+RootSignature::RootSignature(const RootSignature& other) : m_device(other.m_device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0) {
+    SetRootSignatureDesc(other.m_root_signature_desc);
+}
+
 RootSignature::~RootSignature() {
     Destroy();
+}
+
+RootSignature& RootSignature::operator=(const RootSignature& right) {
+    if (this == &right) {
+        return *this;
+    }
+    SetRootSignatureDesc(right.m_root_signature_desc);
+    return *this;
 }
 
 void RootSignature::Destroy() {
@@ -31,6 +43,7 @@ void RootSignature::Destroy() {
 
     m_descriptor_table_bit_mask = 0u;
     m_sampler_table_bit_mask = 0u;
+    m_bytes_used = 0u;
 
     memset(m_num_descriptors_per_table, 0, sizeof(m_num_descriptors_per_table));
 }
@@ -46,6 +59,7 @@ void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_
         pParameters[i] = root_parameter;
 
         if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE) {
+            m_bytes_used += 4u;
             UINT num_descriptor_ranges = root_parameter.DescriptorTable.NumDescriptorRanges;
             D3D12_DESCRIPTOR_RANGE1* pDescriptor_ranges = num_descriptor_ranges > 0 ? new D3D12_DESCRIPTOR_RANGE1[num_descriptor_ranges] : nullptr;
 
@@ -70,6 +84,12 @@ void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_
             for (UINT j = 0; j < num_descriptor_ranges; ++j) {
                 m_num_descriptors_per_table[i] += pDescriptor_ranges[j].NumDescriptors;
             }
+        }
+        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_CBV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_SRV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_UAV) {
+            m_bytes_used += 8u;
+        }
+        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS) {
+            m_bytes_used += 4u * root_parameter.Constants.Num32BitValues;
         }
     }
 
@@ -121,6 +141,10 @@ uint32_t RootSignature::GetDescriptorTableBitMask(D3D12_DESCRIPTOR_HEAP_TYPE des
 uint32_t RootSignature::GetNumDescriptors(uint32_t root_index) const {
     assert(root_index < 32u);
     return m_num_descriptors_per_table[root_index];
+}
+
+uint32_t RootSignature::GetBytesUsed() const {
+    return m_bytes_used;
 }
 
 Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature::GetD3D12RootSignature() const {

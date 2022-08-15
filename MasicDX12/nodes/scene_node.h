@@ -6,7 +6,7 @@
 #include <DirectXMath.h>
 
 #include "scene_node_properties.h"
-#include "visitor.h"
+#include "i_visitor.h"
 #include "../tools/memory_utility.h"
 
 class SceneNode;
@@ -22,13 +22,13 @@ protected:
 	SceneNodeProperties m_props;
 
 public:
+	SceneNode(const std::string& name);
 	SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from = nullptr);
 	SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from = true);
 
 	virtual ~SceneNode();
 
-	virtual void Accept(Visitor& visitor);
-	virtual bool VIsVisible() const = 0;
+	virtual void Accept(IVisitor& visitor);
 	virtual HRESULT VOnRestore();
 	virtual HRESULT VOnUpdate();
 	virtual HRESULT VOnLostDevice();
@@ -46,11 +46,9 @@ public:
 	void SetParent(std::shared_ptr<SceneNode> parent_node);
 	std::shared_ptr<SceneNode> GetParent();
 
-	void SetAlpha(float alpha);
 	void SetName(std::string name);
 	void SetPosition3(const DirectX::XMFLOAT3& pos);
 
 	void SetScale(const DirectX::XMFLOAT3& scale);
 	void SetScale(DirectX::XMVECTOR scale);
-	void SetMaterial(const Material& mat);	
 };

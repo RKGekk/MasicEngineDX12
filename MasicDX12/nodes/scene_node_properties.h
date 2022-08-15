@@ -23,11 +23,6 @@ protected:
 	
 	bool m_active;
 
-	Material m_material;
-	AlphaType m_alpha_type;
-
-	void SetAlpha(const float alpha);
-
 public:
 	SceneNodeProperties();
 
@@ -75,10 +70,4 @@ public:
 
 	const char* NameCstr() const;
 	const std::string& Name() const;
-
-	bool HasAlpha() const;
-	float Alpha() const;
-	AlphaType AlphaType() const;
-
-	const Material& GetMaterial() const;
 };

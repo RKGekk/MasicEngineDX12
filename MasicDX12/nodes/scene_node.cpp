@@ -6,12 +6,18 @@
 
 #include <algorithm>
 
+SceneNode::SceneNode(const std::string& name) {
+	SetTransform(DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), false);
+	m_props.m_name = name;
+	m_props.m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_props.m_active = true;
+}
+
 SceneNode::SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from) {
 	SetTransform4x4(to, from);
 	m_props.m_name = name;
 	m_props.m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_props.m_active = true;
-	m_props.m_alpha_type = AlphaType::AlphaOpaque;
 }
 
 SceneNode::SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from) {
@@ -19,12 +25,11 @@ SceneNode::SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CX
 	m_props.m_name = name;
 	m_props.m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_props.m_active = true;
-	m_props.m_alpha_type = AlphaType::AlphaOpaque;
 }
 
 SceneNode::~SceneNode() {}
 
-void SceneNode::Accept(Visitor& visitor) {
+void SceneNode::Accept(IVisitor& visitor) {
 	visitor.Visit(*this);
 	for (auto& child : m_children) {
 		child->Accept(visitor);
@@ -193,14 +198,6 @@ std::shared_ptr<SceneNode> SceneNode::GetParent() {
 	return m_pParent.lock();
 }
 
-void SceneNode::SetAlpha(float alpha) {
-	m_props.SetAlpha(alpha);
-	for (SceneNodeList::const_iterator i = m_children.begin(); i != m_children.end(); ++i) {
-		std::shared_ptr<SceneNode> scene_node = std::static_pointer_cast<SceneNode>(*i);
-		scene_node->SetAlpha(alpha);
-	}
-}
-
 void SceneNode::SetName(std::string name) {
 	m_props.m_name = name;
 }
@@ -227,8 +224,4 @@ void SceneNode::SetScale(const DirectX::XMFLOAT3& scale) {
 void SceneNode::SetScale(DirectX::XMVECTOR scale) {
 	DirectX::XMStoreFloat3(&m_props.m_scale, scale);
 	UpdateCumulativeScale();
-}
-
-void SceneNode::SetMaterial(const Material& mat) {
-	m_props.m_material = mat;
 }

@@ -31,7 +31,7 @@ SpotLight LightNode::GetSpotLight(DirectX::FXMMATRIX view) {
 	return res;
 }
 
-PointLight LightNode::GetPointLight() {
+PointLight LightNode::GetPointLight(DirectX::FXMMATRIX view) {
 	PointLight res = PointLight();
 
 	DirectX::XMVECTOR positionWS_xm = Get().CumulativePosition();
@@ -47,7 +47,7 @@ PointLight LightNode::GetPointLight() {
 	return res;
 }
 
-DirectionalLight LightNode::GetDirectionalLight() {
+DirectionalLight LightNode::GetDirectionalLight(DirectX::FXMMATRIX view) {
 	DirectionalLight res = DirectionalLight();
 
 	DirectX::XMVECTOR directionWS_xm = Get().CumulativeDirection();

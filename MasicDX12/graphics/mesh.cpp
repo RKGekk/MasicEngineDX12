@@ -65,25 +65,6 @@ std::shared_ptr<Material> Mesh::GetMaterial() const {
     return m_material;
 }
 
-void Mesh::Draw(CommandList& command_list, uint32_t instance_count, uint32_t start_instance) {
-    command_list.SetPrimitiveTopology(GetPrimitiveTopology());
-
-    for (auto vertex_buffer : m_vertex_buffers) {
-        command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
-    }
-
-    auto index_count = GetIndexCount();
-    auto vertex_count = GetVertexCount();
-
-    if (index_count > 0) {
-        command_list.SetIndexBuffer(m_index_buffer);
-        command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
-    }
-    else if (vertex_count > 0) {
-        command_list.Draw(vertex_count, instance_count, 0u, start_instance);
-    }
-}
-
 void Mesh::SetAABB(const DirectX::BoundingBox& aabb) {
     m_AABB = aabb;
 }

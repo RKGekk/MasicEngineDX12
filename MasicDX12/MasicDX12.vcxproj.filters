@@ -300,9 +300,6 @@
     <ClCompile Include="nodes\matrix_stack.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
-    <ClCompile Include="nodes\root_node.cpp">
-      <Filter>Source Files\nodes</Filter>
-    </ClCompile>
     <ClCompile Include="nodes\scene.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
@@ -502,6 +499,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="events\mouse_wheel_event_args.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\mesh_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\qualifier_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\input_assembler_layout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -824,9 +833,6 @@
     <ClInclude Include="actors\render_component_interface.h">
       <Filter>Header Files\actors</Filter>
     </ClInclude>
-    <ClInclude Include="nodes\root_node.h">
-      <Filter>Header Files\nodes</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\directx12_wrappers\constant_buffer_types.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
@@ -1061,7 +1067,22 @@
     <ClInclude Include="graphics\directional_light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="nodes\visitor.h">
+    <ClInclude Include="nodes\i_visitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\mesh_node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\i_visibility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\qualifier_node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\input_assembler_layout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

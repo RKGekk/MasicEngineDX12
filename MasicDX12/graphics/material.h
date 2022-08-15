@@ -175,4 +175,5 @@ private:
 
 	MaterialPropertiesPtr m_material_properties;
 	TextureMap m_textures;
+
 };

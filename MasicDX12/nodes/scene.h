@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include "i_scene_node.h"
 #include "scene_node.h"
 #include "../graphics/i_renderer.h"
 #include "matrix_stack.h"
@@ -13,8 +12,6 @@ class CameraNode;
 class SkyNode;
 class LightNode;
 class LightManager;
-class ShadowManager;
-class RootNode;
 
 class Scene {
 protected:
@@ -22,7 +19,6 @@ protected:
 
 	std::shared_ptr<RootNode> m_Root;
 	std::shared_ptr<CameraNode> m_Camera;
-	IRenderer* m_Renderer;
 
 	std::shared_ptr<MatrixStack> m_MatrixStack;
 	AlphaSceneNodes m_AlphaSceneNodes;

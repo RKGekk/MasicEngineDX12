@@ -39,12 +39,11 @@ public:
 	void SetAABB(const DirectX::BoundingBox& aabb);
 	const DirectX::BoundingBox& GetAABB() const;
 
-	void Draw(CommandList& command_list, uint32_t instance_count = 1, uint32_t start_instance = 0);
-
 private:
 	BufferMap m_vertex_buffers;
 	std::shared_ptr<IndexBuffer> m_index_buffer;
 	std::shared_ptr<Material> m_material;
+
 	D3D12_PRIMITIVE_TOPOLOGY m_primitive_topology;
 	DirectX::BoundingBox m_AABB;
 };

@@ -1,18 +1,6 @@
 #include "scene_node_properties.h"
 
-void SceneNodeProperties::SetAlpha(const float alpha) {
-	if (alpha != 1.0f) {
-		m_alpha_type = AlphaType::AlphaMaterial;
-		m_material.SetOpacity(alpha);
-	}
-	else {
-		m_alpha_type = AlphaType::AlphaOpaque;
-		m_material.SetOpacity(alpha);
-	}
-}
-
 SceneNodeProperties::SceneNodeProperties() {
-	m_alpha_type = AlphaType::AlphaOpaque;
 	DirectX::XMStoreFloat4x4(&m_to_world, DirectX::XMMatrixIdentity());
 	DirectX::XMStoreFloat4x4(&m_from_world, DirectX::XMMatrixIdentity());
 	m_scale = { 1.0f, 1.0f, 1.0f };
@@ -208,20 +196,4 @@ const char* SceneNodeProperties::NameCstr() const {
 
 const std::string& SceneNodeProperties::Name() const {
 	return m_name;
-}
-
-bool SceneNodeProperties::HasAlpha() const {
-	return m_material.IsTransparent();
-}
-
-float SceneNodeProperties::Alpha() const {
-	return m_material.GetOpacity();
-}
-
-AlphaType SceneNodeProperties::AlphaType() const {
-	return m_alpha_type;
-}
-
-const Material& SceneNodeProperties::GetMaterial() const {
-	return m_material;
 }
