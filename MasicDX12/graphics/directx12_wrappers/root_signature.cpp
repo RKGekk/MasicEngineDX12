@@ -52,13 +52,12 @@ void RootSignature::Destroy() {
 
 D3D12_ROOT_SIGNATURE_DESC1 RootSignature::CombineRootSignatureDesc() {
     D3D12_ROOT_SIGNATURE_DESC1 res{};
-    res.Version = D3D_ROOT_SIGNATURE_VERSION_1_1;
 
-    res.Desc_1_1.NumParameters = (UINT)mD3DParameters.size();
-    res.Desc_1_1.pParameters = &mD3DParameters[0];
+    res.NumParameters = (UINT)m_parameters.size();
+    res.pParameters = m_parameters.data();
 
-    res.Desc_1_1.NumStaticSamplers = (UINT)mD3DStaticSamplers.size();
-    res.Desc_1_1.pStaticSamplers = mD3DStaticSamplers.data();
+    res.NumStaticSamplers = (UINT)m_static_samplers.size();
+    res.pStaticSamplers = m_static_samplers.data();
 
     return res;
 }
@@ -67,37 +66,30 @@ void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_
     Destroy();
 
     UINT num_parameters = root_signature_desc.NumParameters;
-    D3D12_ROOT_PARAMETER1* pParameters = num_parameters > 0 ? new D3D12_ROOT_PARAMETER1[num_parameters] : nullptr;
-
     for (UINT i = 0; i < num_parameters; ++i) {
         const D3D12_ROOT_PARAMETER1& root_parameter = root_signature_desc.pParameters[i];
-        pParameters[i] = root_parameter;
-
         if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE) {
             m_bytes_used += 4u;
+
             UINT num_descriptor_ranges = root_parameter.DescriptorTable.NumDescriptorRanges;
-            D3D12_DESCRIPTOR_RANGE1* pDescriptor_ranges = num_descriptor_ranges > 0 ? new D3D12_DESCRIPTOR_RANGE1[num_descriptor_ranges] : nullptr;
+            RootDescriptorTableParameter desc_table_param;
 
-            memcpy(pDescriptor_ranges, root_parameter.DescriptorTable.pDescriptorRanges, sizeof(D3D12_DESCRIPTOR_RANGE1) * num_descriptor_ranges);
-
-            pParameters[i].DescriptorTable.NumDescriptorRanges = num_descriptor_ranges;
-            pParameters[i].DescriptorTable.pDescriptorRanges = pDescriptor_ranges;
-
-            if (num_descriptor_ranges > 0) {
-                switch (pDescriptor_ranges[0].RangeType) {
+            for (UINT j = 0; j < num_descriptor_ranges; ++j) {
+                switch (root_parameter.DescriptorTable.pDescriptorRanges[j].RangeType) {
                     case D3D12_DESCRIPTOR_RANGE_TYPE_CBV:
+                        desc_table_param.AddDescriptorRange(CBDescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
                     case D3D12_DESCRIPTOR_RANGE_TYPE_SRV:
+                        desc_table_param.AddDescriptorRange(SRDescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
                     case D3D12_DESCRIPTOR_RANGE_TYPE_UAV:
+                        desc_table_param.AddDescriptorRange(UADescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
                         m_descriptor_table_bit_mask |= (1 << i);
                         break;
                     case D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER:
+                        desc_table_param.AddDescriptorRange(SamplerDescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
                         m_sampler_table_bit_mask |= (1 << i);
                         break;
                 }
-            }
-
-            for (UINT j = 0; j < num_descriptor_ranges; ++j) {
-                m_num_descriptors_per_table[i] += pDescriptor_ranges[j].NumDescriptors;
+                m_num_descriptors_per_table[i] += root_parameter.DescriptorTable.pDescriptorRanges[j].NumDescriptors;
             }
         }
         if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_CBV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_SRV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_UAV) {
