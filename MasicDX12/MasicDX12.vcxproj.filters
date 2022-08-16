@@ -513,6 +513,18 @@
     <ClCompile Include="graphics\directx12_wrappers\input_assembler_layout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\shader_register.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\root_parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\descripror_table_range.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1083,6 +1095,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\directx12_wrappers\input_assembler_layout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\shader_register.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\root_parameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\descripror_table_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\sampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

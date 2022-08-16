@@ -177,8 +177,11 @@
     <ClCompile Include="events\resize_event_args.cpp" />
     <ClCompile Include="events\evt_data_mouse_button_released.cpp" />
     <ClCompile Include="events\mouse_wheel_event_args.cpp" />
+    <ClCompile Include="graphics\directx12_wrappers\descripror_table_range.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\input_assembler_layout.cpp" />
+    <ClCompile Include="graphics\directx12_wrappers\root_parameter.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\shader.cpp" />
+    <ClCompile Include="graphics\directx12_wrappers\shader_register.cpp" />
     <ClCompile Include="nodes\mesh_node.cpp" />
     <ClCompile Include="nodes\qualifier_node.cpp" />
     <ClCompile Include="render_window_config.cpp" />
@@ -230,6 +233,7 @@
     <ClCompile Include="graphics\directx12_wrappers\upload_buffer.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\vertex_buffer.cpp" />
     <ClCompile Include="graphics\vertex_types.cpp" />
+    <ClCompile Include="graphics\directx12_wrappers\sampler.cpp" />
     <ClCompile Include="window_surface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="graphics\d3d12_renderer.cpp" />
@@ -346,13 +350,16 @@
     <ClInclude Include="graphics\directx12_wrappers\constant_buffer_view.h" />
     <ClInclude Include="graphics\d3d12_renderer.h" />
     <ClInclude Include="engine\engine.h" />
+    <ClInclude Include="graphics\directx12_wrappers\descripror_table_range.h" />
     <ClInclude Include="graphics\directx12_wrappers\descriptor_allocation.h" />
     <ClInclude Include="graphics\directx12_wrappers\descriptor_allocator.h" />
     <ClInclude Include="graphics\directx12_wrappers\descriptor_allocator_page.h" />
     <ClInclude Include="graphics\directx12_wrappers\device.h" />
     <ClInclude Include="graphics\directx12_wrappers\dynamic_descriptor_heap.h" />
     <ClInclude Include="graphics\directx12_wrappers\input_assembler_layout.h" />
+    <ClInclude Include="graphics\directx12_wrappers\root_parameter.h" />
     <ClInclude Include="graphics\directx12_wrappers\shader.h" />
+    <ClInclude Include="graphics\directx12_wrappers\shader_register.h" />
     <ClInclude Include="graphics\effect_pso.h" />
     <ClInclude Include="graphics\generate_mips_pso.h" />
     <ClInclude Include="graphics\gui.h" />
@@ -376,6 +383,7 @@
     <ClInclude Include="nodes\mesh_node.h" />
     <ClInclude Include="nodes\i_visitor.h" />
     <ClInclude Include="nodes\qualifier_node.h" />
+    <ClInclude Include="graphics\directx12_wrappers\sampler.h" />
     <ClInclude Include="window_keycodes.h" />
     <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />

@@ -6,11 +6,13 @@
 #include <cassert>
 #include <memory>
 
-RootSignature::RootSignature(Device& device, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0) {
+RootSignature::RootSignature(Device& device) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {}
+
+RootSignature::RootSignature(Device& device, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {
     SetRootSignatureDesc(root_signature_desc);
 }
 
-RootSignature::RootSignature(const RootSignature& other) : m_device(other.m_device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0) {
+RootSignature::RootSignature(const RootSignature& other) : m_device(other.m_device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(m_compiled) {
     SetRootSignatureDesc(other.m_root_signature_desc);
 }
 
@@ -47,6 +49,8 @@ void RootSignature::Destroy() {
 
     memset(m_num_descriptors_per_table, 0, sizeof(m_num_descriptors_per_table));
 }
+
+void RootSignature::Compile() {}
 
 void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) {
     Destroy();
@@ -122,7 +126,19 @@ void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_
     auto d3d12_device = m_device.GetD3D12Device();
     hr = d3d12_device->CreateRootSignature(0, root_signature_blob->GetBufferPointer(), root_signature_blob->GetBufferSize(), IID_PPV_ARGS(m_root_signature.ReleaseAndGetAddressOf()));
     ThrowIfFailed(hr);
+
+    m_compiled = true;
 }
+
+/* 
+* m_compiled = false;
+    for (const SignatureRegisters& location : parameter.SignatureLocations()) {
+        assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+        index = (uint32_t)m_parameters.size();
+        m_parameters.push_back(parameter);
+        m_parameter_indices_map[location] = index;
+    }
+*/
 
 uint32_t RootSignature::GetDescriptorTableBitMask(D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heap_type) const {
     uint32_t descriptor_table_bit_mask = 0u;
@@ -145,6 +161,14 @@ uint32_t RootSignature::GetNumDescriptors(uint32_t root_index) const {
 
 uint32_t RootSignature::GetBytesUsed() const {
     return m_bytes_used;
+}
+
+bool RootSignature::ConatinParameterIndex(const SignatureRegisters& location) const {
+    return m_parameter_indices_map.count(location);
+}
+
+RootSignature::ParameterIndex RootSignature::GetParameterIndex(const SignatureRegisters& location) const {
+    return m_parameter_indices_map.find(location)->second;
 }
 
 Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature::GetD3D12RootSignature() const {
