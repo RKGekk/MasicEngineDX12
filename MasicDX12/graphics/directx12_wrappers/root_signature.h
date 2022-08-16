@@ -41,7 +41,7 @@ public:
 
 private:
 	void Destroy();
-	void Compile();
+	D3D12_ROOT_SIGNATURE_DESC1 CombineRootSignatureDesc();
 	void SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc);
 
 	using ParamIndexMap = std::unordered_map<SignatureRegisters, ParameterIndex, LocationHasher, LocationEquality>;
@@ -55,7 +55,7 @@ private:
 	std::vector<RootDescriptorTableParameter> m_descriptor_table_parameters;
 	std::vector<RootDescriptorParameter> m_descriptor_parameters;
 	std::vector<RootConstantsParameter> m_constant_parameters;
-	std::vector<RootSaticSampler> m_constant_parameters;
+	std::vector<RootSaticSampler> m_root_static_samplers;
 
 	std::vector<D3D12_STATIC_SAMPLER_DESC> m_static_samplers;
 	std::vector<D3D12_ROOT_PARAMETER1> m_parameters;
@@ -63,6 +63,7 @@ private:
 	uint32_t m_num_descriptors_per_table[32];
 	uint32_t m_sampler_table_bit_mask;
 	uint32_t m_descriptor_table_bit_mask;
+
 	uint32_t m_bytes_used;
 
 	bool m_compiled;

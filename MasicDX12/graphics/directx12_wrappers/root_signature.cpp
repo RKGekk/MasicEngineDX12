@@ -50,7 +50,18 @@ void RootSignature::Destroy() {
     memset(m_num_descriptors_per_table, 0, sizeof(m_num_descriptors_per_table));
 }
 
-void RootSignature::Compile() {}
+D3D12_ROOT_SIGNATURE_DESC1 RootSignature::CombineRootSignatureDesc() {
+    D3D12_ROOT_SIGNATURE_DESC1 res{};
+    res.Version = D3D_ROOT_SIGNATURE_VERSION_1_1;
+
+    res.Desc_1_1.NumParameters = (UINT)mD3DParameters.size();
+    res.Desc_1_1.pParameters = &mD3DParameters[0];
+
+    res.Desc_1_1.NumStaticSamplers = (UINT)mD3DStaticSamplers.size();
+    res.Desc_1_1.pStaticSamplers = mD3DStaticSamplers.data();
+
+    return res;
+}
 
 void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) {
     Destroy();
@@ -130,16 +141,6 @@ void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_
     m_compiled = true;
 }
 
-/* 
-* m_compiled = false;
-    for (const SignatureRegisters& location : parameter.SignatureLocations()) {
-        assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
-        index = (uint32_t)m_parameters.size();
-        m_parameters.push_back(parameter);
-        m_parameter_indices_map[location] = index;
-    }
-*/
-
 uint32_t RootSignature::GetDescriptorTableBitMask(D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heap_type) const {
     uint32_t descriptor_table_bit_mask = 0u;
     switch (descriptor_heap_type) {
@@ -169,6 +170,58 @@ bool RootSignature::ConatinParameterIndex(const SignatureRegisters& location) co
 
 RootSignature::ParameterIndex RootSignature::GetParameterIndex(const SignatureRegisters& location) const {
     return m_parameter_indices_map.find(location)->second;
+}
+
+void RootSignature::AddDescriptorTableParameter(const RootDescriptorTableParameter& table) {
+    m_compiled = false;
+    ParameterIndex index = (ParameterIndex)m_parameters.size();
+    for (const SignatureRegisters& location : table.SignatureLocations()) {
+        assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+        m_parameter_indices_map[location] = index;
+    }
+    m_descriptor_table_parameters.push_back(table);
+
+    const D3D12_ROOT_PARAMETER1& root_parameter = table.GetParameter();
+    m_parameters.push_back(root_parameter);
+    m_descriptor_table_bit_mask |= (1 << index);
+    UINT num_descriptor_ranges = root_parameter.DescriptorTable.NumDescriptorRanges;
+    for (UINT j = 0; j < num_descriptor_ranges; ++j) {
+        m_num_descriptors_per_table[index] += root_parameter.DescriptorTable.pDescriptorRanges[j].NumDescriptors;
+    }
+}
+
+void RootSignature::AddDescriptorParameter(const RootDescriptorParameter& descriptor) {
+    m_compiled = false;
+    ParameterIndex index = (ParameterIndex)m_parameters.size();
+    for (const SignatureRegisters& location : descriptor.SignatureLocations()) {
+        assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+        m_parameter_indices_map[location] = index;
+    }
+    m_descriptor_parameters.push_back(descriptor);
+    m_parameters.push_back(descriptor.GetParameter());
+}
+
+void RootSignature::AddConstantsParameter(const RootConstantsParameter& constants) {
+    m_compiled = false;
+    ParameterIndex index = (ParameterIndex)m_parameters.size();
+    for (const SignatureRegisters& location : constants.SignatureLocations()) {
+        assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+        m_parameter_indices_map[location] = index;
+    }
+    m_constant_parameters.push_back(constants);
+    m_parameters.push_back(constants.GetParameter());
+}
+
+void RootSignature::AddStaticSampler(const RootSaticSampler& sampler) {
+    m_compiled = false;
+    ParameterIndex index = (ParameterIndex)m_parameters.size();
+
+    const SignatureRegisters& location = sampler.GetSignatureLocation();
+    assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+    m_parameter_indices_map[location] = index;
+    
+    m_root_static_samplers.push_back(sampler);
+    m_static_samplers.push_back(sampler.GetStaticSampler());
 }
 
 Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature::GetD3D12RootSignature() const {
