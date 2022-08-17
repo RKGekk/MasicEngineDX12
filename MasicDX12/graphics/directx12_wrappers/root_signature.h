@@ -18,14 +18,14 @@ public:
 	using ParameterIndex = uint32_t;
 
 	RootSignature(Device& device);
-	RootSignature(Device& device, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc);
+	RootSignature(Device& device, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc);
 	RootSignature(const RootSignature& other);
 	virtual ~RootSignature();
 
 	RootSignature& operator=(const RootSignature& right);
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> GetD3D12RootSignature() const;
-	const D3D12_ROOT_SIGNATURE_DESC1& GetRootSignatureDesc() const;
+	const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& GetRootSignatureDesc() const;
 
 	uint32_t GetDescriptorTableBitMask(D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heap_type) const;
 	uint32_t GetNumDescriptors(uint32_t root_index) const;
@@ -41,13 +41,14 @@ public:
 
 private:
 	void Destroy();
-	D3D12_ROOT_SIGNATURE_DESC1 CombineRootSignatureDesc();
-	void SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc);
+	D3D12_VERSIONED_ROOT_SIGNATURE_DESC CombineRootSignatureDesc(D3D12_ROOT_SIGNATURE_FLAGS flags);
+	void CompileRootSignature();
+	void SetRootSignatureDesc(const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc);
 
 	using ParamIndexMap = std::unordered_map<SignatureRegisters, ParameterIndex, LocationHasher, LocationEquality>;
 
 	Device& m_device;
-	D3D12_ROOT_SIGNATURE_DESC1 m_root_signature_desc;
+	D3D12_VERSIONED_ROOT_SIGNATURE_DESC m_root_signature_desc;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_root_signature;
 
 	ParamIndexMap m_parameter_indices_map;

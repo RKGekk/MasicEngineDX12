@@ -5,10 +5,11 @@
 
 #include <cassert>
 #include <memory>
+#include <utility>
 
 RootSignature::RootSignature(Device& device) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {}
 
-RootSignature::RootSignature(Device& device, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {
+RootSignature::RootSignature(Device& device, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {
     SetRootSignatureDesc(root_signature_desc);
 }
 
@@ -29,19 +30,10 @@ RootSignature& RootSignature::operator=(const RootSignature& right) {
 }
 
 void RootSignature::Destroy() {
-    for (UINT i = 0u; i < m_root_signature_desc.NumParameters; ++i) {
-        const D3D12_ROOT_PARAMETER1& root_parameter = m_root_signature_desc.pParameters[i];
-        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE) {
-            delete[] root_parameter.DescriptorTable.pDescriptorRanges;
-        }
-    }
-
-    delete[] m_root_signature_desc.pParameters;
-    delete[] m_root_signature_desc.pStaticSamplers;
-    m_root_signature_desc.pParameters = nullptr;
-    m_root_signature_desc.NumParameters = 0u;
-    m_root_signature_desc.pStaticSamplers = nullptr;
-    m_root_signature_desc.NumStaticSamplers = 0u;
+    m_root_signature_desc.Desc_1_1.pParameters = nullptr;
+    m_root_signature_desc.Desc_1_1.NumParameters = 0u;
+    m_root_signature_desc.Desc_1_1.pStaticSamplers = nullptr;
+    m_root_signature_desc.Desc_1_1.NumStaticSamplers = 0u;
 
     m_descriptor_table_bit_mask = 0u;
     m_sampler_table_bit_mask = 0u;
@@ -50,87 +42,73 @@ void RootSignature::Destroy() {
     memset(m_num_descriptors_per_table, 0, sizeof(m_num_descriptors_per_table));
 }
 
-D3D12_ROOT_SIGNATURE_DESC1 RootSignature::CombineRootSignatureDesc() {
-    D3D12_ROOT_SIGNATURE_DESC1 res{};
+D3D12_VERSIONED_ROOT_SIGNATURE_DESC RootSignature::CombineRootSignatureDesc(D3D12_ROOT_SIGNATURE_FLAGS flags) {
+    D3D12_VERSIONED_ROOT_SIGNATURE_DESC res{};
 
-    res.NumParameters = (UINT)m_parameters.size();
-    res.pParameters = m_parameters.data();
+    res.Desc_1_1.Flags = flags;
 
-    res.NumStaticSamplers = (UINT)m_static_samplers.size();
-    res.pStaticSamplers = m_static_samplers.data();
+    res.Desc_1_1.NumParameters = (UINT)m_parameters.size();
+    res.Desc_1_1.pParameters = m_parameters.data();
+
+    res.Desc_1_1.NumStaticSamplers = (UINT)m_static_samplers.size();
+    res.Desc_1_1.pStaticSamplers = m_static_samplers.data();
 
     return res;
 }
 
-void RootSignature::SetRootSignatureDesc(const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) {
-    Destroy();
-
-    UINT num_parameters = root_signature_desc.NumParameters;
-    for (UINT i = 0; i < num_parameters; ++i) {
-        const D3D12_ROOT_PARAMETER1& root_parameter = root_signature_desc.pParameters[i];
-        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE) {
-            m_bytes_used += 4u;
-
-            UINT num_descriptor_ranges = root_parameter.DescriptorTable.NumDescriptorRanges;
-            RootDescriptorTableParameter desc_table_param;
-
-            for (UINT j = 0; j < num_descriptor_ranges; ++j) {
-                switch (root_parameter.DescriptorTable.pDescriptorRanges[j].RangeType) {
-                    case D3D12_DESCRIPTOR_RANGE_TYPE_CBV:
-                        desc_table_param.AddDescriptorRange(CBDescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
-                    case D3D12_DESCRIPTOR_RANGE_TYPE_SRV:
-                        desc_table_param.AddDescriptorRange(SRDescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
-                    case D3D12_DESCRIPTOR_RANGE_TYPE_UAV:
-                        desc_table_param.AddDescriptorRange(UADescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
-                        m_descriptor_table_bit_mask |= (1 << i);
-                        break;
-                    case D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER:
-                        desc_table_param.AddDescriptorRange(SamplerDescriptorTableRange(root_parameter.DescriptorTable.pDescriptorRanges[j]));
-                        m_sampler_table_bit_mask |= (1 << i);
-                        break;
-                }
-                m_num_descriptors_per_table[i] += root_parameter.DescriptorTable.pDescriptorRanges[j].NumDescriptors;
-            }
-        }
-        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_CBV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_SRV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_UAV) {
-            m_bytes_used += 8u;
-        }
-        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS) {
-            m_bytes_used += 4u * root_parameter.Constants.Num32BitValues;
-        }
-    }
-
-    m_root_signature_desc.NumParameters = num_parameters;
-    m_root_signature_desc.pParameters = pParameters;
-
-    UINT num_static_samplers = root_signature_desc.NumStaticSamplers;
-    D3D12_STATIC_SAMPLER_DESC* pStatic_samplers = num_static_samplers > 0 ? new D3D12_STATIC_SAMPLER_DESC[num_static_samplers] : nullptr;
-
-    if (pStatic_samplers) {
-        memcpy(pStatic_samplers, root_signature_desc.pStaticSamplers, sizeof(D3D12_STATIC_SAMPLER_DESC) * num_static_samplers);
-    }
-
-    m_root_signature_desc.NumStaticSamplers = num_static_samplers;
-    m_root_signature_desc.pStaticSamplers = pStatic_samplers;
-
-    D3D12_ROOT_SIGNATURE_FLAGS flags = root_signature_desc.Flags;
-    m_root_signature_desc.Flags = flags;
-
-    CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC version_root_signature_desc;
-    version_root_signature_desc.Init_1_1(num_parameters, pParameters, num_static_samplers, pStatic_samplers, flags);
-
-    D3D_ROOT_SIGNATURE_VERSION highest_version = m_device.GetHighestRootSignatureVersion();
+void RootSignature::CompileRootSignature() {
+    //D3D_ROOT_SIGNATURE_VERSION highest_version = m_device.GetHighestRootSignatureVersion();
+    D3D_ROOT_SIGNATURE_VERSION highest_version = D3D_ROOT_SIGNATURE_VERSION_1_1;
 
     Microsoft::WRL::ComPtr<ID3DBlob> root_signature_blob;
     Microsoft::WRL::ComPtr<ID3DBlob> error_blob;
-    HRESULT hr = D3DX12SerializeVersionedRootSignature(&version_root_signature_desc, highest_version, &root_signature_blob, &error_blob);
+    HRESULT hr = D3DX12SerializeVersionedRootSignature(&m_root_signature_desc, highest_version, &root_signature_blob, &error_blob);
     ThrowIfFailed(hr);
 
-    auto d3d12_device = m_device.GetD3D12Device();
+    Microsoft::WRL::ComPtr<ID3D12Device2> d3d12_device = m_device.GetD3D12Device();
     hr = d3d12_device->CreateRootSignature(0, root_signature_blob->GetBufferPointer(), root_signature_blob->GetBufferSize(), IID_PPV_ARGS(m_root_signature.ReleaseAndGetAddressOf()));
     ThrowIfFailed(hr);
 
     m_compiled = true;
+}
+
+void RootSignature::SetRootSignatureDesc(const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc) {
+    Destroy();
+
+    UINT num_parameters = root_signature_desc.Desc_1_1.NumParameters;
+    for (UINT i = 0; i < num_parameters; ++i) {
+        const D3D12_ROOT_PARAMETER1& root_parameter = root_signature_desc.Desc_1_1.pParameters[i];
+        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE) {
+            m_bytes_used += 4u;
+
+            UINT num_descriptor_ranges = root_parameter.DescriptorTable.NumDescriptorRanges;
+            if (num_descriptor_ranges > 0) {
+                switch (root_parameter.DescriptorTable.pDescriptorRanges[0].RangeType) {
+                    case D3D12_DESCRIPTOR_RANGE_TYPE_CBV:
+                    case D3D12_DESCRIPTOR_RANGE_TYPE_SRV:
+                    case D3D12_DESCRIPTOR_RANGE_TYPE_UAV:
+                        m_descriptor_table_bit_mask |= (1 << i);
+                        break;
+                    case D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER:
+                        m_sampler_table_bit_mask |= (1 << i);
+                        break;
+                }
+            }
+            m_descriptor_table_parameters.push_back({ root_parameter.DescriptorTable });
+        }
+        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_CBV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_SRV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_UAV) {
+            m_descriptor_parameters.push_back({ root_parameter.ParameterType, root_parameter.Descriptor });
+            m_bytes_used += 8u;
+        }
+        if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS) {
+            m_bytes_used += 4u * root_parameter.Constants.Num32BitValues;
+            m_constant_parameters.push_back({ root_parameter.Constants });
+        }
+    }
+
+    m_root_signature_desc = CombineRootSignatureDesc(root_signature_desc.Desc_1_1.Flags);
+
+    CompileRootSignature();
 }
 
 uint32_t RootSignature::GetDescriptorTableBitMask(D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heap_type) const {
@@ -220,6 +198,6 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature::GetD3D12RootSignature
     return m_root_signature;
 }
 
-const D3D12_ROOT_SIGNATURE_DESC1& RootSignature::GetRootSignatureDesc() const {
+const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& RootSignature::GetRootSignatureDesc() const {
     return m_root_signature_desc;
 }

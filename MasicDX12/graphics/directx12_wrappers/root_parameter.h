@@ -30,6 +30,7 @@ class RootDescriptorTableParameter : public RootParameter {
 public:
     RootDescriptorTableParameter();
     RootDescriptorTableParameter(D3D12_SHADER_VISIBILITY visibility);
+    RootDescriptorTableParameter(D3D12_ROOT_DESCRIPTOR_TABLE1 root_table);
     RootDescriptorTableParameter(const RootDescriptorTableParameter& that);
     RootDescriptorTableParameter(RootDescriptorTableParameter&& that);
     ~RootDescriptorTableParameter() = default;
@@ -46,28 +47,34 @@ private:
 class RootConstantsParameter : public RootParameter {
 public:
     RootConstantsParameter(uint16_t numberOf32BitValues, uint16_t shaderRegister, uint16_t registerSpace);
+    RootConstantsParameter(D3D12_ROOT_CONSTANTS root_const);
     ~RootConstantsParameter() = default;
 };
 
 class RootDescriptorParameter : public RootParameter {
 public:
     RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, SignatureRegisters register_type);
+    RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, SignatureRegisters register_type, D3D12_ROOT_DESCRIPTOR_FLAGS flags);
+    RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, D3D12_ROOT_DESCRIPTOR1 root_desc);
 };
 
 class RootConstantBufferParameter : public RootDescriptorParameter {
 public:
     RootConstantBufferParameter(uint16_t shaderRegister, uint16_t registerSpace);
+    RootConstantBufferParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags);
     ~RootConstantBufferParameter() = default;
 };
 
 class RootShaderResourceParameter : public RootDescriptorParameter {
 public:
     RootShaderResourceParameter(uint16_t shaderRegister, uint16_t registerSpace);
+    RootShaderResourceParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags);
     ~RootShaderResourceParameter() = default;
 };
 
 class RootUnorderedAccessParameter : public RootDescriptorParameter {
 public:
     RootUnorderedAccessParameter(uint16_t shaderRegister, uint16_t registerSpace);
+    RootUnorderedAccessParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags);
     ~RootUnorderedAccessParameter() = default;
 };
