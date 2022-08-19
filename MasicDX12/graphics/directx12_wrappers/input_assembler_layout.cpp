@@ -1,5 +1,24 @@
 #include "input_assembler_layout.h"
 
+InputAssemblerLayout::InputAssemblerLayout(const D3D12_INPUT_LAYOUT_DESC& desc) {
+    SetInputAssemblerLayout(desc);
+}
+
+void InputAssemblerLayout::SetInputAssemblerLayout(const D3D12_INPUT_LAYOUT_DESC& desc) {
+    m_input_elements.clear();
+    m_element_semantic_names.clear();
+
+    size_t sz = desc.NumElements;
+    for (int i = 0; i < sz; ++i) {
+        D3D12_INPUT_ELEMENT_DESC element = desc.pInputElementDescs[i];
+        m_input_elements.push_back(element);
+        m_element_semantic_names.push_back(element.SemanticName);
+    }
+
+    m_desc.NumElements = (UINT)m_input_elements.size();
+    m_desc.pInputElementDescs = m_input_elements.data();
+}
+
 void InputAssemblerLayout::AddPerVertexLayoutElement(const std::string& semantic_name, uint32_t semantic_index, DXGI_FORMAT format, uint32_t input_slot, uint32_t alighned_byte_offset) {
     D3D12_INPUT_ELEMENT_DESC desc{};
     desc.Format = format;
@@ -12,7 +31,7 @@ void InputAssemblerLayout::AddPerVertexLayoutElement(const std::string& semantic
     m_element_semantic_names.push_back(semantic_name);
 
     m_desc.NumElements = (UINT)m_input_elements.size();
-    m_desc.pInputElementDescs = &m_input_elements[0];
+    m_desc.pInputElementDescs = m_input_elements.data();
 
     SetSemanticNames();
 }
@@ -30,7 +49,7 @@ void InputAssemblerLayout::AddPerInstanceLayoutElement(const std::string& semant
     m_element_semantic_names.push_back(semantic_name);
 
     m_desc.NumElements = (UINT)m_input_elements.size();
-    m_desc.pInputElementDescs = &m_input_elements[0];
+    m_desc.pInputElementDescs = m_input_elements.data();
 
     SetSemanticNames();
 }

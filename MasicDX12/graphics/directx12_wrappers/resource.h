@@ -10,6 +10,10 @@ class Device;
 
 class Resource {
 public:
+	Resource(Device& device, const D3D12_RESOURCE_DESC& resource_desc, const D3D12_CLEAR_VALUE* clear_value = nullptr);
+	Resource(Device& device, Microsoft::WRL::ComPtr<ID3D12Resource> resource, const D3D12_CLEAR_VALUE* clear_value = nullptr);
+	virtual ~Resource() = default;
+
 	Device& GetDevice() const;
 	Microsoft::WRL::ComPtr<ID3D12Resource> GetD3D12Resource() const;
 	D3D12_RESOURCE_DESC GetD3D12ResourceDesc() const;
@@ -21,11 +25,6 @@ public:
 	bool CheckFormatSupport(D3D12_FORMAT_SUPPORT2 format_support) const;
 
 protected:
-	Resource(Device& device, const D3D12_RESOURCE_DESC& resource_desc, const D3D12_CLEAR_VALUE* clear_value = nullptr);
-	Resource(Device& device, Microsoft::WRL::ComPtr<ID3D12Resource> resource, const D3D12_CLEAR_VALUE* clear_value = nullptr);
-
-	virtual ~Resource() = default;
-
 	Device& m_device;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_d3d12_resource;

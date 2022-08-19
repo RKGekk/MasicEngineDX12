@@ -3,12 +3,22 @@
 #include "device.h"
 #include "../tools/com_exception.h"
 
-PipelineStateObject::PipelineStateObject(Device& device, const D3D12_PIPELINE_STATE_STREAM_DESC& desc) : m_device(device) {
-    auto d3d12_device = device.GetD3D12Device();
-    HRESULT hr = d3d12_device->CreatePipelineState(&desc, IID_PPV_ARGS(m_d3d12_pipeline_state.GetAddressOf()));
-    ThrowIfFailed(hr);
+PipelineStateObject::PipelineStateObject(Device& device, const std::string& name) : m_device(device), m_name(name), m_compiled(false) {}
+
+PipelineStateObject::PipelineStateObject(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature) : m_device(device), m_root_signature(root_signature), m_name(name), m_compiled(false) {}
+
+Microsoft::WRL::ComPtr<ID3D12PipelineState> PipelineStateObject::GetD3D12PipelineState() {
+    return m_d3d12_pipeline_state;
 }
 
-Microsoft::WRL::ComPtr<ID3D12PipelineState> PipelineStateObject::GetD3D12PipelineState() const {
-    return m_d3d12_pipeline_state;
+std::shared_ptr<RootSignature> PipelineStateObject::GetRootSignature() {
+    return m_root_signature;
+}
+
+void PipelineStateObject::SetRootSignature(std::shared_ptr<RootSignature> root_signature) {
+    m_root_signature = root_signature;
+}
+
+const std::string& PipelineStateObject::GetName() const {
+    return m_name;
 }

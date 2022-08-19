@@ -8,6 +8,10 @@
 
 class InputAssemblerLayout {
 public:
+    InputAssemblerLayout() = default;
+    InputAssemblerLayout(const D3D12_INPUT_LAYOUT_DESC& desc);
+
+    void SetInputAssemblerLayout(const D3D12_INPUT_LAYOUT_DESC& desc);
     void AddPerVertexLayoutElement(const std::string& semantic_name, uint32_t semantic_index, DXGI_FORMAT format, uint32_t input_slot, uint32_t alighned_byte_offset);
     void AddPerInstanceLayoutElement(const std::string& semantic_name, uint32_t semantic_index, DXGI_FORMAT format, uint32_t input_slot, uint32_t alighned_byte_offset, uint32_t step_rate);
 

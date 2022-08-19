@@ -7,13 +7,13 @@
 #include <memory>
 #include <utility>
 
-RootSignature::RootSignature(Device& device) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {}
+RootSignature::RootSignature(Device& device, std::string name) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false), m_name(name) {}
 
-RootSignature::RootSignature(Device& device, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {
+RootSignature::RootSignature(Device& device, std::string name, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false), m_name(name) {
     SetRootSignatureDesc(root_signature_desc);
 }
 
-RootSignature::RootSignature(const RootSignature& other) : m_device(other.m_device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(m_compiled) {
+RootSignature::RootSignature(const RootSignature& other) : m_device(other.m_device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false) {
     SetRootSignatureDesc(other.m_root_signature_desc);
 }
 
@@ -134,12 +134,20 @@ uint32_t RootSignature::GetBytesUsed() const {
     return m_bytes_used;
 }
 
+const std::string& RootSignature::GetName() const {
+    m_name;
+}
+
 bool RootSignature::ConatinParameterIndex(const SignatureRegisters& location) const {
     return m_parameter_indices_map.count(location);
 }
 
 RootSignature::ParameterIndex RootSignature::GetParameterIndex(const SignatureRegisters& location) const {
     return m_parameter_indices_map.find(location)->second;
+}
+
+uint16_t RootSignature::ParameterCount() const {
+    return m_descriptor_table_parameters.size() + m_descriptor_parameters.size() + m_constant_parameters.size();
 }
 
 void RootSignature::AddDescriptorTableParameter(const RootDescriptorTableParameter& table) {
@@ -189,15 +197,27 @@ void RootSignature::AddStaticSampler(const RootSaticSampler& sampler) {
     const SignatureRegisters& location = sampler.GetSignatureLocation();
     assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
     m_parameter_indices_map[location] = index;
-    
+
     m_root_static_samplers.push_back(sampler);
     m_static_samplers.push_back(sampler.GetStaticSampler());
 }
 
-Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature::GetD3D12RootSignature() const {
+void RootSignature::SetRootSignatureDescFlags(D3D12_ROOT_SIGNATURE_FLAGS flags) {
+    m_root_signature_desc.Desc_1_1.Flags = flags;
+}
+
+Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature::GetD3D12RootSignature() {
+    if(!m_compiled) {
+        m_root_signature_desc = CombineRootSignatureDesc(m_root_signature_desc.Desc_1_1.Flags);
+        CompileRootSignature();
+    }
     return m_root_signature;
 }
 
-const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& RootSignature::GetRootSignatureDesc() const {
+const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& RootSignature::GetRootSignatureDesc() {
+    if (!m_compiled) {
+        m_root_signature_desc = CombineRootSignatureDesc(m_root_signature_desc.Desc_1_1.Flags);
+        CompileRootSignature();
+    }
     return m_root_signature_desc;
 }
