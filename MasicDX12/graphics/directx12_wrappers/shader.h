@@ -14,6 +14,9 @@
 #include "input_assembler_layout.h"
 #include "render_target.h"
 #include "primitive_topology.h"
+#include "blend_state.h"
+#include "rasterizer_state.h"
+#include "depth_stencil_state.h"
 
 class Shader {
 public:
@@ -35,6 +38,7 @@ public:
 	const ShaderRegistersSet GetRegisters() const;
 	void AddRegister(SignatureRegisters register_location);
 	void RemoveRegister(SignatureRegisters register_location);
+	bool IsRegisterFree(SignatureRegisters register_location);
 	
 protected:
 	std::string m_name;
@@ -67,8 +71,10 @@ public:
 	const D3D12_INPUT_LAYOUT_DESC& GetInputAssemblerLayoutDesc() const;
 
 	void SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY topology);
-	D3D12_PRIMITIVE_TOPOLOGY GetPrimitiveTopology();
-	D3D12_PRIMITIVE_TOPOLOGY_TYPE GetPrimitiveTopologyType();
+	void SetPrimitiveTopology(PrimitiveTopology topology);
+	D3D12_PRIMITIVE_TOPOLOGY GetPrimitiveTopology() const;
+	D3D12_PRIMITIVE_TOPOLOGY_TYPE GetPrimitiveTopologyType() const;
+	const PrimitiveTopology& GetPrimitiveTopologyClass() const;
 
 private:
 	InputAssemblerLayout m_input_layout;
@@ -77,11 +83,29 @@ private:
 
 class PixelShader : public Shader {
 public:
+	using RenderTargetFormatMap = std::unordered_map<AttachmentPoint, DXGI_FORMAT>;
+
 	PixelShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name);
 	PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name);
 
-	
+	DXGI_FORMAT GetRenderTargetFormat(AttachmentPoint render_target) const;
+	const RenderTargetFormatMap& GetRenderTargetFormats() const;
+	void SetRenderTargetFormat(AttachmentPoint render_target, DXGI_FORMAT format);
+	void EraseRenderTargetFormat(AttachmentPoint render_target);
+	bool IsRenderTargetFormatSet(AttachmentPoint render_target) const;
+
+	void SetBlendState(const BlendState& state);
+	const BlendState& GetBlendState() const;
+
+	void SetRasterizerState(const RasterizerState& state);
+	const RasterizerState& GetRasterizerState() const;
+
+	void SetDepthStencilState(const DepthStencilState& state);
+	const DepthStencilState& GetDepthStencilState() const;
 
 private:
-	std::unordered_map<AttachmentPoint, DXGI_FORMAT> m_render_target_formats_map;
+	RenderTargetFormatMap m_render_target_formats_map;
+	BlendState m_blend_state;
+	RasterizerState m_rasterizer_state;
+	DepthStencilState m_depth_stencil_state;
 };

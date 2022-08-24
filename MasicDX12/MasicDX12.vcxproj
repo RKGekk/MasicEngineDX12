@@ -177,8 +177,11 @@
     <ClCompile Include="events\resize_event_args.cpp" />
     <ClCompile Include="events\evt_data_mouse_button_released.cpp" />
     <ClCompile Include="events\mouse_wheel_event_args.cpp" />
+    <ClCompile Include="graphics\directx12_wrappers\blend_state.cpp" />
+    <ClCompile Include="graphics\directx12_wrappers\depth_stencil_state.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\descripror_table_range.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\input_assembler_layout.cpp" />
+    <ClCompile Include="graphics\directx12_wrappers\rasterizer_state.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\root_parameter.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\shader.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\shader_register.cpp" />
@@ -342,6 +345,7 @@
     <ClInclude Include="events\evt_data_mouse_button_released.h" />
     <ClInclude Include="graphics\directional_light.h" />
     <ClInclude Include="graphics\directx12_wrappers\adapter_reader.h" />
+    <ClInclude Include="graphics\directx12_wrappers\blend_state.h" />
     <ClInclude Include="graphics\directx12_wrappers\buffer.h" />
     <ClInclude Include="graphics\directx12_wrappers\byte_address_buffer.h" />
     <ClInclude Include="graphics\directx12_wrappers\command_list.h" />
@@ -351,6 +355,7 @@
     <ClInclude Include="graphics\directx12_wrappers\constant_buffer_view.h" />
     <ClInclude Include="graphics\d3d12_renderer.h" />
     <ClInclude Include="engine\engine.h" />
+    <ClInclude Include="graphics\directx12_wrappers\depth_stencil_state.h" />
     <ClInclude Include="graphics\directx12_wrappers\descripror_table_range.h" />
     <ClInclude Include="graphics\directx12_wrappers\descriptor_allocation.h" />
     <ClInclude Include="graphics\directx12_wrappers\descriptor_allocator.h" />
@@ -358,6 +363,7 @@
     <ClInclude Include="graphics\directx12_wrappers\device.h" />
     <ClInclude Include="graphics\directx12_wrappers\dynamic_descriptor_heap.h" />
     <ClInclude Include="graphics\directx12_wrappers\input_assembler_layout.h" />
+    <ClInclude Include="graphics\directx12_wrappers\rasterizer_state.h" />
     <ClInclude Include="graphics\directx12_wrappers\root_parameter.h" />
     <ClInclude Include="graphics\directx12_wrappers\shader.h" />
     <ClInclude Include="graphics\directx12_wrappers\shader_register.h" />

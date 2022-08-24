@@ -528,6 +528,15 @@
     <ClCompile Include="graphics\directx12_wrappers\primitive_topology.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\blend_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\rasterizer_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\directx12_wrappers\depth_stencil_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1113,6 +1122,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\directx12_wrappers\primitive_topology.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\blend_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\rasterizer_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\directx12_wrappers\depth_stencil_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

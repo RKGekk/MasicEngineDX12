@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+PrimitiveTopology::PrimitiveTopology() : m_topology(PrimitiveTopologyEnum::TriangleList) {}
+
 PrimitiveTopology::PrimitiveTopology(PrimitiveTopologyEnum topology) : m_topology(topology) {}
 
 PrimitiveTopology::PrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY topology) {
@@ -76,7 +78,7 @@ void PrimitiveTopology::SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE topol
     }
 }
 
-D3D12_PRIMITIVE_TOPOLOGY_TYPE PrimitiveTopology::GetPrimitiveTopologyType() {
+D3D12_PRIMITIVE_TOPOLOGY_TYPE PrimitiveTopology::GetPrimitiveTopologyType() const {
     switch (m_topology) {
         case PrimitiveTopologyEnum::LineList: return D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
         case PrimitiveTopologyEnum::PointList: return D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
@@ -86,7 +88,7 @@ D3D12_PRIMITIVE_TOPOLOGY_TYPE PrimitiveTopology::GetPrimitiveTopologyType() {
     }
 }
 
-D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology::GetPrimitiveTopology() {
+D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology::GetPrimitiveTopology() const {
     switch (m_topology) {
         case PrimitiveTopologyEnum::LineList: return D3D_PRIMITIVE_TOPOLOGY_LINELIST;
         case PrimitiveTopologyEnum::PointList: return D3D_PRIMITIVE_TOPOLOGY_POINTLIST;

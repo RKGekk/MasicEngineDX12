@@ -57,6 +57,10 @@ void Shader::RemoveRegister(SignatureRegisters register_location) {
 	m_registers.erase(register_location);
 }
 
+bool Shader::IsRegisterFree(SignatureRegisters register_location) {
+	return !m_registers.count(register_location);
+}
+
 VertexShader::VertexShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name) : Shader(blob, entry_point, Shader::Stage::Vertex, name) {}
 
 VertexShader::VertexShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name) : Shader(executable_folder, entry_point, Shader::Stage::Vertex, name) {}
@@ -81,10 +85,48 @@ void VertexShader::SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY topology) {
 	m_primitive_topology.SetPrimitiveTopology(topology);
 }
 
-D3D12_PRIMITIVE_TOPOLOGY VertexShader::GetPrimitiveTopology() {
+void VertexShader::SetPrimitiveTopology(PrimitiveTopology topology) {
+	m_primitive_topology = topology;
+}
+
+D3D12_PRIMITIVE_TOPOLOGY VertexShader::GetPrimitiveTopology() const {
 	return m_primitive_topology.GetPrimitiveTopology();
 }
 
-D3D12_PRIMITIVE_TOPOLOGY_TYPE VertexShader::GetPrimitiveTopologyType() {
+D3D12_PRIMITIVE_TOPOLOGY_TYPE VertexShader::GetPrimitiveTopologyType() const {
 	return m_primitive_topology.GetPrimitiveTopologyType();
+}
+
+PixelShader::PixelShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name) : Shader(blob, entry_point, Shader::Stage::Pixel, name) {};
+
+PixelShader::PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name) : Shader(executable_folder, entry_point, Shader::Stage::Pixel, name) {}
+
+const PixelShader::RenderTargetFormatMap& PixelShader::GetRenderTargetFormats() const {
+	return m_render_target_formats_map;
+}
+
+DXGI_FORMAT PixelShader::GetRenderTargetFormat(AttachmentPoint render_target) const {
+	return m_render_target_formats_map.at(render_target);
+}
+
+bool PixelShader::IsRenderTargetFormatSet(AttachmentPoint render_target) const {
+	m_render_target_formats_map.count(render_target);
+}
+
+void PixelShader::EraseRenderTargetFormat(AttachmentPoint render_target) {
+	if (m_render_target_formats_map.count(render_target)) {
+		m_render_target_formats_map.erase(render_target);
+	}
+}
+
+void PixelShader::SetRenderTargetFormat(AttachmentPoint render_target, DXGI_FORMAT format) {
+	m_render_target_formats_map[render_target] = format;
+}
+
+void PixelShader::SetBlendState(const BlendState& state) {
+	m_blend_state = state;
+}
+
+const BlendState& PixelShader::GetBlendState() const {
+	return m_blend_state;
 }

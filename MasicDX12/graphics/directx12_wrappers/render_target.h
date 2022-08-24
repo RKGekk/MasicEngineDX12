@@ -9,7 +9,7 @@
 
 class Texture;
 
-enum AttachmentPoint {
+enum class AttachmentPoint {
 	Color0,
 	Color1,
 	Color2,
