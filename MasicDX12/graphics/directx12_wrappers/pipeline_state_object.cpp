@@ -8,6 +8,7 @@ PipelineStateObject::PipelineStateObject(Device& device, const std::string& name
 PipelineStateObject::PipelineStateObject(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature) : m_device(device), m_root_signature(root_signature), m_name(name), m_compiled(false) {}
 
 Microsoft::WRL::ComPtr<ID3D12PipelineState> PipelineStateObject::GetD3D12PipelineState() {
+    if (!m_compiled) Compile();
     return m_d3d12_pipeline_state;
 }
 

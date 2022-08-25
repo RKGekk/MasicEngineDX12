@@ -97,6 +97,10 @@ D3D12_PRIMITIVE_TOPOLOGY_TYPE VertexShader::GetPrimitiveTopologyType() const {
 	return m_primitive_topology.GetPrimitiveTopologyType();
 }
 
+const PrimitiveTopology& VertexShader::GetPrimitiveTopologyClass() const {
+	return m_primitive_topology;
+}
+
 PixelShader::PixelShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name) : Shader(blob, entry_point, Shader::Stage::Pixel, name) {};
 
 PixelShader::PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name) : Shader(executable_folder, entry_point, Shader::Stage::Pixel, name) {}
@@ -129,4 +133,20 @@ void PixelShader::SetBlendState(const BlendState& state) {
 
 const BlendState& PixelShader::GetBlendState() const {
 	return m_blend_state;
+}
+
+void PixelShader::SetRasterizerState(const RasterizerState& state) {
+	m_rasterizer_state = state;
+}
+
+const RasterizerState& PixelShader::GetRasterizerState() const {
+	return m_rasterizer_state;
+}
+
+void PixelShader::SetDepthStencilState(const DepthStencilState& state) {
+	m_depth_stencil_state = state;
+}
+
+const DepthStencilState& PixelShader::GetDepthStencilState() const {
+	return m_depth_stencil_state;
 }
