@@ -110,9 +110,7 @@ std::shared_ptr<Shader> GraphicsPipelineState::GetGeometryShader() {
 }
 
 void GraphicsPipelineState::Compile() {
-
     D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
-
     desc.pRootSignature = m_root_signature->GetD3D12RootSignature().Get();
     if (m_vertex_shader) {
         desc.VS = m_vertex_shader->GetBytecode();
@@ -142,6 +140,68 @@ void GraphicsPipelineState::Compile() {
     desc.NodeMask = m_device.NodeMask();
 
     HRESULT hr = m_device.GetD3D12Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_d3d12_pipeline_state.ReleaseAndGetAddressOf()));
+    ThrowIfFailed(hr);
+
+    m_d3d12_pipeline_state->SetName(to_wstring(m_name).c_str());
+
+    m_compiled = true;
+}
+
+void ComputePipelineState::AddOrReplaceShader(std::shared_ptr<Shader> shader) {
+    Shader::Stage stage = shader->GetPipelineStage();
+    switch (stage) {
+        case Shader::Stage::Vertex: assert(false); break;
+        case Shader::Stage::Hull: assert(false); break;
+        case Shader::Stage::Domain: assert(false); break;
+        case Shader::Stage::Geometry: assert(false); break;
+        case Shader::Stage::Pixel: assert(false); break;
+        case Shader::Stage::Compute: m_compute_shader = shader; break;
+        default: assert(false); break;
+    }
+}
+
+std::shared_ptr<Shader> ComputePipelineState::GetShader(Shader::Stage stage) {
+    switch (stage) {
+        case Shader::Stage::Vertex: assert(false); break;
+        case Shader::Stage::Hull: assert(false); break;
+        case Shader::Stage::Domain: assert(false); break;
+        case Shader::Stage::Geometry: assert(false); break;
+        case Shader::Stage::Pixel: assert(false); break;
+        case Shader::Stage::Compute: return m_compute_shader; break;
+        default: assert(false); break;
+    }
+    return std::shared_ptr<Shader>();
+}
+
+bool ComputePipelineState::HaveShader(Shader::Stage stage) {
+    bool result = false;
+    switch (stage) {
+        case Shader::Stage::Vertex: assert(false); break;
+        case Shader::Stage::Hull: assert(false); break;
+        case Shader::Stage::Domain: assert(false); break;
+        case Shader::Stage::Geometry: assert(false); break;
+        case Shader::Stage::Pixel: assert(false); break;
+        case Shader::Stage::Compute: result = m_compute_shader == nullptr ? false : true; break;
+        default: assert(false); break;
+    }
+    return result;
+}
+
+void ComputePipelineState::SetComputeShader(std::shared_ptr<Shader> compute_shader) {
+    m_compute_shader = compute_shader;
+}
+
+std::shared_ptr<Shader> ComputePipelineState::GetComputeShader() {
+    return m_compute_shader;
+}
+
+void ComputePipelineState::Compile() {
+    D3D12_COMPUTE_PIPELINE_STATE_DESC desc{};
+    desc.pRootSignature = m_root_signature->GetD3D12RootSignature().Get();;
+    desc.CS = m_compute_shader->GetBytecode();
+    desc.NodeMask = m_device.NodeMask();
+
+    HRESULT hr = m_device.GetD3D12Device()->CreateComputePipelineState(&desc, IID_PPV_ARGS(m_d3d12_pipeline_state.ReleaseAndGetAddressOf()));
     ThrowIfFailed(hr);
 
     m_d3d12_pipeline_state->SetName(to_wstring(m_name).c_str());

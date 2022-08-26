@@ -78,8 +78,9 @@ class ComputePipelineState : public PipelineStateObject {
 
 	virtual void AddOrReplaceShader(std::shared_ptr<Shader> shader) override;
 	virtual std::shared_ptr<Shader> GetShader(Shader::Stage stage) override;
+	virtual bool HaveShader(Shader::Stage stage) override;
 
-	void SetComputeShader(std::shared_ptr<Shader> vertex_shader);
+	void SetComputeShader(std::shared_ptr<Shader> compute_shader);
 	std::shared_ptr<Shader> GetComputeShader();
 
 protected:
