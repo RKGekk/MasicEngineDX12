@@ -23,6 +23,7 @@ public:
 
 	virtual void AddOrReplaceShader(std::shared_ptr<Shader> shader) = 0;
 	virtual std::shared_ptr<Shader> GetShader(Shader::Stage stage) = 0;
+	virtual bool HaveShader(Shader::Stage stage) = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> GetD3D12PipelineState();
 	std::shared_ptr<RootSignature> GetRootSignature();
@@ -32,18 +33,20 @@ public:
 protected:
 	virtual void Compile() = 0;
 
-private:
-	Device& m_device;
+	bool m_compiled;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_d3d12_pipeline_state;
+
+	Device& m_device;
+	
 	std::shared_ptr<RootSignature> m_root_signature;
 	std::string m_name;
-	bool m_compiled;
 };
 
 class GraphicsPipelineState : public PipelineStateObject {
 
 	virtual void AddOrReplaceShader(std::shared_ptr<Shader> shader) override;
 	virtual std::shared_ptr<Shader> GetShader(Shader::Stage stage) override;
+	virtual bool HaveShader(Shader::Stage stage) override;
 
 	void SetVertexShader(std::shared_ptr<VertexShader> vertex_shader);
 	std::shared_ptr<VertexShader> GetVertexShader();

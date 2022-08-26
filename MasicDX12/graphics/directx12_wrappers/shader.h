@@ -89,6 +89,7 @@ public:
 	PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name);
 
 	DXGI_FORMAT GetRenderTargetFormat(AttachmentPoint render_target) const;
+	UINT GetRenderTargetCount() const;
 	const RenderTargetFormatMap& GetRenderTargetFormats() const;
 	void SetRenderTargetFormat(AttachmentPoint render_target, DXGI_FORMAT format);
 	void EraseRenderTargetFormat(AttachmentPoint render_target);

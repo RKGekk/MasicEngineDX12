@@ -75,6 +75,11 @@ public:
 
 	DXGI_SAMPLE_DESC GetMultisampleQualityLevels(DXGI_FORMAT format, UINT num_samples = D3D12_MAX_MULTISAMPLE_SAMPLE_COUNT, D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE) const;
 
+	bool SupportsUniversalHeaps() const;
+	uint64_t MinimumHeapSize() const;
+	uint64_t MandatoryHeapAlignment() const;
+	uint64_t NodeMask() const;
+
 protected:
 	explicit Device(std::shared_ptr<AdapterData> adapter);
 	virtual ~Device();
@@ -93,4 +98,9 @@ private:
 	std::unique_ptr<DescriptorAllocator> m_descriptor_allocators[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES];
 
 	D3D_ROOT_SIGNATURE_VERSION m_highest_root_signature_version;
+
+	bool m_supports_universal_heaps = false;
+	uint64_t m_minimum_heap_size = 1u;
+	uint64_t m_heap_alignment = 1u;
+	uint64_t m_node_mask = 0u;
 };

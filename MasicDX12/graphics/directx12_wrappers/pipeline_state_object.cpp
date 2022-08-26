@@ -2,6 +2,9 @@
 
 #include "device.h"
 #include "../tools/com_exception.h"
+#include "../tools/string_utility.h"
+
+#include <cassert>
 
 PipelineStateObject::PipelineStateObject(Device& device, const std::string& name) : m_device(device), m_name(name), m_compiled(false) {}
 
@@ -22,4 +25,126 @@ void PipelineStateObject::SetRootSignature(std::shared_ptr<RootSignature> root_s
 
 const std::string& PipelineStateObject::GetName() const {
     return m_name;
+}
+
+void GraphicsPipelineState::AddOrReplaceShader(std::shared_ptr<Shader> shader) {
+    Shader::Stage stage = shader->GetPipelineStage();
+    switch (stage) {
+        case Shader::Stage::Vertex: m_vertex_shader = std::static_pointer_cast<VertexShader>(shader); break;
+        case Shader::Stage::Hull: m_hull_shader = shader; break;
+        case Shader::Stage::Domain: m_domain_shader = shader; break;
+        case Shader::Stage::Geometry: m_geometry_shader = shader; break;
+        case Shader::Stage::Pixel: m_pixel_shader = std::static_pointer_cast<PixelShader>(shader); break;
+        // Graphics pipeline cannot contain compute shader
+        case Shader::Stage::Compute: assert(false); break;
+        default: assert(false); break;
+    }
+}
+
+std::shared_ptr<Shader> GraphicsPipelineState::GetShader(Shader::Stage stage) {
+    switch (stage) {
+        case Shader::Stage::Vertex: return m_vertex_shader; break;
+        case Shader::Stage::Hull: return m_hull_shader; break;
+        case Shader::Stage::Domain: return m_domain_shader; break;
+        case Shader::Stage::Geometry: return m_geometry_shader; break;
+        case Shader::Stage::Pixel: return m_pixel_shader; break;
+        // Graphics pipeline cannot contain compute shader
+        case Shader::Stage::Compute: assert(false); break;
+        default: assert(false); break;
+    }
+    return std::shared_ptr<Shader>();
+}
+
+bool GraphicsPipelineState::HaveShader(Shader::Stage stage) {
+    bool result = false;
+    switch (stage) {
+        case Shader::Stage::Vertex: result = m_vertex_shader == nullptr ? false : true; break;
+        case Shader::Stage::Hull: result = m_hull_shader == nullptr ? false : true; break;
+        case Shader::Stage::Domain: result = m_domain_shader == nullptr ? false : true; break;
+        case Shader::Stage::Geometry: result = m_geometry_shader == nullptr ? false : true; break;
+        case Shader::Stage::Pixel: result = m_pixel_shader == nullptr ? false : true; break;
+        case Shader::Stage::Compute: assert(false); break;
+        default: assert(false); break;
+    }
+    return result;
+}
+
+void GraphicsPipelineState::SetVertexShader(std::shared_ptr<VertexShader> vertex_shader) {
+    m_vertex_shader = vertex_shader;
+}
+
+std::shared_ptr<VertexShader> GraphicsPipelineState::GetVertexShader() {
+    return m_vertex_shader;
+}
+
+void GraphicsPipelineState::SetPixelShader(std::shared_ptr<PixelShader> pixel_shader) {
+    m_pixel_shader = pixel_shader;
+}
+
+std::shared_ptr<PixelShader> GraphicsPipelineState::GetPixelShader() {
+    return m_pixel_shader;
+}
+
+void GraphicsPipelineState::SetDomainShader(std::shared_ptr<Shader> domain_shader) {
+    m_domain_shader = domain_shader;
+}
+
+std::shared_ptr<Shader> GraphicsPipelineState::GetDomainShader() {
+    return m_domain_shader;
+}
+
+void GraphicsPipelineState::SetHullShader(std::shared_ptr<Shader> hull_shader) {
+    m_hull_shader = hull_shader;
+}
+
+std::shared_ptr<Shader> GraphicsPipelineState::GetHullShader() {
+    return m_hull_shader;
+}
+
+void GraphicsPipelineState::SetGeometryShader(std::shared_ptr<Shader> geometry_shader) {
+    m_geometry_shader = geometry_shader;
+}
+
+std::shared_ptr<Shader> GraphicsPipelineState::GetGeometryShader() {
+    return m_geometry_shader;
+}
+
+void GraphicsPipelineState::Compile() {
+
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
+
+    desc.pRootSignature = m_root_signature->GetD3D12RootSignature().Get();
+    if (m_vertex_shader) {
+        desc.VS = m_vertex_shader->GetBytecode();
+        desc.InputLayout = m_vertex_shader->GetInputAssemblerLayoutDesc();
+        desc.PrimitiveTopologyType = m_vertex_shader->GetPrimitiveTopologyType();
+    }
+    if (m_pixel_shader) {
+        desc.PS = m_pixel_shader->GetBytecode();
+        desc.BlendState = m_pixel_shader->GetBlendState().GetState();
+        desc.RasterizerState = m_pixel_shader->GetRasterizerState().GetState();
+        desc.DepthStencilState = m_pixel_shader->GetDepthStencilState().GetState();
+        
+        desc.NumRenderTargets = m_pixel_shader->GetRenderTargetCount();
+        desc.DSVFormat = m_pixel_shader->GetRenderTargetFormat(AttachmentPoint::DepthStencil);
+        for (auto& kv : m_pixel_shader->GetRenderTargetFormats()) {
+            auto rt = std::underlying_type<AttachmentPoint>::type(kv.first);
+            desc.RTVFormats[rt] = kv.second;
+        }
+    }
+    if (m_domain_shader) desc.DS = m_domain_shader->GetBytecode();
+    if (m_hull_shader) desc.HS = m_hull_shader->GetBytecode();
+    if (m_geometry_shader) desc.GS = m_geometry_shader->GetBytecode();
+    
+    desc.SampleDesc.Count = 1;
+    desc.SampleDesc.Quality = 0;
+    desc.SampleMask = 0xFFFFFFFF;
+    desc.NodeMask = m_device.NodeMask();
+
+    HRESULT hr = m_device.GetD3D12Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_d3d12_pipeline_state.ReleaseAndGetAddressOf()));
+    ThrowIfFailed(hr);
+
+    m_d3d12_pipeline_state->SetName(to_wstring(m_name).c_str());
+
+    m_compiled = true;
 }

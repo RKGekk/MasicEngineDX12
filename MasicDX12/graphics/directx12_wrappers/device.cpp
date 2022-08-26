@@ -169,7 +169,7 @@ std::wstring Device::GetDescription() const {
 Device::Device(std::shared_ptr<AdapterData> adapter) : m_adapter(adapter) {
     auto dxgi_adapter = m_adapter->GetDXGIAdapter();
 
-    HRESULT hr = D3D12CreateDevice(dxgi_adapter.Get(), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(m_d3d12_device.GetAddressOf()));
+    HRESULT hr = D3D12CreateDevice(dxgi_adapter.Get(), D3D_FEATURE_LEVEL_12_2, IID_PPV_ARGS(m_d3d12_device.GetAddressOf()));
     ThrowIfFailed(hr);
 
     {
@@ -213,6 +213,18 @@ Device::Device(std::shared_ptr<AdapterData> adapter) : m_adapter(adapter) {
             feature_data.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
         }
         m_highest_root_signature_version = feature_data.HighestVersion;
+    }
+
+    m_heap_alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+    m_minimum_heap_size = m_heap_alignment;
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS featureSupport{};
+    hr = m_d3d12_device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &featureSupport, sizeof(featureSupport));
+    ThrowIfFailed(hr);
+
+    switch (featureSupport.ResourceHeapTier) {
+        case D3D12_RESOURCE_HEAP_TIER_1: m_supports_universal_heaps = false; break;
+        default: m_supports_universal_heaps = true; break;
     }
 }
 
@@ -389,4 +401,20 @@ DXGI_SAMPLE_DESC Device::GetMultisampleQualityLevels(DXGI_FORMAT format, UINT nu
     }
 
     return sample_desc;
+}
+
+bool Device::SupportsUniversalHeaps() const {
+    return m_supports_universal_heaps;
+}
+
+uint64_t Device::MinimumHeapSize() const {
+    return m_minimum_heap_size;
+}
+
+uint64_t Device::MandatoryHeapAlignment() const {
+    return m_heap_alignment;
+}
+
+uint64_t Device::NodeMask() const {
+    return m_node_mask;
 }

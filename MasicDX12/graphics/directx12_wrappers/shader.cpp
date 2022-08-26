@@ -113,6 +113,17 @@ DXGI_FORMAT PixelShader::GetRenderTargetFormat(AttachmentPoint render_target) co
 	return m_render_target_formats_map.at(render_target);
 }
 
+UINT PixelShader::GetRenderTargetCount() const {
+	UINT result = 0u;
+	if (m_render_target_formats_map.count(AttachmentPoint::DepthStencil)) {
+		result = (UINT)(m_render_target_formats_map.size() - 1u);
+	}
+	else {
+		result = (UINT)m_render_target_formats_map.size();
+	}
+	return result;
+}
+
 bool PixelShader::IsRenderTargetFormatSet(AttachmentPoint render_target) const {
 	m_render_target_formats_map.count(render_target);
 }
