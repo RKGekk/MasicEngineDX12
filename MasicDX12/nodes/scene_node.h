@@ -13,14 +13,7 @@ class SceneNode;
 using SceneNodeList = std::vector<std::shared_ptr<SceneNode>>;
 
 class SceneNode : public std::enable_shared_from_this<SceneNode> {
-	friend class Scene;
-
-protected:
-	SceneNodeList m_children;
-	std::weak_ptr<SceneNode> m_pParent;
-	std::weak_ptr<SceneNode> m_pRoot;
-	SceneNodeProperties m_props;
-
+friend class Scene;
 public:
 	SceneNode(const std::string& name);
 	SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from = nullptr);
@@ -51,4 +44,11 @@ public:
 
 	void SetScale(const DirectX::XMFLOAT3& scale);
 	void SetScale(DirectX::XMVECTOR scale);
+
+	void SetDirtyFlags(uint32_t flags);
+
+protected:
+	SceneNodeList m_children;
+	std::weak_ptr<SceneNode> m_pParent;
+	SceneNodeProperties m_props;
 };

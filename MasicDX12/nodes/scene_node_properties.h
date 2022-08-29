@@ -6,6 +6,7 @@
 
 #include "../actors/actor.h"
 #include "../graphics/material.h"
+#include "../tools/memory_utility.h"
 #include "alpha_type.h"
 
 class SceneNodeProperties {
@@ -20,10 +21,19 @@ protected:
 
 	DirectX::XMFLOAT3 m_scale;
 	DirectX::XMFLOAT3 m_scale_cumulative;
+	uint32_t m_dirty_flags;
 	
 	bool m_active;
 
 public:
+	enum class DirtyFlags {
+		DF_None = 0,
+		DF_Light = (1 << 0),
+		DF_Mesh = (1 << 1),
+		DF_Transform = (1 << 2),
+		DF_All = DF_Light | DF_Mesh | DF_Transform
+	};
+
 	SceneNodeProperties();
 
 	DirectX::XMMATRIX ToWorld() const;
@@ -70,4 +80,6 @@ public:
 
 	const char* NameCstr() const;
 	const std::string& Name() const;
+
+	uint32_t GetDirtyFlags() const;
 };

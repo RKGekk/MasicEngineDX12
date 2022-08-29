@@ -12,7 +12,6 @@
 #include "../graphics/point_light.h"
 
 class LightNode;
-typedef std::list<std::shared_ptr<LightNode>> Lights;
 
 class LightNode : public SceneNode {
 protected:

@@ -5,6 +5,7 @@
 #include "string_utility.h"
 
 #include <string>
+#include <type_traits>
 #include <Windows.h>
 #include <comdef.h>
 
@@ -60,3 +61,8 @@ struct SortBy_SharedPtr_Content {
     if(FAILED(hr__)) { throw DxException(hr__, L#x, wfn, __LINE__); } \
 }
 #endif
+
+template <typename E>
+constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {
+    return static_cast<typename std::underlying_type<E>::type>(e);
+}

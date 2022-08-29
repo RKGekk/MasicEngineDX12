@@ -5,6 +5,7 @@ SceneNodeProperties::SceneNodeProperties() {
 	DirectX::XMStoreFloat4x4(&m_from_world, DirectX::XMMatrixIdentity());
 	m_scale = { 1.0f, 1.0f, 1.0f };
 	m_active = true;
+	m_dirty_flags = to_underlying(SceneNodeProperties::DirtyFlags::DF_All);
 }
 
 DirectX::XMMATRIX SceneNodeProperties::ToWorld() const {
@@ -196,4 +197,8 @@ const char* SceneNodeProperties::NameCstr() const {
 
 const std::string& SceneNodeProperties::Name() const {
 	return m_name;
+}
+
+uint32_t SceneNodeProperties::GetDirtyFlags() const {
+	return m_dirty_flags;
 }

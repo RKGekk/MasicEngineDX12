@@ -31,6 +31,7 @@ SceneNode::~SceneNode() {}
 
 void SceneNode::Accept(IVisitor& visitor) {
 	visitor.Visit(*this);
+	m_props.m_dirty_flags = to_underlying(SceneNodeProperties::DirtyFlags::DF_None);
 	for (auto& child : m_children) {
 		child->Accept(visitor);
 	}
@@ -224,4 +225,8 @@ void SceneNode::SetScale(const DirectX::XMFLOAT3& scale) {
 void SceneNode::SetScale(DirectX::XMVECTOR scale) {
 	DirectX::XMStoreFloat3(&m_props.m_scale, scale);
 	UpdateCumulativeScale();
+}
+
+void SceneNode::SetDirtyFlags(uint32_t flags) {
+	m_props.m_dirty_flags = flags;
 }

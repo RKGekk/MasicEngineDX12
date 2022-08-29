@@ -537,6 +537,9 @@
     <ClCompile Include="graphics\directx12_wrappers\depth_stencil_state.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\light_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1131,6 +1134,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\directx12_wrappers\depth_stencil_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\light_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
