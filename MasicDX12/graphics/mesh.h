@@ -38,6 +38,7 @@ public:
 
 	void SetAABB(const DirectX::BoundingBox& aabb);
 	const DirectX::BoundingBox& GetAABB() const;
+	const DirectX::BoundingSphere& GetSphere() const;
 
 private:
 	BufferMap m_vertex_buffers;
@@ -46,4 +47,5 @@ private:
 
 	D3D12_PRIMITIVE_TOPOLOGY m_primitive_topology;
 	DirectX::BoundingBox m_AABB;
+	DirectX::BoundingSphere m_sphere;
 };

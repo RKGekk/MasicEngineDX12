@@ -67,8 +67,13 @@ std::shared_ptr<Material> Mesh::GetMaterial() const {
 
 void Mesh::SetAABB(const DirectX::BoundingBox& aabb) {
     m_AABB = aabb;
+    DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere, m_AABB);
 }
 
 const DirectX::BoundingBox& Mesh::GetAABB() const {
     return m_AABB;
+}
+
+const DirectX::BoundingSphere& Mesh::GetSphere() const {
+    return m_sphere;
 }

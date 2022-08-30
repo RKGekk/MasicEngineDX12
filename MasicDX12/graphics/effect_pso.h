@@ -1,7 +1,5 @@
 #pragma once
 
-#include "light.h"
-
 #include <DirectXMath.h>
 
 #include <memory>
@@ -14,6 +12,7 @@ class RootSignature;
 class PipelineStateObject;
 class ShaderResourceView;
 class Texture;
+class LightManager;
 
 class EffectPSO {
 public:
@@ -44,25 +43,11 @@ public:
 	EffectPSO(std::shared_ptr<Device> device, bool enable_ligting, bool enable_decal);
 	virtual ~EffectPSO();
 
-	const std::vector<PointLight>& GetPointLights() const;
-	void SetPointLights(const std::vector<PointLight>& point_lights);
-
-	const std::vector<SpotLight>& GetSpotLights() const;
-	void SetSpotLights(const std::vector<SpotLight>& spot_lights);
-
-	const std::vector<DirectionalLight>& GetDirectionalLights() const;
-	void SetDirectionalLights(const std::vector<DirectionalLight>& directional_lights);
-
-	const std::shared_ptr<Material>& GetMaterial() const;
+	void SetLightManager(std::shared_ptr<LightManager> light_manager);
 	void SetMaterial(const std::shared_ptr<Material>& material);
 
-	DirectX::XMMATRIX GetWorldMatrix() const;
 	void XM_CALLCONV SetWorldMatrix(DirectX::FXMMATRIX world_matrix);
-
-	DirectX::XMMATRIX GetViewMatrix() const;
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
-
-	DirectX::XMMATRIX GetProjectionMatrix() const;
 	void XM_CALLCONV SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix);
 
 	void Apply(CommandList& command_list);
@@ -90,9 +75,7 @@ private:
 	std::shared_ptr<RootSignature> m_root_signature;
 	std::shared_ptr<PipelineStateObject> m_pipeline_state_object;
 
-	std::vector<PointLight> m_point_lights;
-	std::vector<SpotLight> m_spot_lights;
-	std::vector<DirectionalLight> m_directional_lights;
+	std::shared_ptr<LightManager> m_light_manager;
 
 	std::shared_ptr<Material> m_material;
 

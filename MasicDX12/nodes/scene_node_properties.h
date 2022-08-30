@@ -22,6 +22,7 @@ protected:
 	DirectX::XMFLOAT3 m_scale;
 	DirectX::XMFLOAT3 m_scale_cumulative;
 	uint32_t m_dirty_flags;
+	uint32_t m_group_id;
 	
 	bool m_active;
 
@@ -82,4 +83,5 @@ public:
 	const std::string& Name() const;
 
 	uint32_t GetDirtyFlags() const;
+	uint32_t GetGroupID() const;
 };

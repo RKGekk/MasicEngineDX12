@@ -13,6 +13,22 @@ SceneNode::SceneNode(const std::string& name) {
 	m_props.m_active = true;
 }
 
+SceneNode::SceneNode(const std::string& name, uint32_t group_id) {
+	SetTransform(DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), false);
+	m_props.m_name = name;
+	m_props.m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_props.m_active = true;
+	m_props.m_group_id = group_id;
+}
+
+SceneNode::SceneNode(const std::string& name, uint32_t group_id, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from) {
+	SetTransform4x4(to, from);
+	m_props.m_name = name;
+	m_props.m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_props.m_active = true;
+	m_props.m_group_id = group_id;
+}
+
 SceneNode::SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from) {
 	SetTransform4x4(to, from);
 	m_props.m_name = name;
@@ -25,6 +41,14 @@ SceneNode::SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CX
 	m_props.m_name = name;
 	m_props.m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_props.m_active = true;
+}
+
+SceneNode::SceneNode(const std::string& name, uint32_t group_id, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from) {
+	SetTransform(to, from, calulate_from);
+	m_props.m_name = name;
+	m_props.m_scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	m_props.m_active = true;
+	m_props.m_group_id = group_id;
 }
 
 SceneNode::~SceneNode() {}
@@ -229,4 +253,8 @@ void SceneNode::SetScale(DirectX::XMVECTOR scale) {
 
 void SceneNode::SetDirtyFlags(uint32_t flags) {
 	m_props.m_dirty_flags = flags;
+}
+
+void SceneNode::SetGroupID(uint32_t id) {
+	m_props.m_group_id = id;
 }

@@ -7,6 +7,7 @@
 #include "directx12_wrappers/root_signature.h"
 #include "vertex_types.h"
 #include "../tools/com_exception.h"
+#include "../nodes/light_manager.h"
 
 #include <d3dcompiler.h>
 #include <d3dx12.h>
@@ -102,6 +103,10 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
 
 EffectPSO::~EffectPSO() {
     _aligned_free(m_pAligned_mvp);
+}
+
+void EffectPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
+    m_light_manager = light_manager;
 }
 
 inline void EffectPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {

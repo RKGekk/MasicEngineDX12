@@ -16,8 +16,11 @@ class SceneNode : public std::enable_shared_from_this<SceneNode> {
 friend class Scene;
 public:
 	SceneNode(const std::string& name);
+	SceneNode(const std::string& name, uint32_t group_id);
 	SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from = nullptr);
+	SceneNode(const std::string& name, uint32_t group_id, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from = nullptr);
 	SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from = true);
+	SceneNode(const std::string& name, uint32_t group_id, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from = true);
 
 	virtual ~SceneNode();
 
@@ -46,6 +49,7 @@ public:
 	void SetScale(DirectX::XMVECTOR scale);
 
 	void SetDirtyFlags(uint32_t flags);
+	void SetGroupID(uint32_t id);
 
 protected:
 	SceneNodeList m_children;

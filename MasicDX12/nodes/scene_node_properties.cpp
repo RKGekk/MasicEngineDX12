@@ -6,6 +6,7 @@ SceneNodeProperties::SceneNodeProperties() {
 	m_scale = { 1.0f, 1.0f, 1.0f };
 	m_active = true;
 	m_dirty_flags = to_underlying(SceneNodeProperties::DirtyFlags::DF_All);
+	m_group_id = 0u;
 }
 
 DirectX::XMMATRIX SceneNodeProperties::ToWorld() const {
@@ -201,4 +202,8 @@ const std::string& SceneNodeProperties::Name() const {
 
 uint32_t SceneNodeProperties::GetDirtyFlags() const {
 	return m_dirty_flags;
+}
+
+uint32_t SceneNodeProperties::GetGroupID() const {
+	return m_group_id;
 }

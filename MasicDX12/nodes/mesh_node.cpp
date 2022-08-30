@@ -18,6 +18,7 @@ bool MeshNode::AddMesh(std::shared_ptr<Mesh> mesh) {
 
     m_meshes.push_back(mesh);
     DirectX::BoundingBox::CreateMerged(m_AABB_merged, m_AABB_merged, mesh->GetAABB());
+    DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_merged, m_AABB_merged);
 
     return true;
 }
@@ -47,4 +48,8 @@ std::shared_ptr<Mesh> MeshNode::GetMesh(size_t index) {
 
 const DirectX::BoundingBox& MeshNode::GetAABB() const {
 	return m_AABB_merged;
+}
+
+const DirectX::BoundingSphere& MeshNode::GetSphere() const {
+    return m_sphere_merged;
 }

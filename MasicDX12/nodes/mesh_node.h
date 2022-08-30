@@ -23,10 +23,12 @@ public:
 	std::shared_ptr<Mesh> GetMesh(size_t index = 0);
 
 	const DirectX::BoundingBox& GetAABB() const;
+	const DirectX::BoundingSphere& GetSphere() const;
 
 protected:
 	using MeshList = std::vector<std::shared_ptr<Mesh>>;
 
 	MeshList m_meshes;
 	DirectX::BoundingBox m_AABB_merged;
+	DirectX::BoundingSphere m_sphere_merged;
 };
