@@ -92,16 +92,20 @@ public:
 	UINT GetRenderTargetCount() const;
 	const RenderTargetFormatMap& GetRenderTargetFormats() const;
 	void SetRenderTargetFormat(AttachmentPoint render_target, DXGI_FORMAT format);
+	void SetRenderTargetFormat(D3D12_RT_FORMAT_ARRAY rtv_formats);
 	void EraseRenderTargetFormat(AttachmentPoint render_target);
 	bool IsRenderTargetFormatSet(AttachmentPoint render_target) const;
 
 	void SetBlendState(const BlendState& state);
+	void SetBlendState(const D3D12_BLEND_DESC& desc);
 	const BlendState& GetBlendState() const;
 
 	void SetRasterizerState(const RasterizerState& state);
+	void SetRasterizerState(const D3D12_RASTERIZER_DESC& desc);
 	const RasterizerState& GetRasterizerState() const;
 
 	void SetDepthStencilState(const DepthStencilState& state);
+	void SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC& desc);
 	const DepthStencilState& GetDepthStencilState() const;
 
 private:

@@ -138,8 +138,19 @@ void PixelShader::SetRenderTargetFormat(AttachmentPoint render_target, DXGI_FORM
 	m_render_target_formats_map[render_target] = format;
 }
 
+void PixelShader::SetRenderTargetFormat(D3D12_RT_FORMAT_ARRAY rtv_formats) {
+	for (uint32_t i = 0; i < rtv_formats.NumRenderTargets; ++i) {
+		AttachmentPoint ap = static_cast<AttachmentPoint>(i);
+		m_render_target_formats_map[ap] = rtv_formats.RTFormats[i];
+	}
+}
+
 void PixelShader::SetBlendState(const BlendState& state) {
 	m_blend_state = state;
+}
+
+void PixelShader::SetBlendState(const D3D12_BLEND_DESC& desc) {
+	m_blend_state = BlendState(desc);
 }
 
 const BlendState& PixelShader::GetBlendState() const {
@@ -150,12 +161,20 @@ void PixelShader::SetRasterizerState(const RasterizerState& state) {
 	m_rasterizer_state = state;
 }
 
+void PixelShader::SetRasterizerState(const D3D12_RASTERIZER_DESC& desc) {
+	m_rasterizer_state = RasterizerState(desc);
+}
+
 const RasterizerState& PixelShader::GetRasterizerState() const {
 	return m_rasterizer_state;
 }
 
 void PixelShader::SetDepthStencilState(const DepthStencilState& state) {
 	m_depth_stencil_state = state;
+}
+
+void PixelShader::SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC& desc) {
+	m_depth_stencil_state = DepthStencilState(desc);
 }
 
 const DepthStencilState& PixelShader::GetDepthStencilState() const {

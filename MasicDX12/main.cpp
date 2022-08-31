@@ -14,6 +14,7 @@
 #include <tuple>
 #include <string>
 
+//#pragma comment(lib,"rpcrt4.lib")
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"DirectXTK12.lib")
 #pragma comment(lib,"DXGI.lib")

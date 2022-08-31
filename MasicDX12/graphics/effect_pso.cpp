@@ -55,19 +55,7 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC root_signature_description;
     root_signature_description.Init_1_1(RootParameters::NumRootParameters, root_parameters, 1, &anisotropic_sampler, root_signature_flags);
 
-    m_root_signature = m_device->CreateRootSignature(root_signature_description.Desc_1_1);
-
-    struct PipelineStateStream {
-        CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
-        CD3DX12_PIPELINE_STATE_STREAM_VS VS;
-        CD3DX12_PIPELINE_STATE_STREAM_PS PS;
-        CD3DX12_PIPELINE_STATE_STREAM_RASTERIZER RasterizerState;
-        CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
-        CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
-        CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
-        CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
-        CD3DX12_PIPELINE_STATE_STREAM_SAMPLE_DESC SampleDesc;
-    } pipeline_state_stream;
+    m_root_signature = m_device->CreateRootSignature("RootSignFor"s + pixel_shader_name, root_signature_description.Desc_1_1);
 
     DXGI_FORMAT back_buffer_format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     DXGI_FORMAT depth_buffer_format = DXGI_FORMAT_D32_FLOAT;
@@ -83,17 +71,17 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
         rasterizer_state.CullMode = D3D12_CULL_MODE_NONE;
     }
 
-    pipeline_state_stream.pRootSignature = m_root_signature->GetD3D12RootSignature().Get();
-    pipeline_state_stream.VS = CD3DX12_SHADER_BYTECODE(vertex_shader_blob.Get());
-    pipeline_state_stream.PS = CD3DX12_SHADER_BYTECODE(pixel_shader_blob.Get());
-    pipeline_state_stream.RasterizerState = rasterizer_state;
-    pipeline_state_stream.InputLayout = VertexPositionNormalTangentBitangentTexture::InputLayout;
-    pipeline_state_stream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-    pipeline_state_stream.DSVFormat = depth_buffer_format;
-    pipeline_state_stream.RTVFormats = rtv_formats;
-    pipeline_state_stream.SampleDesc = sample_desc;
+    m_vertex_shader->AddRegister({0, 0, ShaderRegister::ConstantBuffer });
+    m_vertex_shader->SetInputAssemblerLayout(VertexPositionNormalTangentBitangentTexture::InputLayout);
+    m_vertex_shader->SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
-    m_pipeline_state_object = m_device->CreatePipelineStateObject(pipeline_state_stream);
+    m_pixel_shader->SetRenderTargetFormat(rtv_formats);
+    m_pixel_shader->SetRenderTargetFormat(AttachmentPoint::DepthStencil, depth_buffer_format);
+    //m_pixel_shader->SetBlendState();
+    m_pixel_shader->SetRasterizerState(rasterizer_state);
+    //m_pixel_shader->SetDepthStencilState();
+    
+    m_pipeline_state_object = m_device->CreateGraphicsPipelineState("PSOFor"s + pixel_shader_name, m_root_signature, m_vertex_shader, m_pixel_shader);
 
     D3D12_SHADER_RESOURCE_VIEW_DESC default_srv;
     default_srv.Format = DXGI_FORMAT_R8G8B8A8_UNORM;

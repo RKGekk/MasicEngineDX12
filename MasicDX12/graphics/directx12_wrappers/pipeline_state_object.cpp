@@ -27,6 +27,10 @@ const std::string& PipelineStateObject::GetName() const {
     return m_name;
 }
 
+GraphicsPipelineState::GraphicsPipelineState(Device& device, const std::string& name) : PipelineStateObject(device, name) {}
+
+GraphicsPipelineState::GraphicsPipelineState(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature) : PipelineStateObject(device, name, root_signature) {}
+
 void GraphicsPipelineState::AddOrReplaceShader(std::shared_ptr<Shader> shader) {
     Shader::Stage stage = shader->GetPipelineStage();
     switch (stage) {
@@ -146,6 +150,10 @@ void GraphicsPipelineState::Compile() {
 
     m_compiled = true;
 }
+
+ComputePipelineState::ComputePipelineState(Device& device, const std::string& name) : PipelineStateObject(device, name){}
+
+ComputePipelineState::ComputePipelineState(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature) : PipelineStateObject(device, name, root_signature) {}
 
 void ComputePipelineState::AddOrReplaceShader(std::shared_ptr<Shader> shader) {
     Shader::Stage stage = shader->GetPipelineStage();

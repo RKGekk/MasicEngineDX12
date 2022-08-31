@@ -53,19 +53,6 @@ public:
     virtual ~MakeConstantBufferView() {}
 };
 
-class MakePipelineStateObject : public PipelineStateObject {
-public:
-    MakePipelineStateObject(Device& device, const D3D12_PIPELINE_STATE_STREAM_DESC& desc) : PipelineStateObject(device, desc) {}
-
-    virtual ~MakePipelineStateObject() {}
-};
-class MakeRootSignature : public RootSignature {
-public:
-    MakeRootSignature(Device& device, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) : RootSignature(device, root_signature_desc) {}
-
-    virtual ~MakeRootSignature() {}
-};
-
 class MakeTexture : public Texture {
 public:
     MakeTexture(Device& device, const D3D12_RESOURCE_DESC& resource_desc, const D3D12_CLEAR_VALUE* clear_value) : Texture(device, resource_desc, clear_value) {}
@@ -349,14 +336,19 @@ std::shared_ptr<Texture> Device::CreateTexture(Microsoft::WRL::ComPtr<ID3D12Reso
     return texture;
 }
 
-std::shared_ptr<RootSignature> Device::CreateRootSignature(const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) {
-    std::shared_ptr<RootSignature> root_signature = std::make_shared<MakeRootSignature>(*this, root_signature_desc);
+std::shared_ptr<RootSignature> Device::CreateRootSignature(const std::string& name, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) {
+    std::shared_ptr<RootSignature> root_signature = std::make_shared<RootSignature>(*this, name, root_signature_desc);
     return root_signature;
 }
 
-std::shared_ptr<PipelineStateObject> Device::DoCreatePipelineStateObject(const D3D12_PIPELINE_STATE_STREAM_DESC& pipeline_state_stream_desc) {
-    std::shared_ptr<PipelineStateObject> pipeline_state_object = std::make_shared<MakePipelineStateObject>(*this, pipeline_state_stream_desc);
-    return pipeline_state_object;
+std::shared_ptr<GraphicsPipelineState> Device::CreateGraphicsPipelineState(const std::string& name, std::shared_ptr<RootSignature> root_signature, std::shared_ptr<VertexShader> vertex_shader, std::shared_ptr<PixelShader> pixel_shader, std::shared_ptr<Shader> domain_shader, std::shared_ptr<Shader> hull_shader, std::shared_ptr<Shader> geometry_shader) {
+    std::shared_ptr<GraphicsPipelineState> pso = std::make_shared<GraphicsPipelineState>(name, root_signature);
+    pso->SetVertexShader(vertex_shader);
+    pso->SetPixelShader(pixel_shader);
+    pso->SetDomainShader(domain_shader);
+    pso->SetHullShader(hull_shader);
+    pso->SetGeometryShader(geometry_shader);
+    return pso;
 }
 
 std::shared_ptr<ConstantBufferView> Device::CreateConstantBufferView(const std::shared_ptr<ConstantBuffer>& constant_buffer, size_t offset) {

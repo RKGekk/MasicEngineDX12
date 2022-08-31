@@ -18,6 +18,8 @@ class DescriptorAllocator;
 class GUI;
 class IndexBuffer;
 class PipelineStateObject;
+class GraphicsPipelineState;
+class ComputePipelineState;
 class RenderTarget;
 class Resource;
 class RootSignature;
@@ -52,13 +54,17 @@ public:
 	std::shared_ptr<IndexBuffer> CreateIndexBuffer(Microsoft::WRL::ComPtr<ID3D12Resource> resource, size_t num_indices, DXGI_FORMAT index_format);
 	std::shared_ptr<VertexBuffer> CreateVertexBuffer(size_t num_vertices, size_t vertex_stride);
 	std::shared_ptr<VertexBuffer> CreateVertexBuffer(Microsoft::WRL::ComPtr<ID3D12Resource> resource, size_t num_vertices, size_t vertex_stride);
-	std::shared_ptr<RootSignature> CreateRootSignature(const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc);
+	std::shared_ptr<RootSignature> CreateRootSignature(const std::string& name, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc);
 
-	template<class PipelineStateStream>
-	std::shared_ptr<PipelineStateObject> CreatePipelineStateObject(PipelineStateStream& pipeline_state_stream) {
-		D3D12_PIPELINE_STATE_STREAM_DESC pipeline_state_stream_desc = { sizeof(PipelineStateStream), &pipeline_state_stream };
-		return DoCreatePipelineStateObject(pipeline_state_stream_desc);
-	}
+	std::shared_ptr<GraphicsPipelineState> CreateGraphicsPipelineState(
+		const std::string& name,
+		std::shared_ptr<RootSignature> root_signature,
+		std::shared_ptr<VertexShader> vertex_shader,
+		std::shared_ptr<PixelShader> pixel_shader = nullptr,
+		std::shared_ptr<Shader> domain_shader = nullptr,
+		std::shared_ptr<Shader> hull_shader = nullptr,
+		std::shared_ptr<Shader> geometry_shader = nullptr
+	);
 
 	std::shared_ptr<ConstantBufferView> CreateConstantBufferView(const std::shared_ptr<ConstantBuffer>& constant_buffer, size_t offset = 0);
 	std::shared_ptr<ShaderResourceView> CreateShaderResourceView(const std::shared_ptr<Resource>& resource, const D3D12_SHADER_RESOURCE_VIEW_DESC* srv = nullptr);
@@ -83,8 +89,6 @@ public:
 protected:
 	explicit Device(std::shared_ptr<AdapterData> adapter);
 	virtual ~Device();
-
-	std::shared_ptr<PipelineStateObject> DoCreatePipelineStateObject(const D3D12_PIPELINE_STATE_STREAM_DESC& pipeline_state_stream_desc);
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12Device2> m_d3d12_device;

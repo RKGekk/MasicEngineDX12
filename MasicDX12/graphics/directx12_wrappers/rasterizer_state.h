@@ -8,6 +8,7 @@ public:
     enum class CullMode { None, Back, Front };
 
     RasterizerState();
+    RasterizerState(const D3D12_RASTERIZER_DESC& desc);
 
     void SetFillMode(FillMode mode);
     void SetCullMode(CullMode mode);

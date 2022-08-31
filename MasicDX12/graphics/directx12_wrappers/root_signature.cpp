@@ -7,9 +7,9 @@
 #include <memory>
 #include <utility>
 
-RootSignature::RootSignature(Device& device, std::string name) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false), m_name(name) {}
+RootSignature::RootSignature(Device& device, const std::string& name) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false), m_name(name) {}
 
-RootSignature::RootSignature(Device& device, std::string name, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false), m_name(name) {
+RootSignature::RootSignature(Device& device, const std::string& name, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc) : m_device(device), m_root_signature_desc{}, m_num_descriptors_per_table{ 0 }, m_sampler_table_bit_mask(0), m_descriptor_table_bit_mask(0), m_compiled(false), m_name(name) {
     SetRootSignatureDesc(root_signature_desc);
 }
 
@@ -39,6 +39,8 @@ void RootSignature::Destroy() {
     m_sampler_table_bit_mask = 0u;
     m_bytes_used = 0u;
 
+    m_parameters.clear();
+    m_static_samplers.clear();
     m_parameter_indices_map.clear();
 
     memset(m_num_descriptors_per_table, 0, sizeof(m_num_descriptors_per_table));
@@ -70,6 +72,8 @@ void RootSignature::CompileRootSignature() {
     Microsoft::WRL::ComPtr<ID3D12Device2> d3d12_device = m_device.GetD3D12Device();
     hr = d3d12_device->CreateRootSignature(0, root_signature_blob->GetBufferPointer(), root_signature_blob->GetBufferSize(), IID_PPV_ARGS(m_root_signature.ReleaseAndGetAddressOf()));
     ThrowIfFailed(hr);
+
+    //m_root_signature->SetPrivateData(RootSignature::GetGUID(), sizeof(RootSignature*), this);
 
     m_compiled = true;
 }
@@ -122,6 +126,11 @@ void RootSignature::SetRootSignatureDesc(const D3D12_VERSIONED_ROOT_SIGNATURE_DE
             m_constant_parameters.push_back(std::move(const_param));
         }
         m_parameters.push_back(root_parameter);
+    }
+
+    UINT num_samplers = root_signature_desc.Desc_1_1.NumStaticSamplers;
+    for (UINT i = 0; i < num_samplers; ++i) {
+        m_static_samplers.push_back(root_signature_desc.Desc_1_1.pStaticSamplers[i]);
     }
 
     m_root_signature_desc = CombineRootSignatureDesc(root_signature_desc.Desc_1_1.Flags);
@@ -223,6 +232,16 @@ void RootSignature::AddStaticSampler(const RootSaticSampler& sampler) {
 void RootSignature::SetRootSignatureDescFlags(D3D12_ROOT_SIGNATURE_FLAGS flags) {
     m_root_signature_desc.Desc_1_1.Flags = flags;
 }
+
+//GUID RootSignature::GetGUID() {
+//    static UUID uuid;
+//    static bool generated = false;
+//    if (!generated) {
+//        UuidCreate(&uuid);
+//        generated = true;
+//    }
+//    return uuid;
+//}
 
 Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature::GetD3D12RootSignature() {
     if(!m_compiled) {

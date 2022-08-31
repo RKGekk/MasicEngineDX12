@@ -8,6 +8,8 @@ RasterizerState::RasterizerState() {
     m_desc.DepthClipEnable = true;
 }
 
+RasterizerState::RasterizerState(const D3D12_RASTERIZER_DESC& desc) : m_desc(desc) {}
+
 void RasterizerState::SetFillMode(FillMode mode) {
     switch (mode) {
         case FillMode::Wireframe: m_desc.FillMode = D3D12_FILL_MODE_WIREFRAME; break;

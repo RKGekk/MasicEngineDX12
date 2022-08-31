@@ -2,6 +2,7 @@
 
 #include <d3dx12.h>
 #include <wrl.h>
+//#include <rpc.h>
 
 #include <string>
 #include <vector>
@@ -18,8 +19,8 @@ class RootSignature {
 public:
 	using ParameterIndex = uint32_t;
 
-	RootSignature(Device& device, std::string name);
-	RootSignature(Device& device, std::string name, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc);
+	RootSignature(Device& device, const std::string& name);
+	RootSignature(Device& device, const std::string& name, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc);
 	RootSignature(const RootSignature& other);
 	virtual ~RootSignature();
 
@@ -43,6 +44,8 @@ public:
 	void AddConstantsParameter(const RootConstantsParameter& constants);
 	void AddStaticSampler(const RootSaticSampler& sampler);
 	void SetRootSignatureDescFlags(D3D12_ROOT_SIGNATURE_FLAGS flags);
+
+	//static GUID GetGUID();
 
 private:
 	void Destroy();
