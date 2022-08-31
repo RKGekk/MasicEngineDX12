@@ -7,6 +7,7 @@
 #include "directx12_wrappers/root_signature.h"
 #include "vertex_types.h"
 #include "../tools/com_exception.h"
+#include "../tools/string_utility.h"
 #include "../nodes/light_manager.h"
 
 #include <d3dcompiler.h>
@@ -14,18 +15,23 @@
 #include <wrl/client.h>
 
 EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal) {
+    using namespace std::literals;
     m_pAligned_mvp = (MVP*)_aligned_malloc(sizeof(MVP), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
     HRESULT hr = D3DReadFileToBlob(L"Basic_VS.cso", vertex_shader_blob.GetAddressOf());
     ThrowIfFailed(hr);
+    m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, "Basic_VS.cso"s);
 
     Microsoft::WRL::ComPtr<ID3DBlob> pixel_shader_blob;
+    std::string pixel_shader_name = ""s;
     if (enable_lighting)
-        if (enable_decal) hr = D3DReadFileToBlob(L"Decal_PS.cso", pixel_shader_blob.GetAddressOf());
-        else hr = D3DReadFileToBlob(L"Lighting_PS.cso", pixel_shader_blob.GetAddressOf());
-    else hr = D3DReadFileToBlob(L"Unlit_PS.cso", pixel_shader_blob.GetAddressOf());
+        if (enable_decal) pixel_shader_name = "Decal_PS.cso";
+        else pixel_shader_name = "Lighting_PS.cso";
+    else pixel_shader_name = "Unlit_PS.cso";
+    hr = D3DReadFileToBlob(to_wstring(pixel_shader_name).c_str(), pixel_shader_blob.GetAddressOf());
     ThrowIfFailed(hr);
+    m_pixel_shader = std::make_shared<PixelShader>(pixel_shader_blob, "main"s, pixel_shader_name);
 
     D3D12_ROOT_SIGNATURE_FLAGS root_signature_flags =
         D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |

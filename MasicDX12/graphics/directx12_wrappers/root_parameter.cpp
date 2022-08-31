@@ -28,7 +28,7 @@ RootDescriptorTableParameter::RootDescriptorTableParameter() : RootParameter(D3D
 
 RootDescriptorTableParameter::RootDescriptorTableParameter(D3D12_SHADER_VISIBILITY visibility) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE, visibility) {}
 
-RootDescriptorTableParameter::RootDescriptorTableParameter(D3D12_ROOT_DESCRIPTOR_TABLE1 root_table) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE) {
+RootDescriptorTableParameter::RootDescriptorTableParameter(D3D12_ROOT_DESCRIPTOR_TABLE1 root_table, D3D12_SHADER_VISIBILITY visibility) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE, visibility) {
 	UINT num_descriptor_ranges = root_table.NumDescriptorRanges;
 	RootDescriptorTableParameter desc_table_param;
 
@@ -84,40 +84,40 @@ void RootDescriptorTableParameter::AddDescriptorRange(const RootDescriprorTableR
 	m_parameter.DescriptorTable.pDescriptorRanges = m_ranges.data();
 }
 
-RootConstantsParameter::RootConstantsParameter(uint16_t numberOf32BitValues, uint16_t shaderRegister, uint16_t registerSpace) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS) {
+RootConstantsParameter::RootConstantsParameter(uint16_t numberOf32BitValues, uint16_t shaderRegister, uint16_t registerSpace, D3D12_SHADER_VISIBILITY visibility) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, visibility) {
 	AddSignatureLocation({ shaderRegister, registerSpace, ShaderRegister::ConstantBuffer });
 	m_parameter.Constants = { shaderRegister, registerSpace, numberOf32BitValues };
 }
 
-RootConstantsParameter::RootConstantsParameter(D3D12_ROOT_CONSTANTS root_const) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS) {
+RootConstantsParameter::RootConstantsParameter(D3D12_ROOT_CONSTANTS root_const, D3D12_SHADER_VISIBILITY visibility) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, visibility) {
 	AddSignatureLocation({ (uint16_t)root_const.ShaderRegister, (uint16_t)root_const.RegisterSpace, ShaderRegister::ConstantBuffer });
 	m_parameter.Constants = root_const;
 }
 
-RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, SignatureRegisters register_type) : RootParameter(type) {
+RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, SignatureRegisters register_type, D3D12_SHADER_VISIBILITY visibility) : RootParameter(type, visibility) {
 	AddSignatureLocation(register_type);
 	m_parameter.Descriptor = { register_type.BaseRegister, register_type.RegisterSpace };
 }
 
-RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, SignatureRegisters register_type, D3D12_ROOT_DESCRIPTOR_FLAGS flags) : RootParameter(type) {
+RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, SignatureRegisters register_type, D3D12_ROOT_DESCRIPTOR_FLAGS flags, D3D12_SHADER_VISIBILITY visibility) : RootParameter(type, visibility) {
 	AddSignatureLocation(register_type);
 	m_parameter.Descriptor = { register_type.BaseRegister, register_type.RegisterSpace, flags };
 }
 
-RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, D3D12_ROOT_DESCRIPTOR1 root_desc) : RootParameter(type) {
+RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, D3D12_ROOT_DESCRIPTOR1 root_desc, D3D12_SHADER_VISIBILITY visibility) : RootParameter(type, visibility) {
 
 }
 
-RootConstantBufferParameter::RootConstantBufferParameter(uint16_t shaderRegister, uint16_t registerSpace) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, { shaderRegister, registerSpace, ShaderRegister::ConstantBuffer }) {}
+RootConstantBufferParameter::RootConstantBufferParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_SHADER_VISIBILITY visibility) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, { shaderRegister, registerSpace, ShaderRegister::ConstantBuffer }, visibility) {}
 
-RootConstantBufferParameter::RootConstantBufferParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, { shaderRegister, registerSpace, ShaderRegister::ConstantBuffer }, flags) {}
+RootConstantBufferParameter::RootConstantBufferParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags, D3D12_SHADER_VISIBILITY visibility) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, { shaderRegister, registerSpace, ShaderRegister::ConstantBuffer }, flags, visibility) {}
 
-RootShaderResourceParameter::RootShaderResourceParameter(uint16_t shaderRegister, uint16_t registerSpace) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_SRV, { shaderRegister, registerSpace, ShaderRegister::ShaderResource }) {}
+RootShaderResourceParameter::RootShaderResourceParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_SHADER_VISIBILITY visibility) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_SRV, { shaderRegister, registerSpace, ShaderRegister::ShaderResource }, visibility) {}
 
-RootShaderResourceParameter::RootShaderResourceParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_SRV, { shaderRegister, registerSpace, ShaderRegister::ShaderResource }, flags) {}
+RootShaderResourceParameter::RootShaderResourceParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags, D3D12_SHADER_VISIBILITY visibility) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_SRV, { shaderRegister, registerSpace, ShaderRegister::ShaderResource }, flags, visibility) {}
 
-RootUnorderedAccessParameter::RootUnorderedAccessParameter(uint16_t shaderRegister, uint16_t registerSpace) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_UAV, { shaderRegister, registerSpace, ShaderRegister::UnorderedAccess }) {}
+RootUnorderedAccessParameter::RootUnorderedAccessParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_SHADER_VISIBILITY visibility) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_UAV, { shaderRegister, registerSpace, ShaderRegister::UnorderedAccess }, visibility) {}
 
-RootUnorderedAccessParameter::RootUnorderedAccessParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_UAV, { shaderRegister, registerSpace, ShaderRegister::UnorderedAccess }, flags) {}
+RootUnorderedAccessParameter::RootUnorderedAccessParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_ROOT_DESCRIPTOR_FLAGS flags, D3D12_SHADER_VISIBILITY visibility) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_UAV, { shaderRegister, registerSpace, ShaderRegister::UnorderedAccess }, flags, visibility) {}
 
 

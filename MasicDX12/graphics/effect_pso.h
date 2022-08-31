@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 
+#include "directx12_wrappers/shader.h"
+
 class CommandList;
 class Device;
 class Material;
@@ -74,6 +76,9 @@ private:
 	std::shared_ptr<Device> m_device;
 	std::shared_ptr<RootSignature> m_root_signature;
 	std::shared_ptr<PipelineStateObject> m_pipeline_state_object;
+
+	std::shared_ptr<VertexShader> m_vertex_shader;
+	std::shared_ptr<PixelShader> m_pixel_shader;
 
 	std::shared_ptr<LightManager> m_light_manager;
 
