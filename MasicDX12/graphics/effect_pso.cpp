@@ -71,10 +71,24 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
         rasterizer_state.CullMode = D3D12_CULL_MODE_NONE;
     }
 
-    m_vertex_shader->AddRegister({0, 0, ShaderRegister::ConstantBuffer });
+    m_vertex_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "MatricesCB"s);
     m_vertex_shader->SetInputAssemblerLayout(VertexPositionNormalTangentBitangentTexture::InputLayout);
     m_vertex_shader->SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
+    m_pixel_shader->AddRegister({ 0, 1, ShaderRegister::ConstantBuffer }, "MaterialCB"s);
+    m_pixel_shader->AddRegister({ 1, 0, ShaderRegister::ConstantBuffer }, "LightPropertiesCB");
+    m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ShaderResource }, "PointLights"s);
+    m_pixel_shader->AddRegister({ 1, 0, ShaderRegister::ShaderResource }, "SpotLights"s);
+    m_pixel_shader->AddRegister({ 2, 0, ShaderRegister::ShaderResource }, "DirectionalLights"s);
+    m_pixel_shader->AddRegister({ 3, 0, ShaderRegister::ShaderResource }, "AmbientTexture"s);
+    m_pixel_shader->AddRegister({ 4, 0, ShaderRegister::ShaderResource }, "EmissiveTexture"s);
+    m_pixel_shader->AddRegister({ 5, 0, ShaderRegister::ShaderResource }, "DiffuseTexture"s);
+    m_pixel_shader->AddRegister({ 6, 0, ShaderRegister::ShaderResource }, "SpecularTexture"s);
+    m_pixel_shader->AddRegister({ 7, 0, ShaderRegister::ShaderResource }, "SpecularPowerTexture"s);
+    m_pixel_shader->AddRegister({ 8, 0, ShaderRegister::ShaderResource }, "NormalTexture"s);
+    m_pixel_shader->AddRegister({ 9, 0, ShaderRegister::ShaderResource }, "BumpTexture"s);
+    m_pixel_shader->AddRegister({ 10, 0, ShaderRegister::ShaderResource }, "OpacityTexture"s);
+    m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::Sampler }, "TextureSampler"s);
     m_pixel_shader->SetRenderTargetFormat(rtv_formats);
     m_pixel_shader->SetRenderTargetFormat(AttachmentPoint::DepthStencil, depth_buffer_format);
     //m_pixel_shader->SetBlendState();
@@ -101,12 +115,16 @@ EffectPSO::~EffectPSO() {
 
 void EffectPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
     m_light_manager = light_manager;
+    m_dirty_flags |= DF_PointLights | DF_SpotLights | DF_DirectionalLights;
 }
 
 inline void EffectPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
-    if (texture) command_list.SetShaderResourceView(RootParameters::Textures, offset, texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    else command_list.SetShaderResourceView(RootParameters::Textures, offset, m_default_srv, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-
+    if (texture) {
+        command_list.SetShaderResourceView(RootParameters::Textures, offset, texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    }
+    else {
+        command_list.SetShaderResourceView(RootParameters::Textures, offset, m_default_srv, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    }
 }
 
 void EffectPSO::Apply(CommandList& command_list) {
@@ -143,59 +161,27 @@ void EffectPSO::Apply(CommandList& command_list) {
     }
 
     if (m_dirty_flags & DF_PointLights) {
-        command_list.SetGraphicsDynamicStructuredBuffer(RootParameters::PointLights, m_point_lights);
+        command_list.SetGraphicsDynamicStructuredBuffer(RootParameters::PointLights, m_light_manager->GetPointLights());
     }
 
     if (m_dirty_flags & DF_SpotLights) {
-        command_list.SetGraphicsDynamicStructuredBuffer(RootParameters::SpotLights, m_spot_lights);
+        command_list.SetGraphicsDynamicStructuredBuffer(RootParameters::SpotLights, m_light_manager->GetSpotLights());
     }
 
     if (m_dirty_flags & DF_DirectionalLights) {
-        command_list.SetGraphicsDynamicStructuredBuffer(RootParameters::DirectionalLights, m_directional_lights);
+        command_list.SetGraphicsDynamicStructuredBuffer(RootParameters::DirectionalLights, m_light_manager->GetDirLights());
     }
 
     if (m_dirty_flags & (DF_PointLights | DF_SpotLights | DF_DirectionalLights)) {
         LightProperties light_props;
-        light_props.NumPointLights = static_cast<uint32_t>(m_point_lights.size());
-        light_props.NumSpotLights = static_cast<uint32_t>(m_spot_lights.size());
-        light_props.NumDirectionalLights = static_cast<uint32_t>(m_directional_lights.size());
+        light_props.NumPointLights = static_cast<uint32_t>(m_light_manager->GetPointLightsCount());
+        light_props.NumSpotLights = static_cast<uint32_t>(m_light_manager->GetSpotLightsCount());
+        light_props.NumDirectionalLights = static_cast<uint32_t>(m_light_manager->GetDirLightsCount());
 
         command_list.SetGraphics32BitConstants(RootParameters::LightPropertiesCB, light_props);
     }
 
     m_dirty_flags = DF_None;
-}
-
-
-const std::vector<PointLight>& EffectPSO::GetPointLights() const {
-    return m_point_lights;
-}
-
-void EffectPSO::SetPointLights(const std::vector<PointLight>& point_lights) {
-    m_point_lights = point_lights;
-    m_dirty_flags |= DF_PointLights;
-}
-
-const std::vector<SpotLight>& EffectPSO::GetSpotLights() const {
-    return m_spot_lights;
-}
-
-void EffectPSO::SetSpotLights(const std::vector<SpotLight>& spot_lights) {
-    m_spot_lights = spot_lights;
-    m_dirty_flags |= DF_SpotLights;
-}
-
-const std::vector<DirectionalLight>& EffectPSO::GetDirectionalLights() const {
-    return m_directional_lights;
-}
-
-void EffectPSO::SetDirectionalLights(const std::vector<DirectionalLight>& directional_lights) {
-    m_directional_lights = directional_lights;
-    m_dirty_flags |= DF_DirectionalLights;
-}
-
-const std::shared_ptr<Material>& EffectPSO::GetMaterial() const {
-    return m_material;
 }
 
 void EffectPSO::SetMaterial(const std::shared_ptr<Material>& material) {
@@ -208,24 +194,12 @@ void XM_CALLCONV EffectPSO::SetWorldMatrix(DirectX::FXMMATRIX world_matrix) {
     m_dirty_flags |= DF_Matrices;
 }
 
-DirectX::XMMATRIX EffectPSO::GetWorldMatrix() const {
-    return m_pAligned_mvp->World;
-}
-
 void XM_CALLCONV EffectPSO::SetViewMatrix(DirectX::FXMMATRIX view_matrix) {
     m_pAligned_mvp->View = view_matrix;
     m_dirty_flags |= DF_Matrices;
 }
 
-DirectX::XMMATRIX EffectPSO::GetViewMatrix() const {
-    return m_pAligned_mvp->View;
-}
-
 void XM_CALLCONV EffectPSO::SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix) {
     m_pAligned_mvp->Projection = projection_matrix;
     m_dirty_flags |= DF_Matrices;
-}
-
-DirectX::XMMATRIX EffectPSO::GetProjectionMatrix() const {
-    return m_pAligned_mvp->Projection;
 }

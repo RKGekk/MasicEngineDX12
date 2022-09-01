@@ -5,10 +5,11 @@
 #include "../tools/string_utility.h"
 
 #include <cassert>
+#include <utility>
 
-PipelineStateObject::PipelineStateObject(Device& device, const std::string& name) : m_device(device), m_name(name), m_compiled(false) {}
+PipelineStateObject::PipelineStateObject(Device& device, std::string name) : m_device(device), m_name(std::move(name)), m_compiled(false) {}
 
-PipelineStateObject::PipelineStateObject(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature) : m_device(device), m_root_signature(root_signature), m_name(name), m_compiled(false) {}
+PipelineStateObject::PipelineStateObject(Device& device, std::string name, std::shared_ptr<RootSignature> root_signature) : m_device(device), m_root_signature(root_signature), m_name(std::move(name)), m_compiled(false) {}
 
 Microsoft::WRL::ComPtr<ID3D12PipelineState> PipelineStateObject::GetD3D12PipelineState() {
     if (!m_compiled) Compile();
@@ -27,9 +28,9 @@ const std::string& PipelineStateObject::GetName() const {
     return m_name;
 }
 
-GraphicsPipelineState::GraphicsPipelineState(Device& device, const std::string& name) : PipelineStateObject(device, name) {}
+GraphicsPipelineState::GraphicsPipelineState(Device& device, std::string name) : PipelineStateObject(device, std::move(name)) {}
 
-GraphicsPipelineState::GraphicsPipelineState(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature) : PipelineStateObject(device, name, root_signature) {}
+GraphicsPipelineState::GraphicsPipelineState(Device& device, std::string name, std::shared_ptr<RootSignature> root_signature) : PipelineStateObject(device, std::move(name), root_signature) {}
 
 void GraphicsPipelineState::AddOrReplaceShader(std::shared_ptr<Shader> shader) {
     Shader::Stage stage = shader->GetPipelineStage();
@@ -151,9 +152,9 @@ void GraphicsPipelineState::Compile() {
     m_compiled = true;
 }
 
-ComputePipelineState::ComputePipelineState(Device& device, const std::string& name) : PipelineStateObject(device, name){}
+ComputePipelineState::ComputePipelineState(Device& device, std::string name) : PipelineStateObject(device, std::move(name)){}
 
-ComputePipelineState::ComputePipelineState(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature) : PipelineStateObject(device, name, root_signature) {}
+ComputePipelineState::ComputePipelineState(Device& device, std::string name, std::shared_ptr<RootSignature> root_signature) : PipelineStateObject(device, std::move(name), root_signature) {}
 
 void ComputePipelineState::AddOrReplaceShader(std::shared_ptr<Shader> shader) {
     Shader::Stage stage = shader->GetPipelineStage();

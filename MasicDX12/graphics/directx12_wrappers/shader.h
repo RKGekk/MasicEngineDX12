@@ -20,14 +20,15 @@
 
 class Shader {
 public:
-	using ShaderRegistersSet = std::unordered_set<SignatureRegisters, LocationHasher, LocationEquality>;
+	using ShaderLocationName = std::string;
+	using ShaderRegistersSet = std::unordered_map<SignatureRegisters, ShaderLocationName, LocationHasher, LocationEquality>;
 	enum class Stage { Vertex, Hull, Domain, Geometry, Pixel, Compute };
 
-	Shader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, Stage stage, const std::string& name);
-	Shader(const std::filesystem::path& executable_folder, const std::string& entry_point, Stage stage, const std::string& name);
+	Shader(Microsoft::WRL::ComPtr<ID3DBlob> blob, std::string entry_point, Stage stage, std::string name);
+	Shader(const std::filesystem::path& executable_folder, std::string entry_point, Stage stage, std::string name);
 	virtual ~Shader() = default;
 
-	void SetName(const std::string& name);
+	void SetName(std::string name);
 	const std::string& GetName() const;
 
 	const Microsoft::WRL::ComPtr<ID3DBlob>& GetBlob() const;
@@ -35,8 +36,8 @@ public:
 	const std::string& GetEntryPoint() const;
 	const Stage GetPipelineStage() const;
 
-	const ShaderRegistersSet GetRegisters() const;
-	void AddRegister(SignatureRegisters register_location);
+	const ShaderRegistersSet& GetRegisters() const;
+	void AddRegister(SignatureRegisters register_location, std::string name);
 	void RemoveRegister(SignatureRegisters register_location);
 	bool IsRegisterFree(SignatureRegisters register_location);
 	

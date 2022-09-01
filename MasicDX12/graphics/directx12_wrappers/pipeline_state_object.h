@@ -31,8 +31,8 @@ public:
 	const std::string& GetName() const;
 
 protected:
-	PipelineStateObject(Device& device, const std::string& name);
-	PipelineStateObject(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature);
+	PipelineStateObject(Device& device, std::string name);
+	PipelineStateObject(Device& device, std::string name, std::shared_ptr<RootSignature> root_signature);
 
 	virtual void Compile() = 0;
 
@@ -47,8 +47,8 @@ protected:
 
 class GraphicsPipelineState : public PipelineStateObject {
 public:
-	GraphicsPipelineState(Device& device, const std::string& name);
-	GraphicsPipelineState(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature);
+	GraphicsPipelineState(Device& device, std::string name);
+	GraphicsPipelineState(Device& device, std::string name, std::shared_ptr<RootSignature> root_signature);
 	//GraphicsPipelineState(Device& device, const std::string& name, const D3D12_GRAPHICS_PIPELINE_STATE_DESC& desc);
 	//GraphicsPipelineState(Device& device, const std::string& name, const D3D12_PIPELINE_STATE_STREAM_DESC& desc);
 
@@ -90,8 +90,8 @@ private:
 
 class ComputePipelineState : public PipelineStateObject {
 public:
-	ComputePipelineState(Device& device, const std::string& name);
-	ComputePipelineState(Device& device, const std::string& name, std::shared_ptr<RootSignature> root_signature);
+	ComputePipelineState(Device& device, std::string name);
+	ComputePipelineState(Device& device, std::string name, std::shared_ptr<RootSignature> root_signature);
 	//ComputePipelineState(Device& device, const std::string& name, const D3D12_COMPUTE_PIPELINE_STATE_DESC& desc);
 	//ComputePipelineState(Device& device, const std::string& name, const D3D12_PIPELINE_STATE_STREAM_DESC& desc);
 

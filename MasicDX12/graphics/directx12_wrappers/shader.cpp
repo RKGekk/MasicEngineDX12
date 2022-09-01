@@ -3,6 +3,8 @@
 #include "../../tools/string_utility.h"
 #include "../../tools/com_exception.h"
 
+#include <utility>
+
 const std::string Shader::m_default_vertex_entry_point = "VSMain";
 const std::string Shader::m_default_pixel_entry_point = "PSMain";
 const std::string Shader::m_default_geometry_entry_point = "GSMain";
@@ -13,16 +15,16 @@ const std::string Shader::m_default_ray_any_hit_entry_point = "RayAnyHit";
 const std::string Shader::m_default_ray_closest_hit_entry_point = "RayClosestHit";
 const std::string Shader::m_default_ray_intersec_entry_point = "RayIntersection";
 
-Shader::Shader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, Stage stage, const std::string& name) : m_entry_point(entry_point), m_stage(stage), m_name(name), m_blob(blob) {}
+Shader::Shader(Microsoft::WRL::ComPtr<ID3DBlob> blob, std::string entry_point, Stage stage, std::string name) : m_entry_point(std::move(entry_point)), m_stage(stage), m_name(std::move(name)), m_blob(blob) {}
 
-Shader::Shader(const std::filesystem::path& executable_folder, const std::string& entry_point, Stage stage, const std::string& name) : m_entry_point(entry_point), m_stage(stage), m_name(name) {
+Shader::Shader(const std::filesystem::path& executable_folder, std::string entry_point, Stage stage, std::string name) : m_entry_point(std::move(entry_point)), m_stage(stage), m_name(std::move(name)) {
 	std::wstring file_name = (executable_folder / name).wstring();
 	HRESULT hr = D3DReadFileToBlob(file_name.c_str(), m_blob.GetAddressOf());
 	ThrowIfFailed(hr);
 }
 
-void Shader::SetName(const std::string& name) {
-	m_name = name;
+void Shader::SetName(std::string name) {
+	m_name = std::move(name);
 }
 
 const std::string& Shader::GetName() const {
@@ -45,12 +47,12 @@ const Shader::Stage Shader::GetPipelineStage() const {
 	return m_stage;
 }
 
-const Shader::ShaderRegistersSet Shader::GetRegisters() const {
+const Shader::ShaderRegistersSet& Shader::GetRegisters() const {
 	return m_registers;
 }
 
-void Shader::AddRegister(SignatureRegisters register_location) {
-	m_registers.insert(register_location);
+void Shader::AddRegister(SignatureRegisters register_location, std::string name) {
+	m_registers.insert({ register_location, std::move(name) });
 }
 
 void Shader::RemoveRegister(SignatureRegisters register_location) {

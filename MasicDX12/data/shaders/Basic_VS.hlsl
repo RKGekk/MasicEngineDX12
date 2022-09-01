@@ -5,7 +5,7 @@ struct Matrices {
 	matrix ModelViewProjectionMatrix;
 };
 
-ConstantBuffer<Matrices> MatCB : register(b0);
+ConstantBuffer<Matrices> MatricesCB : register(b0);
 
 struct VertexPositionNormalTangentBitangentTexture {
 	float3 Position : POSITION;
@@ -27,12 +27,12 @@ struct VertexShaderOutput {
 VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture IN) {
 	VertexShaderOutput OUT;
 
-	OUT.PositionVS = mul(MatCB.ModelViewMatrix, float4(IN.Position, 1.0f));
-	OUT.NormalVS = mul((float3x3) MatCB.InverseTransposeModelViewMatrix, IN.Normal);
-	OUT.TangentVS = mul((float3x3) MatCB.InverseTransposeModelViewMatrix, IN.Tangent);
-	OUT.BitangentVS = mul((float3x3) MatCB.InverseTransposeModelViewMatrix, IN.Bitangent);
+	OUT.PositionVS = mul(MatricesCB.ModelViewMatrix, float4(IN.Position, 1.0f));
+	OUT.NormalVS = mul((float3x3) MatricesCB.InverseTransposeModelViewMatrix, IN.Normal);
+	OUT.TangentVS = mul((float3x3) MatricesCB.InverseTransposeModelViewMatrix, IN.Tangent);
+	OUT.BitangentVS = mul((float3x3) MatricesCB.InverseTransposeModelViewMatrix, IN.Bitangent);
 	OUT.TexCoord = IN.TexCoord.xy;
-	OUT.Position = mul(MatCB.ModelViewProjectionMatrix, float4(IN.Position, 1.0f));
+	OUT.Position = mul(MatricesCB.ModelViewProjectionMatrix, float4(IN.Position, 1.0f));
 
 	return OUT;
 }

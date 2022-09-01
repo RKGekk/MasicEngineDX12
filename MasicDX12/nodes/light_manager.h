@@ -27,8 +27,13 @@ public:
 	void RemoveLight(std::shared_ptr<LightNode> light);
 
 	std::vector<DirectionalLight>& GetDirLights();
+	size_t GetDirLightsCount();
+
 	std::vector<PointLight>& GetPointLights();
+	size_t GetPointLightsCount();
+
 	std::vector<SpotLight>& GetSpotLights();
+	size_t GetSpotLightsCount();
 
 protected:
 	Lights m_lights;

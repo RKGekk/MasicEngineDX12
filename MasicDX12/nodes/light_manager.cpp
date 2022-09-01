@@ -109,10 +109,22 @@ std::vector<DirectionalLight>& LightManager::GetDirLights() {
 	return m_dir_lights;
 }
 
+size_t LightManager::GetDirLightsCount() {
+	return m_dir_lights.size();
+}
+
 std::vector<PointLight>& LightManager::GetPointLights() {
 	return m_point_lights;
 }
 
+size_t LightManager::GetPointLightsCount() {
+	return m_point_lights.size();
+}
+
 std::vector<SpotLight>& LightManager::GetSpotLights() {
 	return m_spot_lights;
+}
+
+size_t LightManager::GetSpotLightsCount() {
+	return m_spot_lights.size();
 }
