@@ -48,90 +48,90 @@ void CameraNode::SetFovYDeg(float fovy) {
 	SetFovYRad(DirectX::XMConvertToRadians(fovy));
 }
 
-float CameraNode::GetFovYRad() {
+float CameraNode::GetFovYRad() const {
 	return m_fovy;
 }
 
-float CameraNode::GetFovYDeg() {
+float CameraNode::GetFovYDeg() const {
 	return DirectX::XMConvertToDegrees(m_fovy);
 }
 
-DirectX::XMMATRIX CameraNode::GetWorldViewProjection(DirectX::FXMMATRIX world) {
+DirectX::XMMATRIX CameraNode::GetWorldViewProjection(DirectX::FXMMATRIX world) const {
 	DirectX::XMMATRIX view = Get().CumulativeFromWorld();
 	DirectX::XMMATRIX world_view = DirectX::XMMatrixMultiply(world, view);
 	return DirectX::XMMatrixMultiply(world_view, DirectX::XMLoadFloat4x4(&m_projection));
 }
 
-DirectX::XMMATRIX CameraNode::GetWorldViewProjection(const DirectX::XMFLOAT4X4& world) {
+DirectX::XMMATRIX CameraNode::GetWorldViewProjection(const DirectX::XMFLOAT4X4& world) const {
 	DirectX::XMMATRIX world_xm = DirectX::XMLoadFloat4x4(&world);
 	return GetWorldViewProjection(world_xm);
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4(DirectX::XMMATRIX world) {
+DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4(DirectX::XMMATRIX world) const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, GetWorldViewProjection(world));
 	return res;
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4T(DirectX::XMMATRIX world) {
+DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4T(DirectX::XMMATRIX world) const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(GetWorldViewProjection(world)));
 	return res;
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4(const DirectX::XMFLOAT4X4& world) {
+DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4(const DirectX::XMFLOAT4X4& world) const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, GetWorldViewProjection(world));
 	return res;
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4T(const DirectX::XMFLOAT4X4& world) {
+DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4T(const DirectX::XMFLOAT4X4& world) const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(GetWorldViewProjection(world)));
 	return res;
 }
 
-DirectX::XMMATRIX CameraNode::GetViewProjection() {
+DirectX::XMMATRIX CameraNode::GetViewProjection() const {
 	DirectX::XMMATRIX view = Get().CumulativeFromWorld();
 	return DirectX::XMMatrixMultiply(view, DirectX::XMLoadFloat4x4(&m_projection));
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetViewProjection4x4() {
+DirectX::XMFLOAT4X4 CameraNode::GetViewProjection4x4() const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, GetViewProjection());
 	return res;
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetViewProjection4x4T() {
+DirectX::XMFLOAT4X4 CameraNode::GetViewProjection4x4T() const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(GetViewProjection()));
 	return res;
 }
 
-DirectX::XMMATRIX CameraNode::GetProjection() {
+DirectX::XMMATRIX CameraNode::GetProjection() const {
 	return DirectX::XMLoadFloat4x4(&m_projection);
 }
 
-const DirectX::XMFLOAT4X4& CameraNode::GetProjection4x4f() {
+const DirectX::XMFLOAT4X4& CameraNode::GetProjection4x4f() const {
 	return m_projection;
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetProjection4x4fT() {
+DirectX::XMFLOAT4X4 CameraNode::GetProjection4x4fT() const {
 	DirectX::XMMATRIX t = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_projection));
 	DirectX::XMFLOAT4X4 t4x4;
 	DirectX::XMStoreFloat4x4(&t4x4, t);
 	return t4x4;
 }
 
-DirectX::XMMATRIX CameraNode::GetView() {
+DirectX::XMMATRIX CameraNode::GetView() const {
 	return Get().CumulativeFromWorld();
 }
 
-const DirectX::XMFLOAT4X4& CameraNode::GetView4x4f() {
+const DirectX::XMFLOAT4X4& CameraNode::GetView4x4f() const {
 	return Get().CumulativeFromWorld4x4();
 }
 
-DirectX::XMFLOAT4X4 CameraNode::GetView4x4fT() {
+DirectX::XMFLOAT4X4 CameraNode::GetView4x4fT() const {
 	return Get().CumulativeFromWorld4x4T();
 }
 

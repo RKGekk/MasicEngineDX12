@@ -189,6 +189,7 @@
     <ClCompile Include="nodes\mesh_node.cpp" />
     <ClCompile Include="nodes\qualifier_node.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\primitive_topology.cpp" />
+    <ClCompile Include="nodes\scene_visitor.cpp" />
     <ClCompile Include="render_window_config.cpp" />
     <ClCompile Include="events\base_event_data.cpp" />
     <ClCompile Include="events\event_manager.cpp" />
@@ -394,6 +395,7 @@
     <ClInclude Include="nodes\qualifier_node.h" />
     <ClInclude Include="graphics\directx12_wrappers\sampler.h" />
     <ClInclude Include="graphics\directx12_wrappers\primitive_topology.h" />
+    <ClInclude Include="nodes\scene_visitor.h" />
     <ClInclude Include="window_keycodes.h" />
     <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />

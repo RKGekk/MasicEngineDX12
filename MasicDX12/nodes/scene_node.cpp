@@ -54,7 +54,7 @@ SceneNode::SceneNode(const std::string& name, uint32_t group_id, DirectX::FXMMAT
 SceneNode::~SceneNode() {}
 
 void SceneNode::Accept(IVisitor& visitor) {
-	visitor.Visit(*this);
+	visitor.Visit(shared_from_this());
 	m_props.m_dirty_flags = to_underlying(SceneNodeProperties::DirtyFlags::DF_None);
 	for (auto& child : m_children) {
 		child->Accept(visitor);
