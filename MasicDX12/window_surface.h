@@ -45,10 +45,10 @@ public:
 
     WindowSurface(const WindowSurface&) = delete;
     WindowSurface& operator=(const WindowSurface& right) = delete;
+    WindowSurface(WindowSurface&&) = delete;
+    WindowSurface&& operator=(WindowSurface&& right) = delete;
 
     virtual ~WindowSurface();
-    bool Initialize(const RenderWindowConfig& cfg);
-    bool ProcessMessages();
 
     virtual void OnDPIScaleChanged(float dpi_scale);
 
@@ -66,8 +66,10 @@ public:
     virtual void OnMouseButtonReleased(MBEventArgs& e);
     virtual void OnMouseWheel(MouseWheelEventArgs& e);
 
+    virtual bool Initialize(const RenderWindowConfig& cfg);
     virtual void VRegisterEvents();
     virtual void OnWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    virtual bool ProcessMessages();
 
 protected:
     void RegisterWindowClass();

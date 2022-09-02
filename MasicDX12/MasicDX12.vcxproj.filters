@@ -318,9 +318,6 @@
     <ClCompile Include="events\evt_data_new_render_component.cpp">
       <Filter>Source Files\events</Filter>
     </ClCompile>
-    <ClCompile Include="nodes\shadow_manager.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="nodes\light_node.cpp">
       <Filter>Source Files\nodes</Filter>
     </ClCompile>
@@ -541,6 +538,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="nodes\scene_visitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actors\mesh_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -890,9 +890,6 @@
     <ClInclude Include="graphics\material_shader.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="nodes\shadow_manager.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\directx12_wrappers\index_buffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
@@ -1143,6 +1140,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nodes\scene_visitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\mesh_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

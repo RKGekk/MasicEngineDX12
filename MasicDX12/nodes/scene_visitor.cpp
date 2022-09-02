@@ -44,7 +44,7 @@ void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 					m_command_list.SetIndexBuffer(mesh->GetIndexBuffer());
 					m_command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
 				}
-				else if (vertex_count > 0) {
+				else if (vertex_count > 0u) {
 					m_command_list.Draw(vertex_count, instance_count, 0u, start_instance);
 				}
 			}

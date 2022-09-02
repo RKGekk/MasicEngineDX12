@@ -3,6 +3,7 @@
 #include "../events/evt_data_os_message.h"
 #include "../events/evt_data_update_tick.h"
 #include "../graphics/d3d12_renderer.h"
+#include "../application.h"
 
 std::shared_ptr<Engine> Engine::m_pEngine = nullptr;
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -25,12 +26,13 @@ bool Engine::Initialize(const RenderWindowConfig& cfg) {
 	VRegisterEvents();
 	RegisterAllDelegates();
 
-	if (!m_render_window.Initialize(cfg)) return false;
+	std::shared_ptr<WindowSurface> render_window = Application::Get().CreateRenderWindow(cfg);
+	if (!render_window) return false;
 	
 	m_renderer = std::make_unique<D3DRenderer12>();
-	if (!m_renderer->Initialize(m_render_window)) return false;
+	if (!m_renderer->Initialize(render_window)) return false;
 	
-	m_renderer->VOnRestore(m_render_window);
+	m_renderer->VOnRestore();
 
 	//m_game = VCreateGameAndView();
 	//if (!m_game) {
@@ -44,14 +46,6 @@ ApplicationOptions& Engine::GetConfig() {
 	return m_options;
 }
 
-const WindowSurface& Engine::GetRenderWindow() {
-	return m_render_window;
-}
-
-void Engine::ShowWindow() {
-	m_render_window.Show();
-}
-
 //std::unique_ptr<BaseEngineLogic> Engine::VCreateGameAndView() {
 //	std::unique_ptr pGame = std::make_unique<XLogic>();
 //	pGame->Init();
@@ -63,7 +57,7 @@ void Engine::ShowWindow() {
 //}
 
 bool Engine::ProcessMessages() {
-	return m_render_window.ProcessMessages();
+	return m_renderer->GetRenderWindow()->ProcessMessages();
 }
 
 void Engine::Update(IEventDataPtr pEventData) {
@@ -102,12 +96,12 @@ void Engine::RegisterAllDelegates() {
 //	return 0;
 //}
 
-BaseEngineLogic* Engine::GetGameLogic() {
-	return m_game.get();
+std::shared_ptr<BaseEngineLogic> Engine::GetGameLogic() {
+	return m_game;
 }
 
-IRenderer* Engine::GetRenderer() {
-	return m_renderer.get();
+std::shared_ptr<IRenderer> Engine::GetRenderer() {
+	return m_renderer;
 }
 
 //bool Engine::VLoadGame() {

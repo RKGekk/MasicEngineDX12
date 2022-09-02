@@ -16,6 +16,7 @@
 #include "../events/event_manager.h"
 //#include "human_view.h"
 
+class Application;
 
 class Engine {
 public:
@@ -25,12 +26,11 @@ public:
 
 	ApplicationOptions& GetConfig();
 
-	const WindowSurface& GetRenderWindow();
 	void ShowWindow();
 	bool ProcessMessages();
 
-	BaseEngineLogic* GetGameLogic();
-	IRenderer* GetRenderer();
+	std::shared_ptr<BaseEngineLogic> GetGameLogic();
+	std::shared_ptr<IRenderer> GetRenderer();
 	static std::shared_ptr<Engine> GetEngine();
 	//std::shared_ptr<HumanView> GetHumanView();
 	//std::shared_ptr<HumanView> GetHumanViewByName(std::string name);
@@ -49,10 +49,9 @@ protected:
 private:
 
 	ApplicationOptions m_options;
-	WindowSurface m_render_window;
 
-	std::unique_ptr<IRenderer> m_renderer;
-	std::unique_ptr<BaseEngineLogic> m_game;
+	std::shared_ptr<IRenderer> m_renderer;
+	std::shared_ptr<BaseEngineLogic> m_game;
 
 	static std::shared_ptr<Engine> m_pEngine;
 };

@@ -82,6 +82,7 @@ Application::~Application() {
 std::shared_ptr<WindowSurface> Application::CreateRenderWindow(const RenderWindowConfig& cfg) {
     std::shared_ptr<WindowSurface> pWindow = std::make_shared<WindowSurface>();
     pWindow->Initialize(cfg);
+    pWindow->VRegisterEvents();
 
     gs_windows.insert(WindowMap::value_type(pWindow->GetHWND(), pWindow));
     gs_window_by_name.insert(WindowNameMap::value_type(pWindow->GetWindowTitle(), pWindow));

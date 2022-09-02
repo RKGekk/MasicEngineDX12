@@ -40,17 +40,20 @@ class D3DRenderer12 : public IRenderer {
 public:
 	D3DRenderer12();
 
-	virtual bool Initialize(const WindowSurface& rw) override;
+	virtual bool Initialize(std::shared_ptr<WindowSurface> rw) override;
 
 	virtual bool VPreRender() override;
 	virtual bool VPresent() override;
 	virtual bool VPostRender();
 
-	virtual HRESULT VOnRestore(const WindowSurface& rw);
+	virtual HRESULT VOnRestore() override;
 	virtual void VShutdown();
 	
 	std::shared_ptr<Device> GetDevice();
 	std::shared_ptr<SwapChain> GetSwapChain();
+
+	virtual std::shared_ptr<WindowSurface> GetRenderWindow() override;
+	DXGI_FORMAT GetBackBufferFormat();
 
 protected:
 	bool m_vsync_enabled;
@@ -60,4 +63,6 @@ protected:
 	AdapterData::AdapterDataPtr m_adapter;
 	std::shared_ptr<Device> m_device;
 	std::shared_ptr<SwapChain> m_swap_chain;
+	std::shared_ptr<WindowSurface> m_window_surface;
+	DXGI_FORMAT m_back_buffer_format;
 };

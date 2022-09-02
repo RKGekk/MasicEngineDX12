@@ -2,7 +2,11 @@
 
 #include <algorithm>
 
+MeshNode::MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform) : SceneNode(name, &transform) {}
+
 MeshNode::MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform, MeshList meshes) : SceneNode(name, &transform), m_meshes(std::move(meshes)) {}
+
+MeshNode::MeshNode(const std::string& name, DirectX::FXMMATRIX transform) : SceneNode(name, transform, DirectX::XMMatrixIdentity(), true) {}
 
 MeshNode::MeshNode(const std::string& name, DirectX::FXMMATRIX transform, MeshList meshes) : SceneNode(name, transform, DirectX::XMMatrixIdentity(), true), m_meshes(std::move(meshes)) {}
 

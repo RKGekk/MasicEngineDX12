@@ -151,6 +151,7 @@
     <ClCompile Include="actors\actor.cpp" />
     <ClCompile Include="actors\actor_component.cpp" />
     <ClCompile Include="actors\enemy_component.cpp" />
+    <ClCompile Include="actors\mesh_component.cpp" />
     <ClCompile Include="actors\orientation_relation_component.cpp" />
     <ClCompile Include="actors\particle_component.cpp" />
     <ClCompile Include="actors\transform_component.cpp" />
@@ -250,7 +251,6 @@
     <ClCompile Include="nodes\scene.cpp" />
     <ClCompile Include="nodes\scene_node.cpp" />
     <ClCompile Include="nodes\scene_node_properties.cpp" />
-    <ClCompile Include="nodes\shadow_manager.cpp" />
     <ClCompile Include="physics\aero.cpp" />
     <ClCompile Include="physics\aero_control.cpp" />
     <ClCompile Include="physics\angled_aero.cpp" />
@@ -306,6 +306,7 @@
     <ClInclude Include="actors\actor_component.h" />
     <ClInclude Include="actors\base_render_component.h" />
     <ClInclude Include="actors\enemy_component.h" />
+    <ClInclude Include="actors\mesh_component.h" />
     <ClInclude Include="actors\orientation_relation_component.h" />
     <ClInclude Include="actors\particle_component.h" />
     <ClInclude Include="actors\render_component_interface.h" />
@@ -435,7 +436,6 @@
     <ClInclude Include="nodes\scene.h" />
     <ClInclude Include="nodes\scene_node.h" />
     <ClInclude Include="nodes\scene_node_properties.h" />
-    <ClInclude Include="nodes\shadow_manager.h" />
     <ClInclude Include="physics\aero.h" />
     <ClInclude Include="physics\aero_control.h" />
     <ClInclude Include="physics\angled_aero.h" />
