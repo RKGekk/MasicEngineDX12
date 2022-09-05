@@ -22,7 +22,8 @@ bool ApplicationOptions::Init(const std::string& xml_file_name) {
 	pugi::xml_parse_result parse_res = xml_doc.load_file(xml_file_name.c_str());
 	if (!parse_res) { return false;	}
 
-	RootNode = xml_doc.child("PlayerOptions");
+	//RootNode = xml_doc.child("PlayerOptions");
+	RootNode = xml_doc.root();
 	if (!RootNode) { return false; }
 
 	pugi::xml_node graphics_node = RootNode.child("Graphics");

@@ -543,6 +543,33 @@
     <ClCompile Include="actors\mesh_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base_engine_logic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_request_destroy_actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_request_new_actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_request_start_game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_environment_loaded.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_sphere_particle_contact.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actors\actor_factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="events\evt_data_new_actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\human_view.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1143,6 +1170,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="actors\mesh_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_request_destroy_actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_request_new_actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_request_start_game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_environment_loaded.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_sphere_particle_contact.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\actor_factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_new_actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

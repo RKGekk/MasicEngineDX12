@@ -13,6 +13,10 @@ CameraNode::CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camer
 	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMLoadFloat4x4(&proj));
 }
 
+CameraNode::CameraNode(const std::string& name, const DirectX::BoundingFrustum& frustum) : SceneNode(name, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), false) {
+	SetData(frustum);
+}
+
 CameraNode::CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, float fovy, float aspect, float near_clip, float far_clip) : SceneNode(name, camera_transform, DirectX::XMMatrixIdentity(), true), m_fovy(fovy), m_aspect(aspect) {
 	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
 }
@@ -144,4 +148,16 @@ void CameraNode::SetData(DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX
 	DirectX::XMStoreFloat4(&m_frustum.Orientation, DirectX::XMQuaternionRotationMatrix(camera_transform));
 	m_fovy = 2.0f * atanf(1.0f / m_projection.m[1][1]);
 	m_aspect = m_projection.m[1][1] / m_projection.m[0][0];
+}
+
+void CameraNode::SetData(DirectX::BoundingFrustum frustum) {
+	DirectX::XMMATRIX view_rot = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&frustum.Orientation));
+	SetTransform(view_rot, DirectX::XMMatrixIdentity(), true);
+	SetPosition3(frustum.Origin);
+
+	m_fovy = 2.0f * atanf(frustum.TopSlope);
+	m_aspect = frustum.TopSlope / frustum.RightSlope;
+
+	DirectX::XMStoreFloat4x4(&m_projection, DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, frustum.Near, frustum.Far));
+	m_frustum = frustum;
 }

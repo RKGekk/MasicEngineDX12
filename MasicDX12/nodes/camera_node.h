@@ -11,6 +11,7 @@ class CameraNode : public SceneNode {
 public:
 	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, float fovy, float aspect, float near_clip, float far_clip);
 	CameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, const DirectX::XMFLOAT4X4& proj);
+	CameraNode(const std::string& name, const DirectX::BoundingFrustum& frustum);
 	CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, float fovy, float aspect, float near_clip, float far_clip);
 	CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj);
 
@@ -43,6 +44,7 @@ public:
 
 protected:
 	void SetData(DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj);
+	void SetData(DirectX::BoundingFrustum frustum);
 
 	DirectX::BoundingFrustum m_frustum;
 	DirectX::XMFLOAT4X4 m_projection;

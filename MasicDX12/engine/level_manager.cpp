@@ -8,7 +8,7 @@ const int LevelManager::GetCurrentLevel() const {
 	return m_CurrentLevel;
 }
 
-bool LevelManager::Initialize(std::vector<std::string>& levels) {
+bool LevelManager::Initialize(const std::vector<std::string>& levels) {
 	return false;
 }
 

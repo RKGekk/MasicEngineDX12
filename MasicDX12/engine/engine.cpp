@@ -56,6 +56,10 @@ ApplicationOptions& Engine::GetConfig() {
 //	return pGame;
 //}
 
+void Engine::ShowWindow() {
+	return m_renderer->GetRenderWindow()->Show();
+}
+
 bool Engine::ProcessMessages() {
 	return m_renderer->GetRenderWindow()->ProcessMessages();
 }

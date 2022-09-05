@@ -43,7 +43,10 @@ public:
 	std::shared_ptr<SceneNode> GetParent();
 
 	void SetName(std::string name);
+
+	void SetPosition(DirectX::XMVECTOR pos);
 	void SetPosition3(const DirectX::XMFLOAT3& pos);
+	void SetPosition4(const DirectX::XMFLOAT4& pos);
 
 	void SetScale(const DirectX::XMFLOAT3& scale);
 	void SetScale(DirectX::XMVECTOR scale);

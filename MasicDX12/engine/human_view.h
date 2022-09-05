@@ -21,31 +21,11 @@
 #include "screen_element_scene.h"
 
 class HumanView : public IEngineView {
-	friend class GameCodeApp;
-
-protected:
-	EngineViewId m_view_id;
-	ActorId m_actor_id;
-	BaseEngineState m_base_game_state;
-
-	float m_current_tick;
-	float m_last_draw;
-	bool m_run_full_speed;
-	bool m_can_draw = true;
-
-	std::unique_ptr<ProcessManager> m_process_manager;
-	ScreenElementList m_screen_elements;
-	std::shared_ptr<ScreenElementScene> m_scene;
-	std::shared_ptr<CameraNode> m_camera;
-
-	int m_PointerRadius;
-	std::vector<std::shared_ptr<IPointerHandler>> m_pointer_handlers;
-	std::vector<std::shared_ptr<IKeyboardHandler>> m_keyboard_handlers;
-
-	virtual void VRenderText();
+	friend class Application;
+	friend class Engine;
 
 public:
-	HumanView(IRenderer* renderer);
+	HumanView();
 	virtual ~HumanView();
 
 	bool LoadGame(const pugi::xml_node& pLevelData);
@@ -79,6 +59,26 @@ public:
 
 protected:
 	virtual bool VLoadGameDelegate(const pugi::xml_node& pLevelData);
+
+	EngineViewId m_view_id;
+	ActorId m_actor_id;
+	BaseEngineState m_base_game_state;
+
+	float m_current_tick;
+	float m_last_draw;
+	bool m_run_full_speed;
+	bool m_can_draw = true;
+
+	std::unique_ptr<ProcessManager> m_process_manager;
+	ScreenElementList m_screen_elements;
+	std::shared_ptr<ScreenElementScene> m_scene;
+	std::shared_ptr<CameraNode> m_camera;
+
+	float m_pointer_radius;
+	std::vector<std::shared_ptr<IPointerHandler>> m_pointer_handlers;
+	std::vector<std::shared_ptr<IKeyboardHandler>> m_keyboard_handlers;
+
+	virtual void VRenderText();
 
 private:
 	void RegisterAllDelegates();

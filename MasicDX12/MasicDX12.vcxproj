@@ -150,18 +150,23 @@
   <ItemGroup>
     <ClCompile Include="actors\actor.cpp" />
     <ClCompile Include="actors\actor_component.cpp" />
+    <ClCompile Include="actors\actor_factory.cpp" />
     <ClCompile Include="actors\enemy_component.cpp" />
+    <ClCompile Include="engine\human_view.cpp" />
+    <ClCompile Include="events\evt_data_new_actor.cpp" />
     <ClCompile Include="actors\mesh_component.cpp" />
     <ClCompile Include="actors\orientation_relation_component.cpp" />
     <ClCompile Include="actors\particle_component.cpp" />
     <ClCompile Include="actors\transform_component.cpp" />
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="engine\base_engine_logic.cpp" />
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="application_options.cpp" />
     <ClCompile Include="engine\level_manager.cpp" />
     <ClCompile Include="actors\base_render_component.cpp" />
     <ClCompile Include="engine\screen_element_scene.cpp" />
     <ClCompile Include="events\evt_data_destroy_actor.cpp" />
+    <ClCompile Include="events\evt_data_environment_loaded.cpp" />
     <ClCompile Include="events\evt_data_key_pressed_event.cpp" />
     <ClCompile Include="events\evt_data_key_released_event.cpp" />
     <ClCompile Include="events\evt_data_maximize_window.cpp" />
@@ -171,7 +176,11 @@
     <ClCompile Include="events\evt_data_new_render_component.cpp" />
     <ClCompile Include="events\evt_data_os_message.cpp" />
     <ClCompile Include="events\evt_data_minimize_window.cpp" />
+    <ClCompile Include="events\evt_data_request_destroy_actor.cpp" />
+    <ClCompile Include="events\evt_data_request_new_actor.cpp" />
+    <ClCompile Include="events\evt_data_request_start_game.cpp" />
     <ClCompile Include="events\evt_data_restore_window.cpp" />
+    <ClCompile Include="events\evt_data_sphere_particle_contact.cpp" />
     <ClCompile Include="events\key_event_args.cpp" />
     <ClCompile Include="events\mouse_button_event_args.cpp" />
     <ClCompile Include="events\mouse_motion_event_args.cpp" />
@@ -304,8 +313,10 @@
   <ItemGroup>
     <ClInclude Include="actors\actor.h" />
     <ClInclude Include="actors\actor_component.h" />
+    <ClInclude Include="actors\actor_factory.h" />
     <ClInclude Include="actors\base_render_component.h" />
     <ClInclude Include="actors\enemy_component.h" />
+    <ClInclude Include="events\evt_data_new_actor.h" />
     <ClInclude Include="actors\mesh_component.h" />
     <ClInclude Include="actors\orientation_relation_component.h" />
     <ClInclude Include="actors\particle_component.h" />
@@ -325,6 +336,7 @@
     <ClInclude Include="engine\level_manager.h" />
     <ClInclude Include="engine\screen_element_scene.h" />
     <ClInclude Include="events\evt_data_destroy_actor.h" />
+    <ClInclude Include="events\evt_data_environment_loaded.h" />
     <ClInclude Include="events\evt_data_key_pressed_event.h" />
     <ClInclude Include="events\evt_data_key_released_event.h" />
     <ClInclude Include="events\evt_data_maximize_window.h" />
@@ -332,7 +344,11 @@
     <ClInclude Include="events\evt_data_move_actor.h" />
     <ClInclude Include="events\evt_data_new_particle_component.h" />
     <ClInclude Include="events\evt_data_new_render_component.h" />
+    <ClInclude Include="events\evt_data_request_destroy_actor.h" />
+    <ClInclude Include="events\evt_data_request_new_actor.h" />
+    <ClInclude Include="events\evt_data_request_start_game.h" />
     <ClInclude Include="events\evt_data_restore_window.h" />
+    <ClInclude Include="events\evt_data_sphere_particle_contact.h" />
     <ClInclude Include="events\evt_data_update_tick.h" />
     <ClInclude Include="events\evt_data_dpi_scale.h" />
     <ClInclude Include="events\evt_data_window_close.h" />

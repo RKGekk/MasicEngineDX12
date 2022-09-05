@@ -10,11 +10,11 @@
 #include "../window_surface.h"
 #include "../tools/game_timer.h"
 #include "base_engine_logic.h"
-//#include "i_screen_element.h"
+#include "i_screen_element.h"
 #include "renderer_enum.h"
 #include "../graphics/i_renderer.h"
 #include "../events/event_manager.h"
-//#include "human_view.h"
+#include "human_view.h"
 
 class Application;
 
@@ -32,17 +32,13 @@ public:
 	std::shared_ptr<BaseEngineLogic> GetGameLogic();
 	std::shared_ptr<IRenderer> GetRenderer();
 	static std::shared_ptr<Engine> GetEngine();
-	//std::shared_ptr<HumanView> GetHumanView();
-	//std::shared_ptr<HumanView> GetHumanViewByName(std::string name);
 
 	void Update(IEventDataPtr pEventData);
 	void RenderFrame();
-	//virtual bool VLoadGame();
-	//int Modal(std::shared_ptr<IScreenElement> pModalScreen, int defaultAnswer);
 
 protected:
 	Engine();
-	//virtual std::unique_ptr<BaseEngineLogic> VCreateGameAndView();
+	virtual std::unique_ptr<BaseEngineLogic> VCreateGameAndView();
 	virtual void VRegisterEvents();
 	virtual void RegisterAllDelegates();
 
