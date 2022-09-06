@@ -150,6 +150,6 @@ const ApplicationOptions& Application::GetApplicationOptions() {
     return m_options;
 }
 
-const GameTimer& Application::GetTimer() {
+GameTimer& Application::GetTimer() {
     return m_timer;
 }

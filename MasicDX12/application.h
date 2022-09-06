@@ -39,7 +39,7 @@ public:
     void Stop();
     
     const ApplicationOptions& GetApplicationOptions();
-    const GameTimer& GetTimer();
+    GameTimer& GetTimer();
 
 protected:
     Application(HINSTANCE hInst);

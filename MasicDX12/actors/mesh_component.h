@@ -14,18 +14,13 @@
 #include <assimp/material.h>
 
 #include "actor_component.h"
+#include "scene_node_component_interface.h"
 
-class SceneNode;
 class CommandList;
 class Material;
 class Mesh;
 
-class MeshComponentInterface : public ActorComponent {
-public:
-	virtual std::shared_ptr<SceneNode> VGetSceneNode() = 0;
-};
-
-class MeshComponent : public MeshComponentInterface {
+class MeshComponent : public SceneNodeComponentInterface {
 public:
 	static const std::string g_Name;
 
@@ -40,10 +35,6 @@ public:
 
 	const std::string& GetResourceName();
 	const std::string& GetResourceDirecory();
-
-protected:
-	virtual bool VDelegateInit(const pugi::xml_node& data);
-	virtual std::shared_ptr<SceneNode> VCreateSceneNode();
 
 private:
 	std::string m_resource_name;

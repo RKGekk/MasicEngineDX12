@@ -26,9 +26,9 @@ void Actor::Destroy() {
     m_components.clear();
 }
 
-void Actor::Update(float deltaMs) {
+void Actor::Update(const GameTimerDelta& delta) {
     for (auto it = m_components.begin(); it != m_components.end(); ++it) {
-        it->second->VUpdate(deltaMs);
+        it->second->VUpdate(delta);
     }
 }
 

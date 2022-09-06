@@ -25,12 +25,12 @@ public:
 
     virtual bool VInit(const pugi::xml_node& data) override;
     virtual void VPostInit() override;
-    virtual void VUpdate(float deltaMs) override;
+    virtual void VUpdate(const GameTimerDelta& delta) override;
 
     virtual Particle& VGetParticle();
     virtual Particle* VGetParticlePtr();
 
 protected:
     Particle m_particle;
-    IEnginePhysics* m_pGamePhysics;
+    std::weak_ptr<IEnginePhysics> m_pGame_physics;
 };

@@ -6,17 +6,18 @@
 #include <algorithm>
 
 #include "process.h"
+#include "../tools/game_timer.h"
 
 class DelayProcess : public Process {
 public:
-	DelayProcess(float delay_in_seconds, std::function<bool(float dt, float tt, float n)> fn);
+	DelayProcess(GameClockDuration delay, std::function<bool(const GameTimerDelta& delta, float n)> fn);
 
 protected:
-	virtual void VOnUpdate(float deltaMs) override;
+	virtual void VOnUpdate(const GameTimerDelta& delta) override;
 
 private:
-	float m_total_time = 0.0f;
-	float m_count_to = 0.0f;
-	float m_count_to_inv = 0.0f;
-	std::function<bool(float, float, float)> m_fn;
+	GameTimerDelta m_total_time;
+	GameClockDuration m_count_to;
+	float m_count_to_inv;
+	std::function<bool(const GameTimerDelta&, float)> m_fn;
 };

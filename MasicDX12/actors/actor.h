@@ -1,14 +1,17 @@
 #pragma once
 
 #include <unordered_map>
+#include <unordered_set>
 #include <memory>
 #include <string>
 #include <utility>
 
 #include <pugixml/pugixml.hpp>
+#include "../tools/game_timer.h"
 
 class Actor;
 class ActorComponent;
+class SceneNode;
 
 using ActorId = unsigned int;
 using ComponentId = unsigned int;
@@ -29,7 +32,7 @@ struct actor_component_hash {
     }
 };
 
-typedef std::unordered_map<std::pair<ActorId, ComponentId>, std::shared_ptr<ISceneNode>, actor_component_hash> SceneActorMap;
+typedef std::unordered_map<std::pair<ActorId, ComponentId>, std::shared_ptr<SceneNode>, actor_component_hash> SceneActorMap;
 typedef std::unordered_map<ActorId, std::unordered_set<ComponentId>> ActorComponentMap;
 
 class Actor {
@@ -48,7 +51,7 @@ public:
     bool Init(const pugi::xml_node& data);
     void PostInit();
     void Destroy();
-    void Update(float deltaMs);
+    void Update(const GameTimerDelta& delta);
 
     std::string ToXML();
 
@@ -74,6 +77,21 @@ public:
     template <class ComponentType>
     std::weak_ptr<ComponentType> GetComponent(const char* name) {
         unsigned int id = ActorComponent::GetIdFromName(name);
+        auto findIt = m_components.find(id);
+        if (findIt != m_components.end()) {
+            StrongActorComponentPtr pBase(findIt->second);
+            std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
+            std::weak_ptr<ComponentType> pWeakSub(pSub);
+            return pWeakSub;
+        }
+        else {
+            return std::weak_ptr<ComponentType>();
+        }
+    }
+
+    template <class ComponentType>
+    std::weak_ptr<ComponentType> GetComponent() {
+        unsigned int id = ActorComponent::GetIdFromName(ComponentType::g_Name.c_str());
         auto findIt = m_components.find(id);
         if (findIt != m_components.end()) {
             StrongActorComponentPtr pBase(findIt->second);

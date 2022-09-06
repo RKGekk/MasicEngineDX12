@@ -4,7 +4,7 @@ ProcessManager::~ProcessManager(void) {
     ClearAllProcesses();
 }
 
-unsigned int ProcessManager::UpdateProcesses(float deltaMs) {
+unsigned int ProcessManager::UpdateProcesses(const GameTimerDelta& delta) {
     unsigned short int successCount = 0;
     unsigned short int failCount = 0;
 
@@ -20,39 +20,33 @@ unsigned int ProcessManager::UpdateProcesses(float deltaMs) {
         }
 
         if (pCurrProcess->GetState() == Process::State::RUNNING) {
-            pCurrProcess->VOnUpdate(deltaMs);
+            pCurrProcess->VOnUpdate(delta);
         }
 
         if (pCurrProcess->IsDead()) {
             switch (pCurrProcess->GetState()) {
-            case Process::State::SUCCEEDED:
-            {
-                pCurrProcess->VOnSuccess();
-                std::shared_ptr<Process> pChild = pCurrProcess->RemoveChild();
-                if (pChild) {
-                    AttachProcess(pChild);
+                case Process::State::SUCCEEDED: {
+                    pCurrProcess->VOnSuccess();
+                    std::shared_ptr<Process> pChild = pCurrProcess->RemoveChild();
+                    if (pChild) {
+                        AttachProcess(pChild);
+                    }
+                    else {
+                        ++successCount;
+                    }
                 }
-                else {
-                    ++successCount;
+                break;
+                case Process::State::FAILED: {
+                    pCurrProcess->VOnFail();
+                    ++failCount;
                 }
-            }
-            break;
-
-            case Process::State::FAILED:
-            {
-                pCurrProcess->VOnFail();
-                ++failCount;
-            }
-            break;
-
-            case Process::State::ABORTED:
-            {
-                pCurrProcess->VOnAbort();
-                ++failCount;
+                break;
+                case Process::State::ABORTED: {
+                    pCurrProcess->VOnAbort();
+                    ++failCount;
+                }
                 break;
             }
-            }
-
             m_processList.erase(thisIt);
         }
     }

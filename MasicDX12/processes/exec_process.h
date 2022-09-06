@@ -13,7 +13,7 @@ public:
 	ExecProcess(std::function<bool()> fn);
 
 protected:
-	virtual void VOnUpdate(float deltaMs) override;
+	virtual void VOnUpdate(const GameTimerDelta& delta) override;
 
 private:
 	std::function<bool()> m_fn;

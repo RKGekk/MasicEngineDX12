@@ -23,14 +23,15 @@ bool EnemyComponent::VInit(const pugi::xml_node& data) {
 		m_target_name = enemy_target_node.value();
 	}
 
-	m_force = ntofloat(data.child("EnemyForce"), m_force);
+	m_force = data.child("EnemyForce").text().as_float(m_force);
 
 	return true;
 }
 
 void EnemyComponent::VPostInit() {}
 
-void EnemyComponent::VUpdate(float deltaMs) {
+void EnemyComponent::VUpdate(const GameTimerDelta& delta) {
+	float deltaMs = delta.fGetDeltaMilliseconds();
 	using namespace DirectX;
 	if (Engine::GetEngine()->GetGameLogic()->GetState() != BaseEngineState::BGS_Running) { return; }
 	StrongActorPtr pTargetActor = MakeStrongPtr(Engine::GetEngine()->GetGameLogic()->VGetActorByName(m_target_name));

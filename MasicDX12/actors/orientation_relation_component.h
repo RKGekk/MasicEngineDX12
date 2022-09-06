@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 
 #include "actor_component.h"
+#include "../tools/game_timer.h"
 
 using namespace std::literals;
 
@@ -23,7 +24,7 @@ public:
 
     virtual bool VInit(const pugi::xml_node& data) override;
     virtual void VPostInit() override;
-    virtual void VUpdate(float deltaMs) override;
+    virtual void VUpdate(const GameTimerDelta& delta) override;
 
     virtual const std::string& VGetRelatedToName();
     virtual WeakActorPtr VGetRelatedToActor();

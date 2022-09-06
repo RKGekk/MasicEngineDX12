@@ -1,14 +1,18 @@
 #include "delay_process.h"
 
-DelayProcess::DelayProcess(float delay_in_seconds, std::function<bool(float, float, float)> fn) : m_count_to(delay_in_seconds), m_count_to_inv(1.0f / delay_in_seconds), m_fn(std::move(fn)) {}
+DelayProcess::DelayProcess(GameClockDuration delay, std::function<bool(const GameTimerDelta& delta, float)> fn) : m_count_to(delay), m_fn(std::move(fn)) {
+	m_count_to_inv = (1.0f / std::chrono::duration<float>(delay).count());
+}
 
-void DelayProcess::VOnUpdate(float deltaMs) {
-	m_total_time += deltaMs;
-	float n = std::clamp(m_total_time * m_count_to_inv, 0.0f, 1.0f);
-	if (!m_fn(deltaMs, m_total_time, n)) {
+void DelayProcess::VOnUpdate(const GameTimerDelta& delta) {
+	m_total_time.AddDeltaDuration(delta.GetDeltaDuration());
+	GameClockDuration my_total_time = m_total_time.GetTotalDuration();
+	float tt = std::chrono::duration<float>(my_total_time).count();
+	float n = std::clamp(tt * m_count_to_inv, 0.0f, 1.0f);
+	if (!m_fn(m_total_time, n)) {
 		Fail();
 	};
-	if (m_total_time >= m_count_to) {
+	if (my_total_time >= m_count_to) {
 		Succeed();
 	}
 }

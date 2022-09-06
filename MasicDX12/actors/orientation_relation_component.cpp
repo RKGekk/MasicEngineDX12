@@ -32,16 +32,16 @@ bool OrientationRelationComponent::VInit(const pugi::xml_node& data) {
 		m_relate_to = relate_node.value();
 	}
 
-	m_at_speed = ntofloat(data.child("AtSpeed"), m_at_speed);
+	m_at_speed = data.child("AtSpeed").text().as_float(m_at_speed);
 
 	return true;
 }
 
 void OrientationRelationComponent::VPostInit() {}
 
-void OrientationRelationComponent::VUpdate(float deltaMs) {
+void OrientationRelationComponent::VUpdate(const GameTimerDelta& delta) {
 	using namespace DirectX;
-
+	float deltaMs = delta.fGetDeltaMilliseconds();
 	std::shared_ptr<Actor> act = GetOwner();
 	std::shared_ptr<TransformComponent> tc = MakeStrongPtr(act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")));
 	if (m_first) {

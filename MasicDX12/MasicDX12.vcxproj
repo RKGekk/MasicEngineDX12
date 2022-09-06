@@ -151,6 +151,7 @@
     <ClCompile Include="actors\actor.cpp" />
     <ClCompile Include="actors\actor_component.cpp" />
     <ClCompile Include="actors\actor_factory.cpp" />
+    <ClCompile Include="actors\camera_component.cpp" />
     <ClCompile Include="actors\enemy_component.cpp" />
     <ClCompile Include="engine\human_view.cpp" />
     <ClCompile Include="events\evt_data_new_actor.cpp" />
@@ -315,7 +316,9 @@
     <ClInclude Include="actors\actor_component.h" />
     <ClInclude Include="actors\actor_factory.h" />
     <ClInclude Include="actors\base_render_component.h" />
+    <ClInclude Include="actors\camera_component.h" />
     <ClInclude Include="actors\enemy_component.h" />
+    <ClInclude Include="actors\scene_node_component_interface.h" />
     <ClInclude Include="events\evt_data_new_actor.h" />
     <ClInclude Include="actors\mesh_component.h" />
     <ClInclude Include="actors\orientation_relation_component.h" />

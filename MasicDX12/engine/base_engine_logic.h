@@ -11,6 +11,7 @@
 #include "level_manager.h"
 #include "i_engine_logic.h"
 #include "../processes/process_manager.h"
+#include "../tools/game_timer.h"
 #include "base_engine_state.h"
 #include "../tools/mt_random.h"
 #include "i_engine_view.h"
@@ -51,11 +52,13 @@ public:
 
 	std::string GetActorXml(const ActorId id);
 
+	std::shared_ptr<CameraNode> GetActiveCamera();
+
 	const LevelManager& GetLevelManager();
 	virtual std::shared_ptr<IEnginePhysics> VGetGamePhysics() override;
 	virtual bool VLoadGame(const std::string& level_resource) override;
 	virtual bool VLoadGame(const std::string& level_resource, std::shared_ptr<HumanView> pHuman_view);
-	virtual void VOnUpdate(float time, float elapsed_time) override;
+	virtual void VOnUpdate(const GameTimerDelta& delta) override;
 	virtual void VChangeState(BaseEngineState new_state) override;
 	const BaseEngineState GetState() const;
 
@@ -83,7 +86,7 @@ protected:
 	using ComponentsMap = std::unordered_map<ComponentId, std::unordered_set<ActorId>>;
 	using ActorNamesMap = std::unordered_map<std::string, StrongActorPtr>;
 
-	float m_life_time;
+	GameClockDuration m_life_time;
 
 	GameViewList m_game_views;
 	std::unique_ptr<ProcessManager> m_process_manager;
@@ -96,6 +99,7 @@ protected:
 	ActorNamesMap m_actors_names;
 	ActorId m_last_actor_id;
 	BaseEngineState m_state;
+	std::shared_ptr<CameraNode> m_active_camera;
 
 	int m_expected_players;
 	int m_human_players_attached;

@@ -570,6 +570,9 @@
     <ClCompile Include="engine\human_view.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="actors\camera_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1191,6 +1194,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="events\evt_data_new_actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\scene_node_component_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\camera_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

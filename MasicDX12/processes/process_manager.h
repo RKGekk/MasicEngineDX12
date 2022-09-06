@@ -3,6 +3,7 @@
 #include <list>
 
 #include "process.h"
+#include "../tools/game_timer.h"
 
 class ProcessManager {
 	typedef std::list<std::shared_ptr<Process>> ProcessList;
@@ -12,7 +13,7 @@ class ProcessManager {
 public:
 	~ProcessManager();
 
-	unsigned int UpdateProcesses(float deltaMs);
+	unsigned int UpdateProcesses(const GameTimerDelta& delta);
 	std::weak_ptr<Process> AttachProcess(std::shared_ptr<Process> pProcess);
 	void AbortAllProcesses(bool immediate);
 

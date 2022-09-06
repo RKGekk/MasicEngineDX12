@@ -7,13 +7,15 @@
 
 class ScreenElementScene : public IScreenElement, public Scene {
 public:
-	ScreenElementScene(IRenderer* renderer);
+	ScreenElementScene();
 	virtual ~ScreenElementScene() {}
 
-	virtual void VOnUpdate(float deltaMS) override;
 	virtual HRESULT VOnRestore() override;
-	virtual HRESULT VOnRender(double fTime, float fElapsedTime) override;
 	virtual HRESULT VOnLostDevice() override;
+
+	virtual void VOnUpdate(const GameTimerDelta& delta) override;
+	virtual HRESULT VOnRender(const GameTimerDelta& delta) override;
+	
 	virtual int VGetZOrder() const override;
 	virtual void VSetZOrder(int const zOrder) override;
 
@@ -22,7 +24,7 @@ public:
 	virtual bool VIsVisible() const override;
 	virtual void VSetVisible(bool visible) override;
 
-	virtual bool VAddChild(ActorId id, ComponentId cid, std::shared_ptr<ISceneNode> kid);
+	virtual bool VAddChild(std::shared_ptr<SceneNode> kid);
 
 private:
 	bool m_is_visible = true;

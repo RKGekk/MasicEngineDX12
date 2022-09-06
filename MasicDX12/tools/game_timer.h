@@ -10,7 +10,7 @@ const GameClockDuration ZERO_DURATION = GameClockDuration(0);
 
 class GameTimerDelta {
 public:
-    GameTimerDelta(GameClockDuration delta_time, GameClockDuration total_time);
+    GameTimerDelta(const GameClockDuration& delta_time, const GameClockDuration& total_time);
 
     double GetDeltaNanoseconds() const;
     double GetDeltaMicroseconds() const;
@@ -22,7 +22,9 @@ public:
     float fGetDeltaMilliseconds() const;
     float fGetDeltaSeconds() const;
 
-    GameClockDuration GetDeltaDuration() const;
+    const GameClockDuration& GetDeltaDuration() const;
+    void AddDeltaDuration(const GameClockDuration& delta);
+    void AddDeltaDuration(const GameTimerDelta& delta);
 
     double GetTotalNanoseconds() const;
     double GetTotalMicroseconds() const;
@@ -34,7 +36,7 @@ public:
     float fGetTotalMilliSeconds() const;
     float fGetTotalSeconds() const;
 
-    GameClockDuration GetTotalDuration() const;
+    const GameClockDuration& GetTotalDuration() const;
 
 protected:
     GameClockDuration m_delta_time_duration;

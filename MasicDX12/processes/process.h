@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "../tools/game_timer.h"
+
 class Process;
 typedef std::shared_ptr<Process> StrongProcessPtr;
 typedef std::weak_ptr<Process> WeakProcessPtr;
@@ -39,7 +41,7 @@ public:
 
 protected:
 	virtual void VOnInit();
-	virtual void VOnUpdate(float deltaMs) = 0;
+	virtual void VOnUpdate(const GameTimerDelta& delta) = 0;
 	virtual void VOnSuccess();
 	virtual void VOnFail();
 	virtual void VOnAbort();

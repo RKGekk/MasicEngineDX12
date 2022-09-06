@@ -8,7 +8,7 @@ ActorComponent::~ActorComponent() {
 
 void ActorComponent::VPostInit() {}
 
-void ActorComponent::VUpdate(float deltaMs) {}
+void ActorComponent::VUpdate(const GameTimerDelta& delta) {}
 
 void ActorComponent::VOnChanged() {}
 

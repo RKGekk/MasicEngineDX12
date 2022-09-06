@@ -24,6 +24,8 @@ class HumanView : public IEngineView {
 	friend class Application;
 	friend class Engine;
 
+	static const std::string g_Name;
+
 public:
 	HumanView();
 	virtual ~HumanView();
@@ -32,28 +34,30 @@ public:
 
 	virtual HRESULT VOnRestore() override;
 	virtual HRESULT VOnLostDevice() override;
-	virtual void VOnRender(double fTime, float fElapsedTime) override;
+
+	virtual void VOnRender(const GameTimerDelta& delta) override;
+	virtual void VOnUpdate(const GameTimerDelta& delta) override;
+
 	virtual EngineViewType VGetType() override;
 	virtual EngineViewId VGetId() const override;
 
 	virtual void VOnAttach(EngineViewId vid, ActorId aid) override;
 	virtual LRESULT CALLBACK VOnMsgProc(HWND m_hWnd, UINT m_uMsg, WPARAM m_wParam, LPARAM m_lParam) override;
-	virtual void VOnUpdate(float deltaMilliseconds) override;
-
+	
 	virtual void VPushElement(std::shared_ptr<IScreenElement> pElement);
 	virtual void VRemoveElement(std::shared_ptr<IScreenElement> pElement);
 
-	virtual void VActivateScene(bool isActive);
-	virtual void VCanDraw(bool isCanDraw);
+	virtual void VActivateScene(bool is_active);
+	virtual void VCanDraw(bool is_can_draw);
 
 	void TogglePause(bool active);
 	void HandleGameState(BaseEngineState newState);
 
-	ProcessManager* GetProcessManager();
-
-	virtual void VSetCameraOffset(const DirectX::XMFLOAT4& camOffset);
 	virtual void VSetControlledActor(ActorId actorId);
 	virtual std::shared_ptr<CameraNode> VGetCamera();
+	virtual void VSetCameraByName(std::string camera_name);
+
+	virtual const std::string& VGetName() override;
 
 	void GameStateDelegate(IEventDataPtr pEventData);
 
@@ -64,15 +68,15 @@ protected:
 	ActorId m_actor_id;
 	BaseEngineState m_base_game_state;
 
-	float m_current_tick;
-	float m_last_draw;
+	GameClockDuration m_current_tick;
+	GameClockDuration m_last_draw;
 	bool m_run_full_speed;
 	bool m_can_draw = true;
 
 	std::unique_ptr<ProcessManager> m_process_manager;
 	ScreenElementList m_screen_elements;
 	std::shared_ptr<ScreenElementScene> m_scene;
-	std::shared_ptr<CameraNode> m_camera;
+	std::weak_ptr<CameraNode> m_camera;
 
 	float m_pointer_radius;
 	std::vector<std::shared_ptr<IPointerHandler>> m_pointer_handlers;

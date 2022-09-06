@@ -24,11 +24,12 @@ ParticleComponent::ParticleComponent() {
     m_particle.setRadius(1.0f);
     m_particle.setCanSleep(true);
     m_particle.setAwake(true);
-    m_pGamePhysics = nullptr;
 }
 
 ParticleComponent::~ParticleComponent() {
-    m_pGamePhysics->VRemoveParticle(&m_particle);
+    if (auto phys = m_pGame_physics.lock()) {
+        phys->VRemoveParticle(&m_particle);
+    }
 }
 
 pugi::xml_node ParticleComponent::VGenerateXml() {
@@ -36,18 +37,16 @@ pugi::xml_node ParticleComponent::VGenerateXml() {
 }
 
 bool ParticleComponent::VInit(const pugi::xml_node& data) {
-    m_pGamePhysics = Engine::GetEngine()->GetGameLogic()->VGetGamePhysics();
-    if (!m_pGamePhysics) {
-        return false;
-    }
+    m_pGame_physics = Engine::GetEngine()->GetGameLogic()->VGetGamePhysics();
+    if (m_pGame_physics.expired()) return false;
 
     m_particle.setVelocity3f(posfromattr3f(data.child("Velocity")));
     m_particle.setAcceleration3f(posfromattr3f(data.child("Acceleration")));
-    m_particle.setMass(ntofloat(data.child("Acceleration"), m_particle.getMass()));
-    m_particle.setDamping(ntofloat(data.child("Damping"), m_particle.getDamping()));
-    m_particle.setRadius(ntofloat(data.child("Radius"), m_particle.getRadius()));
-    m_particle.setAwake(ntobool(data.child("IsSleep"), m_particle.getAwake()));
-    m_particle.setCanSleep(ntobool(data.child("CanSleep"), m_particle.getCanSleep()));
+    m_particle.setMass(data.child("Acceleration").text().as_float(m_particle.getMass()));
+    m_particle.setDamping(data.child("Damping").text().as_float(m_particle.getDamping()));
+    m_particle.setRadius(data.child("Radius").text().as_float(m_particle.getRadius()));
+    m_particle.setAwake(data.child("IsSleep").text().as_bool(m_particle.getAwake()));
+    m_particle.setCanSleep(data.child("CanSleep").text().as_bool(m_particle.getCanSleep()));
 
     return true;
 }
@@ -62,7 +61,7 @@ void ParticleComponent::VPostInit() {
     IEventManager::Get()->VTriggerEvent(pEvent);
 }
 
-void ParticleComponent::VUpdate(float deltaMs) {}
+void ParticleComponent::VUpdate(const GameTimerDelta& delta) {}
 
 Particle& ParticleComponent::VGetParticle() {
     return m_particle;

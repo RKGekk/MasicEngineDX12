@@ -6,6 +6,7 @@
 #include <pugixml/pugixml.hpp>
 
 #include "Actor.h"
+#include "../tools/game_timer.h"
 
 class ActorComponent {
 	friend class ActorFactory;
@@ -18,7 +19,7 @@ public:
 
 	virtual bool VInit(const pugi::xml_node& data) = 0;
 	virtual void VPostInit();
-	virtual void VUpdate(float deltaMs);
+	virtual void VUpdate(const GameTimerDelta& delta);
 	virtual void VOnChanged();
 
 	virtual pugi::xml_node VGenerateXml() = 0;

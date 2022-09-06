@@ -167,6 +167,10 @@ std::string BaseEngineLogic::GetActorXml(const ActorId id) {
 	return std::string();
 }
 
+std::shared_ptr<CameraNode> BaseEngineLogic::GetActiveCamera() {
+	return m_active_camera;
+}
+
 const LevelManager& BaseEngineLogic::GetLevelManager() {
 	return *m_level_manager;
 }
@@ -237,9 +241,12 @@ bool BaseEngineLogic::VLoadGame(const std::string& level_resource, std::shared_p
 	return true;
 }
 
-void BaseEngineLogic::VOnUpdate(float time, float elapsed_time) {
-	m_life_time += elapsed_time;
-	m_process_manager->UpdateProcesses(elapsed_time);
+void BaseEngineLogic::VOnUpdate(const GameTimerDelta& delta) {
+	using namespace std::literals;
+	GameClockDuration delta_duration = delta.GetDeltaDuration();
+	GameClockDuration total_duration = delta.GetTotalDuration();
+	m_life_time += delta_duration;
+	m_process_manager->UpdateProcesses(delta);
 
 	switch (m_state) {
 		case BaseEngineState::BGS_Initializing: {
@@ -251,19 +258,20 @@ void BaseEngineLogic::VOnUpdate(float time, float elapsed_time) {
 		case BaseEngineState::BGS_LoadingGameEnvironment: {}
 		break;
 		case BaseEngineState::BGS_Running: {
-			if (elapsed_time > 0.016f) { m_physics->VOnUpdate(0.016f); }
-			else { m_physics->VOnUpdate(elapsed_time); }
+			const static GameTimerDelta const_update_time = GameTimerDelta(std::chrono::duration_cast<GameClockDuration>(16.0ms), std::chrono::duration_cast<GameClockDuration>(16.0ms));
+			if (delta_duration > 16.0ms) { m_physics->VOnUpdate(const_update_time); }
+			else { m_physics->VOnUpdate(delta); }
 			m_physics->VSyncVisibleScene();
 		}
 		break;
 	}
 
 	for (GameViewList::iterator it = m_game_views.begin(); it != m_game_views.end(); ++it) {
-		(*it)->VOnUpdate(elapsed_time);
+		(*it)->VOnUpdate(delta);
 	}
 
 	for (ActorMap::const_iterator it = m_actors.begin(); it != m_actors.end(); ++it) {
-		it->second->Update(elapsed_time);
+		it->second->Update(delta);
 	}
 }
 
@@ -287,14 +295,14 @@ void BaseEngineLogic::VChangeState(BaseEngineState newState) {
 				return true;
 			});
 			std::shared_ptr<ExecProcess> exec2 = std::make_shared<ExecProcess>([]() {
-				std::shared_ptr<HumanView> gameView(new HumanView(g_pApp->GetRenderer()));
-				g_pApp->GetGameLogic()->VLoadGame("World.xml", gameView);
+				std::shared_ptr<HumanView> gameView(new HumanView());
+				Engine::GetEngine()->GetGameLogic()->VLoadGame("World.xml", gameView);
 				gameView->VCanDraw(false);
-				g_pApp->GetGameLogic()->VAddView(gameView);
+				Engine::GetEngine()->GetGameLogic()->VAddView(gameView);
 				return true;
 			});
 			std::shared_ptr<ExecProcess> exec3 = std::make_shared<ExecProcess>([]() {
-				g_pApp->GetTimer().Reset();
+				Application::Get().GetTimer().Reset();
 				std::shared_ptr<EvtData_Environment_Loaded> pEvent(new EvtData_Environment_Loaded());
 				IEventManager::Get()->VTriggerEvent(pEvent);
 				return true;

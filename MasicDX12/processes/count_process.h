@@ -5,13 +5,14 @@
 #include <utility>
 
 #include "process.h"
+#include "../tools/game_timer.h"
 
 class CountProcess : public Process {
 public:
 	CountProcess(unsigned int count_to, std::function<void(unsigned int)> fn);
 
 protected:
-	virtual void VOnUpdate(float deltaMs) override;
+	virtual void VOnUpdate(const GameTimerDelta& delta) override;
 
 private:
 	unsigned int m_count = 0u;

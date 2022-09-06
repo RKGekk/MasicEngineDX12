@@ -1,9 +1,9 @@
 #include "screen_element_scene.h"
 
-ScreenElementScene::ScreenElementScene(IRenderer* renderer) : Scene(renderer) {}
+ScreenElementScene::ScreenElementScene() : Scene() {}
 
-void ScreenElementScene::VOnUpdate(float deltaMS) {
-	OnUpdate(deltaMS);
+void ScreenElementScene::VOnUpdate(const GameTimerDelta& delta) {
+	OnUpdate();
 }
 
 HRESULT ScreenElementScene::VOnRestore() {
@@ -11,8 +11,7 @@ HRESULT ScreenElementScene::VOnRestore() {
 	return S_OK;
 }
 
-HRESULT ScreenElementScene::VOnRender(double fTime, float fElapsedTime) {
-	OnRender();
+HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta) {
 	return S_OK;
 }
 
@@ -39,6 +38,6 @@ void ScreenElementScene::VSetVisible(bool visible) {
 	m_is_visible = visible;
 }
 
-bool ScreenElementScene::VAddChild(ActorId id, ComponentId cid, std::shared_ptr<ISceneNode> kid) {
-	return Scene::AddChild(id, cid, kid);
+bool ScreenElementScene::VAddChild(std::shared_ptr<SceneNode> kid) {
+	return Scene::AddChild(kid);
 }

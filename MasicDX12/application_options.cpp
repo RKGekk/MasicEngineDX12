@@ -28,12 +28,12 @@ bool ApplicationOptions::Init(const std::string& xml_file_name) {
 
 	pugi::xml_node graphics_node = RootNode.child("Graphics");
 	if (graphics_node) {
-		DebugUI = ntobool(graphics_node.child("DebugUI"), DebugUI);
-		FullScreenMax = ntobool(graphics_node.child("FullScreenMax"), FullScreenMax);
-		FullScreen = ntobool(graphics_node.child("FullScreen"), FullScreen);
-		RunFullSpeed = ntobool(graphics_node.child("RunFullSpeed"), RunFullSpeed);
-		ScreenHeight = ntoint(graphics_node.child("Height"), ScreenHeight);
-		ScreenWidth = ntoint(graphics_node.child("Width"), ScreenWidth);
+		DebugUI = graphics_node.child("DebugUI").text().as_bool(DebugUI);
+		FullScreenMax = graphics_node.child("FullScreenMax").text().as_bool(FullScreenMax);
+		FullScreen = graphics_node.child("FullScreen").text().as_bool(FullScreen);
+		RunFullSpeed = graphics_node.child("RunFullSpeed").text().as_bool(RunFullSpeed);
+		ScreenHeight = graphics_node.child("Height").text().as_int(ScreenHeight);
+		ScreenWidth = graphics_node.child("Width").text().as_int(ScreenWidth);
 
 		pugi::xml_node renderer_node = graphics_node.child("Renderer");
 		if (renderer_node) {
@@ -48,8 +48,8 @@ bool ApplicationOptions::Init(const std::string& xml_file_name) {
 
 	pugi::xml_node audio_node = RootNode.child("Sound");
 	if (audio_node) {
-		MusicVolume = attrtofloat(audio_node.attribute("musicVolume"), MusicVolume);
-		SoundEffectsVolume = attrtofloat(audio_node.attribute("sfxVolume"), SoundEffectsVolume);
+		MusicVolume = audio_node.attribute("musicVolume").as_float(MusicVolume);
+		SoundEffectsVolume = audio_node.attribute("sfxVolume").as_float(SoundEffectsVolume);
 	}
 	
 	return true;

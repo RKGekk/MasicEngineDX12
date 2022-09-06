@@ -2,7 +2,7 @@
 
 ExecProcess::ExecProcess(std::function<bool()> fn) : m_fn(std::move(fn)) {}
 
-void ExecProcess::VOnUpdate(float deltaMs) {
+void ExecProcess::VOnUpdate(const GameTimerDelta& delta) {
 	if (m_fn()) {
 		Succeed();
 	}

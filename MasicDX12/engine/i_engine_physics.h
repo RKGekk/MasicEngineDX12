@@ -8,12 +8,13 @@
 #include "../actors/actor.h"
 #include "../physics/particle.h"
 #include "../physics/particle_contact_generator.h"
+#include "../tools/game_timer.h"
 
 class IEnginePhysics {
 public:
 
 	virtual bool VInitialize() = 0;
-	virtual void VOnUpdate(float deltaSeconds) = 0;
+	virtual void VOnUpdate(const GameTimerDelta& delta) = 0;
 	virtual void VSyncVisibleScene() = 0;
 
 	virtual void VAddParticleActor(const ActorId actorId) = 0;
