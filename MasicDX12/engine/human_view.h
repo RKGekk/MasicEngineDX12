@@ -6,10 +6,6 @@
 
 #include <DirectXMath.h>
 
-#include "../graphics/imgui/imgui.h"
-#include "../graphics/imgui/imgui_impl_win32.h"
-#include "../graphics/imgui/imgui_impl_dx12.h"
-
 #include "i_engine_view.h"
 #include "../processes/process_manager.h"
 #include "base_engine_state.h"
@@ -19,6 +15,8 @@
 #include "i_keyboard_handler.h"
 #include "../nodes/camera_node.h"
 #include "screen_element_scene.h"
+#include "actor_menu_ui.h"
+#include "movement_controller.h"
 
 class HumanView : public IEngineView {
 	friend class Application;
@@ -81,6 +79,14 @@ protected:
 	float m_pointer_radius;
 	std::vector<std::shared_ptr<IPointerHandler>> m_pointer_handlers;
 	std::vector<std::shared_ptr<IKeyboardHandler>> m_keyboard_handlers;
+
+	bool m_bShowUI;
+	bool m_bShowDebugUI;
+	std::wstring m_gameplayText;
+	std::shared_ptr<ActorMenuUI> m_ActorMenuUI;
+
+	std::shared_ptr<MovementController> m_pFreeCameraController;
+	std::shared_ptr<SceneNode> m_pTeapot;
 
 	virtual void VRenderText();
 

@@ -28,6 +28,8 @@ public:
     // transform functions
     const DirectX::XMFLOAT4X4& GetTransform4x4f() const;
     DirectX::XMMATRIX GetTransform() const;
+    DirectX::XMFLOAT4X4 GetInvTransform4x4f() const;
+    DirectX::XMMATRIX GetInvTransform() const;
 
     void SetTransform(const DirectX::XMFLOAT4X4& newTransform);
     void SetTransform(DirectX::FXMMATRIX newTransform);

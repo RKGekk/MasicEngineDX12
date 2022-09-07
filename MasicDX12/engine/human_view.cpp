@@ -17,7 +17,6 @@ HumanView::HumanView() {
 
 	RegisterAllDelegates();
 	m_base_game_state = BaseEngineState::BGS_Initializing;
-
 	
 	m_scene.reset(new ScreenElementScene());
 }

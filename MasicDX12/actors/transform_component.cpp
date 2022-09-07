@@ -34,6 +34,16 @@ DirectX::XMMATRIX TransformComponent::GetTransform() const {
     return DirectX::XMLoadFloat4x4(&m_transform);
 }
 
+DirectX::XMFLOAT4X4 TransformComponent::GetInvTransform4x4f() const {
+    DirectX::XMFLOAT4X4 res = {};
+    DirectX::XMStoreFloat4x4(&res, GetInvTransform());
+    return res;
+}
+
+DirectX::XMMATRIX TransformComponent::GetInvTransform() const {
+    return DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&m_transform));
+}
+
 void TransformComponent::SetTransform(const DirectX::XMFLOAT4X4& newTransform) {
     m_transform = newTransform;
 }
