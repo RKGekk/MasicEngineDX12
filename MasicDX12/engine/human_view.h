@@ -51,7 +51,7 @@ public:
 	void TogglePause(bool active);
 	void HandleGameState(BaseEngineState newState);
 
-	virtual void VSetControlledActor(ActorId actorId);
+	virtual void VSetControlledActor(std::shared_ptr<Actor> actor);
 	virtual std::shared_ptr<CameraNode> VGetCamera();
 	virtual void VSetCameraByName(std::string camera_name);
 
@@ -63,7 +63,7 @@ protected:
 	virtual bool VLoadGameDelegate(const pugi::xml_node& pLevelData);
 
 	EngineViewId m_view_id;
-	ActorId m_actor_id;
+	std::weak_ptr<Actor> m_actor;
 	BaseEngineState m_base_game_state;
 
 	GameClockDuration m_current_tick;
@@ -71,7 +71,7 @@ protected:
 	bool m_run_full_speed;
 	bool m_can_draw = true;
 
-	std::unique_ptr<ProcessManager> m_process_manager;
+	std::shared_ptr<ProcessManager> m_process_manager;
 	ScreenElementList m_screen_elements;
 	std::shared_ptr<ScreenElementScene> m_scene;
 	std::weak_ptr<CameraNode> m_camera;
@@ -80,13 +80,13 @@ protected:
 	std::vector<std::shared_ptr<IPointerHandler>> m_pointer_handlers;
 	std::vector<std::shared_ptr<IKeyboardHandler>> m_keyboard_handlers;
 
-	bool m_bShowUI;
-	bool m_bShowDebugUI;
-	std::wstring m_gameplayText;
-	std::shared_ptr<ActorMenuUI> m_ActorMenuUI;
+	bool m_bShow_ui;
+	bool m_bShow_debug_ui;
+	std::wstring m_gameplay_text;
+	std::shared_ptr<ActorMenuUI> m_actor_menu_ui;
 
-	std::shared_ptr<MovementController> m_pFreeCameraController;
-	std::shared_ptr<SceneNode> m_pTeapot;
+	std::shared_ptr<MovementController> m_pFree_camera_controller;
+	std::weak_ptr<Actor> m_pTeapot;
 
 	virtual void VRenderText();
 

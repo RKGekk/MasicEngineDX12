@@ -3,6 +3,7 @@
 #include "../application.h"
 #include "engine.h"
 #include "../actors/camera_component.h"
+#include "../events/evt_data_update_tick.h"
 
 #include <DirectXCollision.h>
 
@@ -10,10 +11,17 @@ using namespace std::literals;
 const std::string HumanView::g_Name = "Level"s;
 
 HumanView::HumanView() {
-	m_process_manager = std::make_unique<ProcessManager>();
+	m_process_manager = std::make_shared<ProcessManager>();
 
 	m_pointer_radius = 1.0f;
 	m_view_id = 0xffffffff;
+
+	m_bShow_ui = false;
+	m_bShow_debug_ui = Application::Get().GetApplicationOptions().DebugUI;
+	if (m_bShow_debug_ui) {
+		m_actor_menu_ui = std::make_shared<ActorMenuUI>(m_process_manager);
+		VPushElement(m_actor_menu_ui);
+	}
 
 	RegisterAllDelegates();
 	m_base_game_state = BaseEngineState::BGS_Initializing;
@@ -78,6 +86,11 @@ void HumanView::VOnUpdate(const GameTimerDelta& delta) {
 	for (ScreenElementList::iterator i = m_screen_elements.begin(); i != m_screen_elements.end(); ++i) {
 		(*i)->VOnUpdate(delta);
 	}
+	if (m_pFree_camera_controller) {
+		m_pFree_camera_controller->OnUpdate(delta);
+	}
+	std::shared_ptr<EvtData_Update_Tick> pTickEvent(new EvtData_Update_Tick(delta.GetDeltaDuration(), delta.GetTotalDuration()));
+	IEventManager::Get()->VTriggerEvent(pTickEvent);
 }
 
 EngineViewType HumanView::VGetType() {
@@ -198,8 +211,29 @@ void HumanView::TogglePause(bool active) {}
 
 void HumanView::HandleGameState(BaseEngineState newState) {}
 
-void HumanView::VSetControlledActor(ActorId actorId) {
-	m_actor_id = actorId;
+void HumanView::VSetControlledActor(std::shared_ptr<Actor> actor) {
+	m_pTeapot = actor;
+	if (m_pTeapot.expired()) {
+		m_keyboard_handlers.clear();
+		m_pointer_handlers.clear();
+		//m_pFreeCameraController.reset(new MovementController(m_camera, 0, 0, false, true));
+		//m_keyboard_handlers.push_back(m_pFreeCameraController);
+		//m_pointer_handlers.push_back(m_pFreeCameraController);
+		//if (auto camera = m_camera.lock()) {
+		//	camera->SetTarget(nullptr);
+		//}
+		return;
+	}
+	else {
+		m_keyboard_handlers.clear();
+		m_pointer_handlers.clear();
+		m_pFree_camera_controller.reset();
+		m_keyboard_handlers.push_back(m_pFree_camera_controller);
+		m_pointer_handlers.push_back(m_pFree_camera_controller);
+
+		//m_camera->SetTarget(m_pTeapot);
+	}
+	m_actor = actor;
 }
 
 std::shared_ptr<CameraNode> HumanView::VGetCamera() {
@@ -238,6 +272,13 @@ bool HumanView::VLoadGameDelegate(const pugi::xml_node& pLevel_data) {
 		}
 	}
 	VPushElement(m_scene);
+	m_keyboard_handlers.clear();
+	m_pointer_handlers.clear();
+	//m_pFreeCameraController.reset(new MovementController(m_camera, 0, 0, false, true));
+	//m_keyboard_handlers.push_back(m_pFreeCameraController);
+	//m_pointer_handlers.push_back(m_pFreeCameraController);
+
+	m_scene->VOnRestore();
 	return false;
 }
 

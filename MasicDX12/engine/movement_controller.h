@@ -16,7 +16,7 @@ public:
 	MovementController(std::shared_ptr<Actor> object, float initial_yaw, float initial_pitch, bool rotate_when_LButton_down, bool rotate_when_RButton_down);
 	void SetObject(std::shared_ptr<SceneNode> new_object);
 
-	void OnUpdate(float elapsed_seconds);
+	void OnUpdate(const GameTimerDelta& delta);
 
 	bool VOnPointerMove(int x, int y, const int radius) override;
 	bool VOnPointerButtonDown(int x, int y, const int radius, const std::string& button_name) override;

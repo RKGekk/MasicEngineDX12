@@ -69,9 +69,9 @@ void MovementController::SetObject(std::shared_ptr<SceneNode> new_object) {
 	m_object = new_object;
 }
 
-void MovementController::OnUpdate(float elapsed_seconds) {
+void MovementController::OnUpdate(const GameTimerDelta& delta) {
 	using namespace DirectX;
-
+	float elapsed_seconds = delta.fGetDeltaSeconds();
 	if (m_object.expired()) return;
 	std::shared_ptr<Actor> act = m_object.lock();
 	std::shared_ptr<TransformComponent> tc;
