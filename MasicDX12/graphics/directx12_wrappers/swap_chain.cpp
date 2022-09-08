@@ -114,6 +114,14 @@ void SwapChain::Resize(uint32_t width, uint32_t height) {
     }
 }
 
+uint32_t SwapChain::GetWidth() {
+    return m_width;
+}
+
+uint32_t SwapChain::GetHeight() {
+    return m_height;
+}
+
 const RenderTarget& SwapChain::GetRenderTarget() const {
     m_render_target.AttachTexture(AttachmentPoint::Color0, m_back_buffer_textures[m_current_back_buffer_index]);
     return m_render_target;

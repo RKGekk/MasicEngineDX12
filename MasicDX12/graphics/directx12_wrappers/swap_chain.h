@@ -22,20 +22,19 @@ public:
 	void SetVSync(bool vsync);
 	bool GetVSync() const;
 	void ToggleVSync();
-
 	bool IsTearingSupported() const;
 
 	void WaitForSwapChain();
 
 	void Resize(uint32_t width, uint32_t height);
-
-	const RenderTarget& GetRenderTarget() const;
-
-	UINT Present(const std::shared_ptr<Texture>& texture = nullptr);
-
+	uint32_t GetWidth();
+	uint32_t GetHeight();
 	DXGI_FORMAT GetRenderTargetFormat() const;
 
+	const RenderTarget& GetRenderTarget() const;
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> GetDXGISwapChain() const;
+
+	UINT Present(const std::shared_ptr<Texture>& texture = nullptr);
 
 protected:
 	SwapChain(Device& device, HWND hWnd, DXGI_FORMAT render_target_format = DXGI_FORMAT_R8G8B8A8_UNORM);

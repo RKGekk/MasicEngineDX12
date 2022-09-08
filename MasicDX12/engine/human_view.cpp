@@ -103,7 +103,7 @@ EngineViewId HumanView::VGetId() const {
 
 void HumanView::VOnAttach(EngineViewId vid, ActorId aid) {
 	m_view_id = vid;
-	m_actor_id = aid;
+	m_actor = Engine::GetEngine()->GetGameLogic()->VGetActor(aid).lock();
 }
 
 LRESULT HumanView::VOnMsgProc(HWND m_hWnd, UINT m_uMsg, WPARAM m_wParam, LPARAM m_lParam) {
