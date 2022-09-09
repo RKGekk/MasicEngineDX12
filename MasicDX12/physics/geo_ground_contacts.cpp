@@ -3,19 +3,20 @@
 #include "../engine/engine.h"
 
 GeoGroundContacts::GeoGroundContacts(const DirectX::XMFLOAT3& center, float ground_level, float restitution) : m_ground_level(ground_level), m_restitution(restitution), m_center(center) {
-    m_physics = g_pApp->GetGameLogic()->VGetGamePhysics();
+    m_physics = Engine::GetEngine()->GetGameLogic()->VGetGamePhysics();
 }
 
 GeoGroundContacts::GeoGroundContacts(DirectX::XMVECTOR center, float ground_level, float restitution) : m_ground_level(ground_level), m_restitution(restitution) {
     DirectX::XMStoreFloat3(&m_center, center);
-    m_physics = g_pApp->GetGameLogic()->VGetGamePhysics();
+    m_physics = Engine::GetEngine()->GetGameLogic()->VGetGamePhysics();
 }
 
 unsigned GeoGroundContacts::addContact(ParticleContact* contact, unsigned limit) const {
     using namespace DirectX;
 
     unsigned count = 0;
-    ParticleWorld::Particles& particles = m_physics->VGetParticles();
+    if (m_physics.expired()) return 0u;
+    ParticleWorld::Particles& particles = m_physics.lock()->VGetParticles();
     for (ParticleWorld::Particles::iterator p = particles.begin(); p != particles.end(); p++) {
         XMVECTOR pos = (*p)->getPosition();
         XMVECTOR center = XMLoadFloat3(&m_center);

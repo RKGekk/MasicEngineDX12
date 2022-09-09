@@ -55,7 +55,7 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC root_signature_description;
     root_signature_description.Init_1_1(RootParameters::NumRootParameters, root_parameters, 1, &anisotropic_sampler, root_signature_flags);
 
-    m_root_signature = m_device->CreateRootSignature("RootSignFor"s + pixel_shader_name, root_signature_description.Desc_1_1);
+    m_root_signature = m_device->CreateRootSignature("RootSignFor"s + pixel_shader_name, root_signature_description);
 
     DXGI_FORMAT back_buffer_format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     DXGI_FORMAT depth_buffer_format = DXGI_FORMAT_D32_FLOAT;

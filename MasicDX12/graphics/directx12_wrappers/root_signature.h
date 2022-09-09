@@ -11,9 +11,9 @@
 
 #include "shader_register.h"
 #include "root_parameter.h"
-#include "sampler.h"
 
 class Device;
+class RootSaticSampler;
 
 class RootSignature {
 public:

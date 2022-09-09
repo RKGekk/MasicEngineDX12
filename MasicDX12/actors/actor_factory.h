@@ -21,7 +21,6 @@ public:
     ActorFactory();
 
     std::shared_ptr<Actor> CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, const DirectX::XMFLOAT4X4* initial_transform, const ActorId servers_actorId);
-    std::shared_ptr<Actor> CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, const DirectX::XMFLOAT4X4* initial_transform, const ActorId servers_actorId);
     std::shared_ptr<Actor> CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, DirectX::FXMMATRIX initial_transform, const ActorId servers_actorId);
     void ModifyActor(std::shared_ptr<Actor> pActor, const pugi::xml_node& overrides);
 

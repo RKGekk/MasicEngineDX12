@@ -14,7 +14,7 @@ RootDescriprorTableRange::RootDescriprorTableRange(SignatureRegisters register_t
 RootDescriprorTableRange::RootDescriprorTableRange(const D3D12_DESCRIPTOR_RANGE1& range) : m_range(range) {}
 
 const D3D12_DESCRIPTOR_RANGE1& RootDescriprorTableRange::GetRange() const {
-	m_range;
+	return m_range;
 }
 
 ShaderRegister RootDescriprorTableRange::ShaderRegisterType() const {

@@ -127,7 +127,7 @@ UINT PixelShader::GetRenderTargetCount() const {
 }
 
 bool PixelShader::IsRenderTargetFormatSet(AttachmentPoint render_target) const {
-	m_render_target_formats_map.count(render_target);
+	return m_render_target_formats_map.count(render_target);
 }
 
 void PixelShader::EraseRenderTargetFormat(AttachmentPoint render_target) {
@@ -181,4 +181,12 @@ void PixelShader::SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC& desc) {
 
 const DepthStencilState& PixelShader::GetDepthStencilState() const {
 	return m_depth_stencil_state;
+}
+
+void PixelShader::SetSample(const DXGI_SAMPLE_DESC& desc) {
+	m_sample = desc;
+}
+
+const DXGI_SAMPLE_DESC& PixelShader::GetSample() const {
+	return m_sample;
 }

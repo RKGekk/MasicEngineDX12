@@ -14,7 +14,7 @@ class Actor;
 class MovementController : public IPointerHandler, public IKeyboardHandler {
 public:
 	MovementController(std::shared_ptr<Actor> object, float initial_yaw, float initial_pitch, bool rotate_when_LButton_down, bool rotate_when_RButton_down);
-	void SetObject(std::shared_ptr<SceneNode> new_object);
+	void SetObject(std::shared_ptr<Actor> new_object);
 
 	void OnUpdate(const GameTimerDelta& delta);
 

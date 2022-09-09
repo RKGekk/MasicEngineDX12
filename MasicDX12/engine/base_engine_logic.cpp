@@ -18,7 +18,6 @@
 
 BaseEngineLogic::BaseEngineLogic() {
 	m_last_actor_id = 0;
-	m_life_time = 0;
 	m_process_manager = std::make_unique<ProcessManager>();
 	m_random.Randomize();
 	m_state = BaseEngineState::BGS_Initializing;
@@ -291,7 +290,7 @@ void BaseEngineLogic::VChangeState(BaseEngineState newState) {
 				main_menu->VActivateScene(false);
 				return true;
 			});
-			std::shared_ptr<DelayProcess> delay = std::make_shared<DelayProcess>(2.0f, [](float dt, float tt, float n) {
+			std::shared_ptr<DelayProcess> delay = std::make_shared<DelayProcess>(std::chrono::duration_cast<GameClockDuration>(2.0s), [](const GameTimerDelta& delta, float n) {
 				return true;
 			});
 			std::shared_ptr<ExecProcess> exec2 = std::make_shared<ExecProcess>([]() {

@@ -6,22 +6,27 @@
 #include <memory>
 #include <cstdint>
 
-#include "light_node.h"
-#include "light_type.h"
 #include "../graphics/directx12_wrappers/command_list.h"
+#include "light_type.h"
+#include "../graphics/directional_light.h"
+#include "../graphics/point_light.h"
+#include "../graphics/spot_light.h"
+
+class LightNode;
+class SceneNode;
 
 class LightManager {
 public:
 	friend class Scene;
 	using Lights = std::set<std::shared_ptr<LightNode>>;
-	using LightIndexMap = std::unordered_map<Lights::iterator, uint32_t>;
+	using LightIndexMap = std::unordered_map<std::shared_ptr<LightNode>, uint32_t>;
 
 	LightManager();
 	void CalcLighting(DirectX::FXMMATRIX view);
 	void CopyDirectionalLighting(CommandList& command_list, uint32_t slot, SceneNode* pNode);
 	void CopyPointLighting(CommandList& command_list, uint32_t slot, SceneNode* pNode);
 	void CopySpotLighting(CommandList& command_list, uint32_t slot, SceneNode* pNode);
-	int GetLightCount(const SceneNode* node);
+	int GetLightCount(std::shared_ptr<SceneNode> node);
 
 	void AddLight(std::shared_ptr<LightNode> light);
 	void RemoveLight(std::shared_ptr<LightNode> light);

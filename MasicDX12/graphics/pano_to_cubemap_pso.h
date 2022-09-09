@@ -1,6 +1,6 @@
 #pragma once
 
-#include "descriptor_allocation.h"
+#include "directx12_wrappers/descriptor_allocation.h"
 
 #include <cstdint>
 

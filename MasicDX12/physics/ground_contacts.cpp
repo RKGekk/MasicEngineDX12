@@ -3,12 +3,13 @@
 #include "../engine/engine.h"
 
 GroundContacts::GroundContacts(float ground_level, float restitution) : m_ground_level(ground_level), m_restitution(restitution) {
-    m_physics = g_pApp->GetGameLogic()->VGetGamePhysics();
+    m_physics = Engine::GetEngine()->GetGameLogic()->VGetGamePhysics();
 }
 
 unsigned GroundContacts::addContact(ParticleContact* contact, unsigned limit) const {
     unsigned count = 0;
-    ParticleWorld::Particles& particles = m_physics->VGetParticles();
+    if (m_physics.expired()) return 0;
+    ParticleWorld::Particles& particles = m_physics.lock()->VGetParticles();
     for (ParticleWorld::Particles::iterator p = particles.begin(); p != particles.end(); p++) {
         float y = (*p)->getPosition3f().y;
         float r = (*p)->getRadius();

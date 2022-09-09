@@ -1,13 +1,19 @@
 #include "generate_mips_pso.h"
 
+#include <string>
+
 #include "directx12_wrappers/device.h"
 #include "directx12_wrappers/root_signature.h"
+#include "directx12_wrappers/pipeline_state_object.h"
 #include "../tools/com_exception.h"
+#include "../tools/string_utility.h"
+#include "directx12_wrappers/shader.h"
 
 #include <d3dx12.h>
 #include <d3dcompiler.h>
 
 GenerateMipsPSO::GenerateMipsPSO(Device& device) {
+    using namespace std::literals;
     auto d3d12_device = device.GetD3D12Device();
 
     CD3DX12_DESCRIPTOR_RANGE1 src_mip(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE);
@@ -22,23 +28,18 @@ GenerateMipsPSO::GenerateMipsPSO(Device& device) {
 
     CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC root_signature_desc(GenerateMips::NumRootParameters, root_parameters, 1, &linear_clamp_sampler);
 
-    m_root_signature = device.CreateRootSignature(root_signature_desc.Desc_1_1);
-
-    struct PipelineStateStream {
-        CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRoot_signature;
-        CD3DX12_PIPELINE_STATE_STREAM_CS CS;
-    } pipeline_state_stream;
+    m_root_signature = device.CreateRootSignature("GenerateMipsPSOSignature"s, root_signature_desc);
 
     static Microsoft::WRL::ComPtr<ID3DBlob> compute_shader_blob;
+    static std::wstring compute_shader_name = L"GenerateMips_CS.cso"s;
     if (!compute_shader_blob) {
-        HRESULT hr = D3DReadFileToBlob(L"GenerateMips_CS.cso", compute_shader_blob.GetAddressOf());
+        HRESULT hr = D3DReadFileToBlob(compute_shader_name.c_str(), compute_shader_blob.GetAddressOf());
         ThrowIfFailed(hr);
     }
+    static std::shared_ptr<Shader> compute_shader = std::make_shared<Shader>(compute_shader_blob, "main"s, Shader::Stage::Compute, ConvertString(compute_shader_name));
 
-    pipeline_state_stream.pRoot_signature = m_root_signature->GetD3D12RootSignature().Get();
-    pipeline_state_stream.CS = CD3DX12_SHADER_BYTECODE(compute_shader_blob.Get());
-
-    m_pipeline_state = device.CreatePipelineStateObject(pipeline_state_stream);
+    m_pipeline_state = device.CreateComputePipelineState("GenerateMipsPSO"s, m_root_signature, compute_shader);
+    //m_pipeline_state = std::dynamic_pointer_cast<PipelineStateObject>(device.CreateComputePipelineState("GenerateMipsPSO"s, m_root_signature, compute_shader));
 
     m_default_uav = device.AllocateDescriptors(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 4u);
 

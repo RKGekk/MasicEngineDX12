@@ -23,7 +23,7 @@ ActorFactory::ActorFactory() {
 std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, const DirectX::XMFLOAT4X4* pInitial_transform, const ActorId servers_actorId) {
 
     pugi::xml_document xml_doc;
-    pugi::xml_parse_result parse_res = xml_doc.load(actor_resource.c_str());
+    pugi::xml_parse_result parse_res = xml_doc.load_string(actor_resource.c_str());
     if (!parse_res) return std::shared_ptr<Actor>();
 
     pugi::xml_node root_node = xml_doc.root();
@@ -78,10 +78,6 @@ std::shared_ptr<ActorComponent> ActorFactory::VCreateComponent(const pugi::xml_n
     }
 
     return pComponent;
-}
-
-std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, const DirectX::XMFLOAT4X4* initial_transform, const ActorId servers_actorId) {
-    return CreateActor(actor_resource.c_str(), overrides, initial_transform, servers_actorId);
 }
 
 std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, DirectX::FXMMATRIX initial_transform, const ActorId servers_actorId) {

@@ -29,7 +29,7 @@ void DynamicDescriptorHeap::ParseRootSignature(const std::shared_ptr<RootSignatu
 
     m_stale_descriptor_table_bit_mask = 0u;
 
-    const auto& root_signature_desc = root_signature->GetRootSignatureDesc();
+    const auto& root_signature_desc = root_signature->GetRootSignatureDesc().Desc_1_1;
 
     m_descriptor_table_bit_mask = root_signature->GetDescriptorTableBitMask(m_descriptor_heap_type);
     uint32_t descriptor_table_bit_mask = m_descriptor_table_bit_mask;

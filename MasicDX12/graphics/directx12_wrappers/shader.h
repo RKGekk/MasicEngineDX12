@@ -109,9 +109,13 @@ public:
 	void SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC& desc);
 	const DepthStencilState& GetDepthStencilState() const;
 
+	void SetSample(const DXGI_SAMPLE_DESC& desc);
+	const DXGI_SAMPLE_DESC& GetSample() const;
+
 private:
 	RenderTargetFormatMap m_render_target_formats_map;
 	BlendState m_blend_state;
 	RasterizerState m_rasterizer_state;
 	DepthStencilState m_depth_stencil_state;
+	DXGI_SAMPLE_DESC m_sample;
 };

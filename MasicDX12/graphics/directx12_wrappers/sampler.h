@@ -43,7 +43,6 @@ private:
 class RootSaticSampler {
 public:
     RootSaticSampler(SignatureRegisters register_type, Sampler type, D3D12_SHADER_VISIBILITY visibility = D3D12_SHADER_VISIBILITY_ALL);
-    virtual ~RootSaticSampler() = 0;
 
     const D3D12_STATIC_SAMPLER_DESC& GetStaticSampler() const;
     SignatureRegisters GetSignatureLocation() const;

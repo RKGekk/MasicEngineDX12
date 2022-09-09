@@ -3,6 +3,8 @@
 #include "../events/i_event_manager.h"
 #include "../engine/engine.h"
 
+#include <memory>
+
 void ParticleSphereContactEventGen::init(ParticleWorld::Particles* particles) {
 	m_particles = particles;
 }
@@ -10,6 +12,8 @@ void ParticleSphereContactEventGen::init(ParticleWorld::Particles* particles) {
 unsigned ParticleSphereContactEventGen::addContact(ParticleContact* contact, unsigned limit) const {
     using namespace DirectX;
     unsigned count = 0;
+    std::shared_ptr<IEnginePhysics> engine_phys = Engine::GetEngine()->GetGameLogic()->VGetGamePhysics();
+    if (!engine_phys) return 0;
     size_t num_particles = m_particles->size();
     if (num_particles < 2u) { return 0; }
     for (size_t i = 0; i < num_particles - 1; ++i) {
@@ -25,7 +29,6 @@ unsigned ParticleSphereContactEventGen::addContact(ParticleContact* contact, uns
             float distance = XMVectorGetX(XMVector3Length(contactTrace));
 
             if (distance < (r1 + r2)) {
-                IEnginePhysics* engine_phys = g_pApp->GetGameLogic()->VGetGamePhysics();
                 ActorId act1 = engine_phys->VGetParticleActor(p1);
                 ActorId act2 = engine_phys->VGetParticleActor(p2);
                 std::shared_ptr<EvtData_Sphere_Particle_Contact> pNewActorEvent(new EvtData_Sphere_Particle_Contact(act1, act2));

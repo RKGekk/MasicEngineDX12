@@ -10,6 +10,7 @@ const GameClockDuration ZERO_DURATION = GameClockDuration(0);
 
 class GameTimerDelta {
 public:
+    GameTimerDelta();
     GameTimerDelta(const GameClockDuration& delta_time, const GameClockDuration& total_time);
 
     double GetDeltaNanoseconds() const;

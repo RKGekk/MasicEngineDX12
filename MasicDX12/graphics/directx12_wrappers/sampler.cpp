@@ -102,7 +102,7 @@ Sampler::Sampler(AddressMode address_mode, MinMaxFilter filter) {
 }
 
 const D3D12_SAMPLER_DESC& Sampler::GetSampler() const {
-	m_sampler;
+	return m_sampler;
 }
 
 D3D12_TEXTURE_ADDRESS_MODE Sampler::GetAddressMode(AddressMode mode) {

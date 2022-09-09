@@ -24,6 +24,7 @@
 #include "vertex_buffer.h"
 #include "../tools/com_exception.h"
 #include "../tools/math_utitity.h"
+#include "../tools/memory_utility.h"
 
 #include <filesystem>
 
@@ -879,7 +880,7 @@ void CommandList::SetConstantBufferView(uint32_t root_parameter_index, uint32_t 
 
 void CommandList::SetRenderTarget(const RenderTarget& render_target) {
 	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> render_target_descriptors;
-	render_target_descriptors.reserve(AttachmentPoint::NumAttachmentPoints);
+	render_target_descriptors.reserve(to_underlying(AttachmentPoint::NumAttachmentPoints));
 
 	const auto& textures = render_target.GetTextures();
 

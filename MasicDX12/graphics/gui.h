@@ -14,6 +14,8 @@ class RenderTarget;
 class RootSignature;
 class ShaderResourceView;
 class Texture;
+class VertexShader;
+class PixelShader;
 
 class GUI {
 public:
@@ -36,4 +38,6 @@ private:
 	std::shared_ptr<ShaderResourceView> m_font_srv;
 	std::shared_ptr<RootSignature> m_root_signature;
 	std::shared_ptr<PipelineStateObject> m_pipeline_state;
+	std::shared_ptr<VertexShader> m_vertex_shader;
+	std::shared_ptr<PixelShader> m_pixel_shader;
 };

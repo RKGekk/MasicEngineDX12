@@ -1,6 +1,7 @@
 #include "root_signature.h"
 
 #include "device.h"
+#include "sampler.h"
 #include "../tools/com_exception.h"
 
 #include <cassert>
@@ -162,7 +163,7 @@ uint32_t RootSignature::GetBytesUsed() const {
 }
 
 const std::string& RootSignature::GetName() const {
-    m_name;
+    return m_name;
 }
 
 bool RootSignature::ConatinParameterIndex(const SignatureRegisters& location) const {

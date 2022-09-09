@@ -1,6 +1,7 @@
 #include "render_target.h"
 
 #include "texture.h"
+#include "../../tools/memory_utility.h"
 
 #include <algorithm>
 
@@ -13,13 +14,13 @@
 #endif
 
 void RenderTarget::Reset() {
-    m_textures = RenderTargetList(AttachmentPoint::NumAttachmentPoints);
+    m_textures = RenderTargetList(to_underlying(AttachmentPoint::NumAttachmentPoints));
 }
 
-RenderTarget::RenderTarget() : m_textures(AttachmentPoint::NumAttachmentPoints), m_size(0, 0) {}
+RenderTarget::RenderTarget() : m_textures(to_underlying(AttachmentPoint::NumAttachmentPoints)), m_size(0, 0) {}
 
 void RenderTarget::AttachTexture(AttachmentPoint attachment_point, std::shared_ptr<Texture> texture) {
-    m_textures[attachment_point] = texture;
+    m_textures[to_underlying(attachment_point)] = texture;
 
     if (texture && texture->GetD3D12Resource()) {
         auto desc = texture->GetD3D12ResourceDesc();
@@ -30,7 +31,7 @@ void RenderTarget::AttachTexture(AttachmentPoint attachment_point, std::shared_p
 }
 
 std::shared_ptr<Texture> RenderTarget::GetTexture(AttachmentPoint attachment_point) const {
-    return m_textures[attachment_point];
+    return m_textures[to_underlying(attachment_point)];
 }
 
 void RenderTarget::Resize(DirectX::XMUINT2 size) {
@@ -61,7 +62,7 @@ D3D12_VIEWPORT RenderTarget::GetViewport(DirectX::XMFLOAT2 scale, DirectX::XMFLO
     UINT64 width = 0;
     UINT height = 0;
 
-    for (int i = AttachmentPoint::Color0; i <= AttachmentPoint::Color7; ++i) {
+    for (int i = to_underlying(AttachmentPoint::Color0); i <= to_underlying(AttachmentPoint::Color7); ++i) {
         auto texture = m_textures[i];
         if (texture) {
             auto desc = texture->GetD3D12ResourceDesc();
@@ -89,7 +90,7 @@ const std::vector<std::shared_ptr<Texture>>& RenderTarget::GetTextures() const {
 D3D12_RT_FORMAT_ARRAY RenderTarget::GetRenderTargetFormats() const {
     D3D12_RT_FORMAT_ARRAY rtv_formats = {};
 
-    for (int i = AttachmentPoint::Color0; i <= AttachmentPoint::Color7; ++i) {
+    for (int i = to_underlying(AttachmentPoint::Color0); i <= to_underlying(AttachmentPoint::Color7); ++i) {
         auto texture = m_textures[i];
         if (texture) {
             rtv_formats.RTFormats[rtv_formats.NumRenderTargets++] = texture->GetD3D12ResourceDesc().Format;
@@ -100,12 +101,12 @@ D3D12_RT_FORMAT_ARRAY RenderTarget::GetRenderTargetFormats() const {
 }
 
 DXGI_FORMAT RenderTarget::GetRenderTargetFormat(AttachmentPoint attachment_point) const {
-    return m_textures[attachment_point]->GetD3D12ResourceDesc().Format;
+    return m_textures[to_underlying(attachment_point)]->GetD3D12ResourceDesc().Format;
 }
 
 DXGI_FORMAT RenderTarget::GetDepthStencilFormat() const {
     DXGI_FORMAT dsv_format = DXGI_FORMAT_UNKNOWN;
-    auto depth_stencil_texture = m_textures[AttachmentPoint::DepthStencil];
+    auto depth_stencil_texture = m_textures[to_underlying(AttachmentPoint::DepthStencil)];
     if (depth_stencil_texture) {
         dsv_format = depth_stencil_texture->GetD3D12ResourceDesc().Format;
     }
@@ -115,7 +116,7 @@ DXGI_FORMAT RenderTarget::GetDepthStencilFormat() const {
 
 DXGI_SAMPLE_DESC RenderTarget::GetSampleDesc() const {
     DXGI_SAMPLE_DESC sample_desc = { 1, 0 };
-    for (int i = AttachmentPoint::Color0; i <= AttachmentPoint::Color7; ++i) {
+    for (int i = to_underlying(AttachmentPoint::Color0); i <= to_underlying(AttachmentPoint::Color7); ++i) {
         auto texture = m_textures[i];
         if (texture) {
             sample_desc = texture->GetD3D12ResourceDesc().SampleDesc;

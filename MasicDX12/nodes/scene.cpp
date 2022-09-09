@@ -6,6 +6,7 @@
 #include "../events/evt_data_move_actor.h"
 #include "../events/evt_data_modified_render_component.h"
 #include "light_manager.h"
+#include "light_node.h"
 #include "../engine/engine.h"
 
 void Scene::ActivateScene(bool is_active) {

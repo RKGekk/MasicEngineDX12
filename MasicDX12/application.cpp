@@ -108,7 +108,7 @@ std::shared_ptr<WindowSurface> Application::GetWindowByHWND(HWND hwnd) {
     return pWindow;
 }
 
-std::shared_ptr<WindowSurface> Application::DestroyWindowByHWND(HWND hwnd) {
+void Application::DestroyWindowByHWND(HWND hwnd) {
     std::lock_guard<std::mutex> lock(gs_window_handles_mutex);
     WindowMap::iterator iter = gs_windows.find(hwnd);
     if (iter != gs_windows.end()) {

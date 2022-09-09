@@ -65,7 +65,7 @@ MovementController::MovementController(std::shared_ptr<Actor> object, float init
 	m_bRotate_when_RButton_down = rotate_when_RButton_down;
 }
 
-void MovementController::SetObject(std::shared_ptr<SceneNode> new_object) {
+void MovementController::SetObject(std::shared_ptr<Actor> new_object) {
 	m_object = new_object;
 }
 
@@ -94,7 +94,7 @@ void MovementController::OnUpdate(const GameTimerDelta& delta) {
 			at.z *= -1.0f;
 		}
 		DirectX::XMVECTOR at_xm = DirectX::XMLoadFloat4(&at);
-		DirectX::XMStoreFloat4(&atWorld, DirectX::XMVector4Transform(at_xm, DirectX::XMLoadFloat4x4(&m_matToWorld)));
+		DirectX::XMStoreFloat4(&atWorld, DirectX::XMVector4Transform(at_xm, DirectX::XMLoadFloat4x4(&m_mat_to_world)));
 		bTranslating = true;
 	}
 
@@ -106,7 +106,7 @@ void MovementController::OnUpdate(const GameTimerDelta& delta) {
 			right.z *= -1.0f;
 		}
 		DirectX::XMVECTOR right_xm = DirectX::XMLoadFloat4(&right);
-		DirectX::XMStoreFloat4(&rightWorld, DirectX::XMVector4Transform(right_xm, DirectX::XMLoadFloat4x4(&m_matToWorld)));
+		DirectX::XMStoreFloat4(&rightWorld, DirectX::XMVector4Transform(right_xm, DirectX::XMLoadFloat4x4(&m_mat_to_world)));
 		bTranslating = true;
 	}
 

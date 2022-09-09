@@ -32,7 +32,7 @@ public:
     std::shared_ptr<WindowSurface> CreateRenderWindow(const RenderWindowConfig& cfg);
     static std::shared_ptr<WindowSurface> GetWindowByName(const std::wstring& window_name);
     static std::shared_ptr<WindowSurface> GetWindowByHWND(HWND hwnd);
-    static std::shared_ptr<WindowSurface> DestroyWindowByHWND(HWND hwnd);
+    static void DestroyWindowByHWND(HWND hwnd);
 
     bool Run(std::shared_ptr<Engine> pEngine, const RenderWindowConfig& cfg);
     void Quit(int exit_code = 0);

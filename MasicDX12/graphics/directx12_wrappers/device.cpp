@@ -12,6 +12,7 @@
 #include "pipeline_state_object.h"
 #include "resource_state_tracker.h"
 #include "root_signature.h"
+#include "shader.h"
 #include "shader_resource_view.h"
 #include "structured_buffer.h"
 #include "swap_chain.h"
@@ -336,18 +337,24 @@ std::shared_ptr<Texture> Device::CreateTexture(Microsoft::WRL::ComPtr<ID3D12Reso
     return texture;
 }
 
-std::shared_ptr<RootSignature> Device::CreateRootSignature(const std::string& name, const D3D12_ROOT_SIGNATURE_DESC1& root_signature_desc) {
+std::shared_ptr<RootSignature> Device::CreateRootSignature(const std::string& name, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& root_signature_desc) {
     std::shared_ptr<RootSignature> root_signature = std::make_shared<RootSignature>(*this, name, root_signature_desc);
     return root_signature;
 }
 
 std::shared_ptr<GraphicsPipelineState> Device::CreateGraphicsPipelineState(const std::string& name, std::shared_ptr<RootSignature> root_signature, std::shared_ptr<VertexShader> vertex_shader, std::shared_ptr<PixelShader> pixel_shader, std::shared_ptr<Shader> domain_shader, std::shared_ptr<Shader> hull_shader, std::shared_ptr<Shader> geometry_shader) {
-    std::shared_ptr<GraphicsPipelineState> pso = std::make_shared<GraphicsPipelineState>(name, root_signature);
+    std::shared_ptr<GraphicsPipelineState> pso = std::make_shared<GraphicsPipelineState>(*this, name, root_signature);
     pso->SetVertexShader(vertex_shader);
     pso->SetPixelShader(pixel_shader);
     pso->SetDomainShader(domain_shader);
     pso->SetHullShader(hull_shader);
     pso->SetGeometryShader(geometry_shader);
+    return pso;
+}
+
+std::shared_ptr<ComputePipelineState> Device::CreateComputePipelineState(const std::string& name, std::shared_ptr<RootSignature> root_signature, std::shared_ptr<Shader> compute_shader) {
+    std::shared_ptr<ComputePipelineState> pso = std::make_shared<ComputePipelineState>(*this, name, root_signature);
+    pso->SetComputeShader(compute_shader);
     return pso;
 }
 

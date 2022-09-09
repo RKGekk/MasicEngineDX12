@@ -1,12 +1,16 @@
 #include "gui.h"
 
+#include <string>
+
 #include "directx12_wrappers/command_list.h"
 #include "directx12_wrappers/command_queue.h"
 #include "directx12_wrappers/device.h"
 #include "directx12_wrappers/render_target.h"
 #include "directx12_wrappers/root_signature.h"
 #include "directx12_wrappers/shader_resource_view.h"
+#include "directx12_wrappers/pipeline_state_object.h"
 #include "directx12_wrappers/texture.h"
+#include "directx12_wrappers/shader.h"
 #include "../tools/com_exception.h"
 
 #include <../graphics/imgui/imgui_impl_win32.h>
@@ -24,6 +28,7 @@ void GetSurfaceInfo(_In_ size_t width, _In_ size_t height, _In_ DXGI_FORMAT fmt,
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 GUI::GUI(Device& device, HWND hWnd, const RenderTarget& render_target) : m_device(device), m_hWnd(hWnd), m_pImgui_ctx(nullptr) {
+    using namespace std::literals;
     m_pImgui_ctx = ImGui::CreateContext();
     ImGui::SetCurrentContext(m_pImgui_ctx);
     if (!ImGui_ImplWin32_Init(m_hWnd)) {
@@ -79,7 +84,7 @@ GUI::GUI(Device& device, HWND hWnd, const RenderTarget& render_target) : m_devic
     CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC root_signature_description;
     root_signature_description.Init_1_1(RootParameters::NumRootParameters, root_parameters, 1, &linear_repeat_sampler, root_signature_flags);
 
-    m_root_signature = m_device.CreateRootSignature(root_signature_description.Desc_1_1);
+    m_root_signature = m_device.CreateRootSignature("GUIRootSignature"s, root_signature_description);
 
     const D3D12_INPUT_ELEMENT_DESC input_layout[] = {
         { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(ImDrawVert, pos), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -114,43 +119,32 @@ GUI::GUI(Device& device, HWND hWnd, const RenderTarget& render_target) : m_devic
     depth_stencil_desc.DepthEnable = false;
     depth_stencil_desc.StencilEnable = false;
 
-    struct PipelineStateStream {
-        CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
-        CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
-        CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
-        CD3DX12_PIPELINE_STATE_STREAM_VS VS;
-        CD3DX12_PIPELINE_STATE_STREAM_PS PS;
-        CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
-        CD3DX12_PIPELINE_STATE_STREAM_SAMPLE_DESC SampleDesc;
-        CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendDesc;
-        CD3DX12_PIPELINE_STATE_STREAM_RASTERIZER RasterizerState;
-        CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL DepthStencilState;
-    } pipeline_state_stream;
-
     static Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
     if (!vertex_shader_blob) {
         HRESULT hr = D3DReadFileToBlob(L"ImGUI_VS.cso", vertex_shader_blob.GetAddressOf());
         ThrowIfFailed(hr);
     }
+    m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, "ImGUI_VS.cso"s);
+    m_vertex_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "vertexBufferProjectionMatrix"s);
+    m_vertex_shader->SetInputAssemblerLayout({ input_layout, 3 });
+    m_vertex_shader->SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
     static Microsoft::WRL::ComPtr<ID3DBlob> pixel_shader_blob;
     if (!pixel_shader_blob) {
         HRESULT hr = D3DReadFileToBlob(L"ImGUI_PS.cso", pixel_shader_blob.GetAddressOf());
         ThrowIfFailed(hr);
     }
+    m_pixel_shader = std::make_shared<PixelShader>(pixel_shader_blob, "main"s, "ImGUI_PS.cso"s);
+    m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::Sampler }, "sampler0"s);
+    m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ShaderResource }, "DiffuseTexture"s);
+    m_pixel_shader->SetRenderTargetFormat(render_target.GetRenderTargetFormats());
+    m_pixel_shader->SetSample(render_target.GetSampleDesc());
+    m_pixel_shader->SetBlendState(CD3DX12_BLEND_DESC(blend_desc));
+    m_pixel_shader->SetRasterizerState(CD3DX12_RASTERIZER_DESC(rasterizer_desc));
+    m_pixel_shader->SetDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(depth_stencil_desc));
 
-    pipeline_state_stream.pRootSignature = m_root_signature->GetD3D12RootSignature().Get();
-    pipeline_state_stream.InputLayout = { input_layout, 3 };
-    pipeline_state_stream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-    pipeline_state_stream.VS = CD3DX12_SHADER_BYTECODE(vertex_shader_blob.Get());
-    pipeline_state_stream.PS = CD3DX12_SHADER_BYTECODE(pixel_shader_blob.Get());
-    pipeline_state_stream.RTVFormats = render_target.GetRenderTargetFormats();
-    pipeline_state_stream.SampleDesc = render_target.GetSampleDesc();
-    pipeline_state_stream.BlendDesc = CD3DX12_BLEND_DESC(blend_desc);
-    pipeline_state_stream.RasterizerState = CD3DX12_RASTERIZER_DESC(rasterizer_desc);
-    pipeline_state_stream.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(depth_stencil_desc);
-
-    m_pipeline_state = device.CreatePipelineStateObject(pipeline_state_stream);
+    //m_pipeline_state = std::dynamic_pointer_cast<PipelineStateObject>(device.CreateGraphicsPipelineState("ImGuiPSO"s, m_root_signature, m_vertex_shader, m_pixel_shader));
+    m_pipeline_state = device.CreateGraphicsPipelineState("ImGuiPSO"s, m_root_signature, m_vertex_shader, m_pixel_shader);
 }
 
 GUI::~GUI() {

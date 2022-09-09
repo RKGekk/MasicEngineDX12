@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "particle_contact.h"
 #include "particle_contact_generator.h"
@@ -11,7 +12,7 @@
 class GroundContacts : public ParticleContactGenerator {
     float m_ground_level;
     float m_restitution;
-    IEnginePhysics* m_physics;
+    std::weak_ptr<IEnginePhysics> m_physics;
 
 public:
     GroundContacts(float ground_level, float restitution);
