@@ -14,7 +14,7 @@ public:
     RootDescriprorTableRange(SignatureRegisters register_type, uint32_t descriptor_heap_index, uint32_t range_size, D3D12_DESCRIPTOR_RANGE_FLAGS flags);
     RootDescriprorTableRange(const D3D12_DESCRIPTOR_RANGE1& range);
 
-    virtual ~RootDescriprorTableRange() = 0;
+    virtual ~RootDescriprorTableRange();
 
     const D3D12_DESCRIPTOR_RANGE1& GetRange() const;
     ShaderRegister ShaderRegisterType() const;

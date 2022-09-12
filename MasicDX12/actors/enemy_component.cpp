@@ -34,7 +34,7 @@ void EnemyComponent::VUpdate(const GameTimerDelta& delta) {
 	float deltaMs = delta.fGetDeltaMilliseconds();
 	using namespace DirectX;
 	if (Engine::GetEngine()->GetGameLogic()->GetState() != BaseEngineState::BGS_Running) { return; }
-	StrongActorPtr pTargetActor = MakeStrongPtr(Engine::GetEngine()->GetGameLogic()->VGetActorByName(m_target_name));
+	StrongActorPtr pTargetActor = Engine::GetEngine()->GetGameLogic()->VGetActorByName(m_target_name).lock();
 	if (!pTargetActor) { return; }
 
 	std::shared_ptr<Actor> act = GetOwner();

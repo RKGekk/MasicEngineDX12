@@ -10,6 +10,10 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT uMsg, WPARAM wPara
 
 Engine::Engine() {}
 
+std::unique_ptr<BaseEngineLogic> Engine::VCreateGameAndView() {
+	return std::unique_ptr<BaseEngineLogic>();
+}
+
 Engine::~Engine() {}
 
 bool Engine::Initialize(const RenderWindowConfig& cfg) {

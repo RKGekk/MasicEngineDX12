@@ -268,6 +268,14 @@ const std::wstring& WindowSurface::GetWindowTitle() const {
     return m_title;
 }
 
+HWND WindowSurface::GetHWND() const {
+    return m_hwnd;
+}
+
+HINSTANCE WindowSurface::GetInstance() const {
+    return m_hInstance;
+}
+
 int WindowSurface::GetClientWidth() const {
     return m_client_width;
 }

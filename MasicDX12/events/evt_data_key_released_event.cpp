@@ -1,5 +1,7 @@
 #include "evt_data_key_released_event.h"
 
+#include "../tools/memory_utility.h"
+
 const std::string EvtData_Key_Released_Event::sk_EventName = "EvtData_Key_Released_Event";
 
 EventTypeId EvtData_Key_Released_Event::VGetEventType() const {
@@ -53,7 +55,7 @@ std::ostream& operator<<(std::ostream& os, const EvtData_Key_Released_Event& evt
     os << "Event type id: " << evt.sk_EventType << std::endl;
     os << "Event name: " << evt.sk_EventName << std::endl;
     os << "Event time stamp: " << evt.GetTimeStamp().time_since_epoch().count() << "ns" << std::endl;
-    os << "Event key: " << evt.m_state.Key << std::endl;
+    os << "Event key: " << to_underlying(evt.m_state.Key) << std::endl;
     os << "Event char: " << evt.m_state.Char << std::endl;
     os << "Event key state: " << (evt.m_state.State == KeyState::Pressed ? "Released" : "") << std::endl;
     os << "Event control pressed: " << evt.m_state.Control << std::endl;

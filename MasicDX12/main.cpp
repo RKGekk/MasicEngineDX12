@@ -20,6 +20,7 @@
 #pragma comment(lib,"DXGI.lib")
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"D3DCompiler.lib")
+#pragma comment(lib,"DirectXTex.lib")
 #if defined _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -29,6 +30,7 @@
 #pragma comment(lib,"assimp-vc142-mt.lib")
 #endif
 #pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "Shlwapi.lib")
 
 #include <dxgi1_6.h>
 #include <Windows.h>

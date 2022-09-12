@@ -12,6 +12,8 @@ RootParameter::RootParameter(D3D12_ROOT_PARAMETER_TYPE type) {
 	m_parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 }
 
+RootParameter::~RootParameter() {}
+
 const D3D12_ROOT_PARAMETER1& RootParameter::GetParameter() const {
 	return m_parameter;
 }

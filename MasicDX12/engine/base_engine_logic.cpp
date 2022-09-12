@@ -375,6 +375,12 @@ void BaseEngineLogic::RequestNewActorDelegate(IEventDataPtr pEventData) {
 	}
 }
 
+void BaseEngineLogic::RequestStartGameDelegate(IEventDataPtr pEventData) {}
+
+void BaseEngineLogic::EnvironmentLoadedDelegate(IEventDataPtr pEventData) {}
+
+void BaseEngineLogic::SphereParticleContactDelegate(IEventDataPtr pEventData) {}
+
 std::unique_ptr<ActorFactory> BaseEngineLogic::VCreateActorFactory() {
 	return std::make_unique<ActorFactory>();
 }

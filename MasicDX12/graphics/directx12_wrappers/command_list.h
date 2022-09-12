@@ -269,6 +269,41 @@ inline DirectX::XMVECTOR CommandList::GetCircleTangent(size_t i, size_t tessella
 	return v;
 }
 
+inline void CommandList::CreateCylinderCap(VertexCollection& vertices, IndexCollection& indices, size_t tessellation, float height, float radius, bool is_top) {
+	// Create cap indices.
+	for (size_t i = 0; i < tessellation - 2; i++) {
+		size_t i1 = (i + 1) % tessellation;
+		size_t i2 = (i + 2) % tessellation;
+
+		if (is_top) {
+			std::swap(i1, i2);
+		}
+
+		size_t vbase = vertices.size();
+		indices.push_back(static_cast<IndexCollection::value_type>(vbase + i2));
+		indices.push_back(static_cast<IndexCollection::value_type>(vbase + i1));
+		indices.push_back(static_cast<IndexCollection::value_type>(vbase));
+	}
+
+	// Which end of the cylinder is this?
+	DirectX::XMVECTOR normal = DirectX::g_XMIdentityR1;
+	DirectX::XMVECTOR texture_scale = DirectX::g_XMNegativeOneHalf;
+
+	if (!is_top) {
+		normal = DirectX::XMVectorNegate(normal);
+		texture_scale = DirectX::XMVectorMultiply(texture_scale, DirectX::g_XMNegateX);
+	}
+
+	// Create cap vertices.
+	for (size_t i = 0; i < tessellation; i++) {
+		DirectX::XMVECTOR circle_vector = GetCircleVector(i, tessellation);
+		DirectX::XMVECTOR position = DirectX::XMVectorAdd(DirectX::XMVectorScale(circle_vector, radius), DirectX::XMVectorScale(normal, height));
+		DirectX::XMVECTOR texture_coordinate = DirectX::XMVectorMultiplyAdd(DirectX::XMVectorSwizzle<0, 2, 3, 3>(circle_vector), texture_scale, DirectX::g_XMOneHalf);
+
+		vertices.emplace_back(position, normal, texture_coordinate);
+	}
+}
+
 inline void CommandList::ReverseWinding(IndexCollection& indices, VertexCollection& vertices) {
 	assert((indices.size() % 3) == 0);
 	for (auto it = indices.begin(); it != indices.end(); it += 3) {

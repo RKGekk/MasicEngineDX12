@@ -13,6 +13,8 @@ RootDescriprorTableRange::RootDescriprorTableRange(SignatureRegisters register_t
 
 RootDescriprorTableRange::RootDescriprorTableRange(const D3D12_DESCRIPTOR_RANGE1& range) : m_range(range) {}
 
+RootDescriprorTableRange::~RootDescriprorTableRange() {}
+
 const D3D12_DESCRIPTOR_RANGE1& RootDescriprorTableRange::GetRange() const {
 	return m_range;
 }

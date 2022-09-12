@@ -12,7 +12,7 @@ class RootParameter {
 public:
     RootParameter(D3D12_ROOT_PARAMETER_TYPE type, D3D12_SHADER_VISIBILITY visibility);
     RootParameter(D3D12_ROOT_PARAMETER_TYPE type);
-    virtual ~RootParameter() = 0;
+    virtual ~RootParameter();
 
     const D3D12_ROOT_PARAMETER1& GetParameter() const;
     const std::vector<SignatureRegisters>& SignatureLocations() const;

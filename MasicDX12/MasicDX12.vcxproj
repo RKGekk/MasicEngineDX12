@@ -254,6 +254,7 @@
     <ClCompile Include="graphics\directx12_wrappers\vertex_buffer.cpp" />
     <ClCompile Include="graphics\vertex_types.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\sampler.cpp" />
+    <ClCompile Include="window_keycodes.cpp" />
     <ClCompile Include="window_surface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="graphics\d3d12_renderer.cpp" />
