@@ -1,6 +1,6 @@
 #include "upload_buffer.h"
 
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 
 #include "device.h"
 #include "../tools/com_exception.h"
@@ -53,7 +53,7 @@ void UploadBuffer::Reset() {
 }
 
 UploadBuffer::Page::Page(Device& device, size_t size_in_bytes) : m_device(device), m_page_size(size_in_bytes), m_offset(0u), m_cpu_ptr(nullptr), m_gpu_ptr(D3D12_GPU_VIRTUAL_ADDRESS(0ul)) {
-    Microsoft::WRL::ComPtr<ID3D12Device2> d3d12_device = m_device.GetD3D12Device();
+    auto d3d12_device = m_device.GetD3D12Device();
     D3D12_HEAP_PROPERTIES props = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
     D3D12_RESOURCE_DESC resource = CD3DX12_RESOURCE_DESC::Buffer(m_page_size);
     HRESULT hr = d3d12_device->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &resource, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(m_d3d12_resource.GetAddressOf()));

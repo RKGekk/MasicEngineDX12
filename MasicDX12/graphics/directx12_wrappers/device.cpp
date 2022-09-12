@@ -157,7 +157,7 @@ std::wstring Device::GetDescription() const {
 Device::Device(std::shared_ptr<AdapterData> adapter) : m_adapter(adapter) {
     auto dxgi_adapter = m_adapter->GetDXGIAdapter();
 
-    HRESULT hr = D3D12CreateDevice(dxgi_adapter.Get(), D3D_FEATURE_LEVEL_12_2, IID_PPV_ARGS(m_d3d12_device.GetAddressOf()));
+    HRESULT hr = D3D12CreateDevice(dxgi_adapter.Get(), D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(m_d3d12_device.GetAddressOf()));
     ThrowIfFailed(hr);
 
     {
@@ -237,7 +237,7 @@ CommandQueue& Device::GetCommandQueue(D3D12_COMMAND_LIST_TYPE type) {
     return *command_queue;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Device2> Device::GetD3D12Device() const {
+Microsoft::WRL::ComPtr<ID3D12Device5> Device::GetD3D12Device() const {
     return m_d3d12_device;
 }
 

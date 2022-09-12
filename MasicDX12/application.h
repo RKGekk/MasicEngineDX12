@@ -25,7 +25,7 @@ class WindowSurface;
 
 class Application {
 public:
-    static void Create(HINSTANCE hInst, const ApplicationOptions& opt);
+    static bool Create(HINSTANCE hInst, const ApplicationOptions& opt);
     static void Destroy();
     static Application& Get();
 
@@ -34,7 +34,7 @@ public:
     static std::shared_ptr<WindowSurface> GetWindowByHWND(HWND hwnd);
     static void DestroyWindowByHWND(HWND hwnd);
 
-    bool Run(std::shared_ptr<Engine> pEngine, const RenderWindowConfig& cfg);
+    bool Run(std::shared_ptr<Engine> pEngine);
     void Quit(int exit_code = 0);
     void Stop();
     

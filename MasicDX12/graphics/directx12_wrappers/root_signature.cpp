@@ -70,7 +70,7 @@ void RootSignature::CompileRootSignature() {
     HRESULT hr = D3DX12SerializeVersionedRootSignature(&m_root_signature_desc, highest_version, &root_signature_blob, &error_blob);
     ThrowIfFailed(hr);
 
-    Microsoft::WRL::ComPtr<ID3D12Device2> d3d12_device = m_device.GetD3D12Device();
+    auto d3d12_device = m_device.GetD3D12Device();
     hr = d3d12_device->CreateRootSignature(0, root_signature_blob->GetBufferPointer(), root_signature_blob->GetBufferSize(), IID_PPV_ARGS(m_root_signature.ReleaseAndGetAddressOf()));
     ThrowIfFailed(hr);
 

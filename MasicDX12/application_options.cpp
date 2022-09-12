@@ -25,6 +25,7 @@ bool ApplicationOptions::Init(const std::string& xml_file_name) {
 	//RootNode = xml_doc.child("PlayerOptions");
 	RootNode = xml_doc.root();
 	if (!RootNode) { return false; }
+	RootNode = RootNode.child("PlayerOptions");
 
 	pugi::xml_node graphics_node = RootNode.child("Graphics");
 	if (graphics_node) {

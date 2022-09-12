@@ -1,6 +1,6 @@
 #pragma once
 
-#include "d3dx12.h"
+#include <directx/d3dx12.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
 
@@ -85,7 +85,7 @@ public:
 	std::shared_ptr<AdapterData> GetAdapter() const;
 	CommandQueue& GetCommandQueue(D3D12_COMMAND_LIST_TYPE type = D3D12_COMMAND_LIST_TYPE_DIRECT);
 
-	Microsoft::WRL::ComPtr<ID3D12Device2> GetD3D12Device() const;
+	Microsoft::WRL::ComPtr<ID3D12Device5> GetD3D12Device() const;
 	D3D_ROOT_SIGNATURE_VERSION GetHighestRootSignatureVersion() const;
 
 	DXGI_SAMPLE_DESC GetMultisampleQualityLevels(DXGI_FORMAT format, UINT num_samples = D3D12_MAX_MULTISAMPLE_SAMPLE_COUNT, D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE) const;
@@ -100,7 +100,7 @@ protected:
 	virtual ~Device();
 
 private:
-	Microsoft::WRL::ComPtr<ID3D12Device2> m_d3d12_device;
+	Microsoft::WRL::ComPtr<ID3D12Device5> m_d3d12_device;
 
 	std::shared_ptr<AdapterData> m_adapter;
 

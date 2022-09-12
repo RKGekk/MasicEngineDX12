@@ -48,18 +48,17 @@ bool Application::Initialize(const ApplicationOptions& opt) {
     m_timer.Start();
     m_options = opt;
     m_event_manager = std::make_unique<EventManager>("GameCodeApp Event Mgr", true);
-    if (!m_event_manager) {
-        return false;
-    }
+    if (!m_event_manager) return false;
 
     return true;
 }
 
-void Application::Create(HINSTANCE hInst, const ApplicationOptions& opt) {
+bool Application::Create(HINSTANCE hInst, const ApplicationOptions& opt) {
     if (!gs_pSingeton) {
         gs_pSingeton = new Application(hInst);
-        gs_pSingeton->Initialize(opt);
+        return gs_pSingeton->Initialize(opt);
     }
+    return true;
 }
 
 Application& Application::Get() {
@@ -81,8 +80,8 @@ Application::~Application() {
 
 std::shared_ptr<WindowSurface> Application::CreateRenderWindow(const RenderWindowConfig& cfg) {
     std::shared_ptr<WindowSurface> pWindow = std::make_shared<WindowSurface>();
-    pWindow->Initialize(cfg);
-    pWindow->VRegisterEvents();
+    if(!pWindow->Initialize(cfg)) return nullptr;
+
 
     gs_windows.insert(WindowMap::value_type(pWindow->GetHWND(), pWindow));
     gs_window_by_name.insert(WindowNameMap::value_type(pWindow->GetWindowTitle(), pWindow));
@@ -117,12 +116,10 @@ void Application::DestroyWindowByHWND(HWND hwnd) {
 }
 
 
-bool Application::Run(std::shared_ptr<Engine> pGame, const RenderWindowConfig& cfg) {
+bool Application::Run(std::shared_ptr<Engine> pGame) {
     assert(!m_is_running);
 
     m_is_running = true;
-
-    if (!pGame->Initialize(cfg)) return 1;
     pGame->ShowWindow();
 
     while (pGame->ProcessMessages()) {

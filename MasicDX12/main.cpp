@@ -55,7 +55,7 @@ void ReportLiveObjects() {
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow) {
-	int retCode = 0;
+	int ret_code = 0;
 
 	WCHAR path[MAX_PATH];
 	HMODULE hModule = GetModuleHandleW(NULL);
@@ -69,15 +69,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	cfg.set_window_title("CG2_2");
 	cfg.set_window_class("MyTestWindowsClass");
 
-	Application::Create(hModule, cfg.options);
+	bool can_run = Application::Create(hModule, cfg.options);
 	std::shared_ptr<Engine> pEngine = Engine::GetEngine();
-	bool can_run = pEngine->Initialize(cfg);
+	if (!can_run || !pEngine) return -1;
+
+	can_run = pEngine->Initialize(cfg);
 	if (can_run) {
-		Application::Get().Run(pEngine, cfg);
+		Application::Get().Run(pEngine);
 	}
 	Application::Destroy();
 
 	atexit(&ReportLiveObjects);
 
-	return retCode;
+	return ret_code;
 }

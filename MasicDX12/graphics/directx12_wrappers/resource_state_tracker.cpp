@@ -3,7 +3,7 @@
 #include "command_list.h"
 #include "resource.h"
 
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 
 std::mutex ResourceStateTracker::ms_global_mutex;
 bool ResourceStateTracker::ms_is_locked = false;

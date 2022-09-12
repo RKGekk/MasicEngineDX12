@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)MasicDX12\includes;$(SolutionDir)MasicDX12\includes\directx_tex;$(SolutionDir)MasicDX12\includes\directx;$(SolutionDir)MasicDX12\includes\dxguids;$(SolutionDir)MasicDX12\includes\wsl;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)MasicDX12\includes;$(SolutionDir)MasicDX12\includes\directx_tex;$(SolutionDir)MasicDX12\includes\dxguids;$(SolutionDir)MasicDX12\includes\wsl;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)MasicDX12\libs\x64\Debug;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath);</SourcePath>
   </PropertyGroup>

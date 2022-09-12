@@ -7,7 +7,7 @@
 #include "directx12_wrappers/pipeline_state_object.h"
 #include "../tools/com_exception.h"
 
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 #include <d3dcompiler.h>
 
 PanoToCubemapPSO::PanoToCubemapPSO(Device& device) {

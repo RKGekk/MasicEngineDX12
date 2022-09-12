@@ -97,7 +97,7 @@ AdapterData::AdapterData(Microsoft::WRL::ComPtr<IDXGIAdapter1> pAdapter) {
 
     m_description = dxgi_adapter_desc1;
 
-    hr = D3D12CreateDevice(m_pAdapter.Get(), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
+    hr = D3D12CreateDevice(m_pAdapter.Get(), D3D_FEATURE_LEVEL_12_1, __uuidof(ID3D12Device), nullptr);
     m_is_dx12_cap = SUCCEEDED(hr);
     m_is_hw = (dxgi_adapter_desc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) == 0;
     m_dedicated_video_memory = dxgi_adapter_desc1.DedicatedVideoMemory;

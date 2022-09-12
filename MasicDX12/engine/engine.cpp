@@ -33,7 +33,7 @@ bool Engine::Initialize(const RenderWindowConfig& cfg) {
 	std::shared_ptr<WindowSurface> render_window = Application::Get().CreateRenderWindow(cfg);
 	if (!render_window) return false;
 	
-	m_renderer = std::make_unique<D3DRenderer12>();
+	m_renderer = std::make_shared<D3DRenderer12>();
 	if (!m_renderer->Initialize(render_window)) return false;
 	
 	m_renderer->VOnRestore();

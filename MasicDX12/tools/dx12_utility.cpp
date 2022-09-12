@@ -33,7 +33,7 @@ void EnableDebugLayer() {
 	debug_interface->EnableDebugLayer();
 }
 
-void SetDebugInfoQueue(Microsoft::WRL::ComPtr<ID3D12Device2> device) {
+void SetDebugInfoQueue(Microsoft::WRL::ComPtr<ID3D12Device5> device) {
 	Microsoft::WRL::ComPtr<ID3D12InfoQueue> p_info_queue;
 	HRESULT hr = device.As(&p_info_queue);
 	if (SUCCEEDED(hr)) {
@@ -87,7 +87,7 @@ Microsoft::WRL::ComPtr<IDXGIAdapter4> GetAdapter(bool use_warp) {
 			dxgi_adapter1->GetDesc1(&dxgi_adapter_desc1);
 			bool is_hw = (dxgi_adapter_desc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) == 0;
 			bool is_gt_mem = dxgi_adapter_desc1.DedicatedVideoMemory > max_dedicated_video_memory;
-			hr = D3D12CreateDevice(dxgi_adapter1.Get(), D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
+			hr = D3D12CreateDevice(dxgi_adapter1.Get(), D3D_FEATURE_LEVEL_12_1, __uuidof(ID3D12Device), nullptr);
 			bool is_dx12_cap = SUCCEEDED(hr);
 			if (is_hw && is_gt_mem && is_dx12_cap) {
 				max_dedicated_video_memory = dxgi_adapter_desc1.DedicatedVideoMemory;
@@ -99,8 +99,8 @@ Microsoft::WRL::ComPtr<IDXGIAdapter4> GetAdapter(bool use_warp) {
 	return dxgi_adapter4;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Device2> CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter) {
-	Microsoft::WRL::ComPtr<ID3D12Device2> d3d12_device2;
+Microsoft::WRL::ComPtr<ID3D12Device5> CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter) {
+	Microsoft::WRL::ComPtr<ID3D12Device5> d3d12_device2;
 	HRESULT hr = D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(d3d12_device2.GetAddressOf()));
 
 #if defined(_DEBUG)
@@ -136,7 +136,7 @@ Microsoft::WRL::ComPtr<ID3D12Device2> CreateDevice(Microsoft::WRL::ComPtr<IDXGIA
 	return d3d12_device2;
 }
 
-Microsoft::WRL::ComPtr<ID3D12CommandQueue> CreateCommandQueue(Microsoft::WRL::ComPtr<ID3D12Device2> device, D3D12_COMMAND_LIST_TYPE type) {
+Microsoft::WRL::ComPtr<ID3D12CommandQueue> CreateCommandQueue(Microsoft::WRL::ComPtr<ID3D12Device5> device, D3D12_COMMAND_LIST_TYPE type) {
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> d3d12_command_queue;
 
 	D3D12_COMMAND_QUEUE_DESC command_queue_desc;
@@ -190,7 +190,7 @@ Microsoft::WRL::ComPtr<IDXGISwapChain4> CreateSwapChain(HWND hwnd, Microsoft::WR
 	return dxgi_swap_chain4;
 }
 
-Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device2> device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t num_descriptors) {
+Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device5> device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t num_descriptors) {
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> desc_heap;
 	D3D12_DESCRIPTOR_HEAP_DESC descriptor_heap_desc;
 	descriptor_heap_desc.NumDescriptors = num_descriptors;
@@ -202,14 +202,14 @@ Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL
 	return desc_heap;
 }
 
-Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CreateCommandAllocator(Microsoft::WRL::ComPtr<ID3D12Device2> device, D3D12_COMMAND_LIST_TYPE type) {
+Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CreateCommandAllocator(Microsoft::WRL::ComPtr<ID3D12Device5> device, D3D12_COMMAND_LIST_TYPE type) {
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> command_allocator;
 	HRESULT hr = device->CreateCommandAllocator(type, IID_PPV_ARGS(command_allocator.GetAddressOf()));
 	ThrowIfFailed(hr);
 	return command_allocator;
 }
 
-Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateCommandList(Microsoft::WRL::ComPtr<ID3D12Device2> device, Microsoft::WRL::ComPtr<ID3D12CommandAllocator> command_allocator, D3D12_COMMAND_LIST_TYPE type) {
+Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateCommandList(Microsoft::WRL::ComPtr<ID3D12Device5> device, Microsoft::WRL::ComPtr<ID3D12CommandAllocator> command_allocator, D3D12_COMMAND_LIST_TYPE type) {
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> command_list;
 	HRESULT hr = device->CreateCommandList(0, type, command_allocator.Get(), nullptr, IID_PPV_ARGS(command_list.GetAddressOf()));
 	ThrowIfFailed(hr);
@@ -329,7 +329,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> CompileShader(const std::string& filename, cons
 	return CompileShader(s2w(filename), defines, entrypoint, target);
 }
 
-Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence(Microsoft::WRL::ComPtr<ID3D12Device2> device) {
+Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence(Microsoft::WRL::ComPtr<ID3D12Device5> device) {
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence;
 	HRESULT hr = device->CreateFence(0u, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 	ThrowIfFailed(hr);
@@ -375,7 +375,7 @@ void ClearDepth(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_list, D3D
 	cmd_list->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depth, 0u, 0u, nullptr);
 }
 
-void UpdateBufferResource(Microsoft::WRL::ComPtr<ID3D12Device2> device, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_list, ID3D12Resource** ppDst_resource, ID3D12Resource** ppIntermediate_resource, size_t num_nlements, size_t element_size, const void* buffer_data, D3D12_RESOURCE_FLAGS flags) {
+void UpdateBufferResource(Microsoft::WRL::ComPtr<ID3D12Device5> device, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_list, ID3D12Resource** ppDst_resource, ID3D12Resource** ppIntermediate_resource, size_t num_nlements, size_t element_size, const void* buffer_data, D3D12_RESOURCE_FLAGS flags) {
 	size_t buffer_size = num_nlements * element_size;
 	D3D12_HEAP_PROPERTIES default_heap_properties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	D3D12_RESOURCE_DESC default_heap_resource_desc = CD3DX12_RESOURCE_DESC::Buffer(buffer_size, flags);

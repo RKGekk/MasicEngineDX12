@@ -7,7 +7,7 @@
 #include <optional>
 
 #include <d3dcompiler.h>
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 #include <wrl/client.h>
 
 #include "shader_register.h"

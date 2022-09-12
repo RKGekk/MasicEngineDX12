@@ -19,20 +19,20 @@
 UINT CalcConstantBufferByteSize(UINT byteSize);
 
 void EnableDebugLayer();
-void SetDebugInfoQueue(Microsoft::WRL::ComPtr<ID3D12Device2> device);
+void SetDebugInfoQueue(Microsoft::WRL::ComPtr<ID3D12Device5> device);
 
 Microsoft::WRL::ComPtr<IDXGIAdapter4> GetAdapter(bool use_warp);
 
-Microsoft::WRL::ComPtr<ID3D12Device2> CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter);
-Microsoft::WRL::ComPtr<ID3D12CommandQueue> CreateCommandQueue(Microsoft::WRL::ComPtr<ID3D12Device2> device, D3D12_COMMAND_LIST_TYPE type);
+Microsoft::WRL::ComPtr<ID3D12Device5> CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter);
+Microsoft::WRL::ComPtr<ID3D12CommandQueue> CreateCommandQueue(Microsoft::WRL::ComPtr<ID3D12Device5> device, D3D12_COMMAND_LIST_TYPE type);
 Microsoft::WRL::ComPtr<IDXGISwapChain4> CreateSwapChain(HWND hwnd, Microsoft::WRL::ComPtr<ID3D12CommandQueue> command_queue, uint32_t width, uint32_t height, uint32_t bufferCount);
-Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device2> device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t num_descriptors);
-Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CreateCommandAllocator(Microsoft::WRL::ComPtr<ID3D12Device2> device, D3D12_COMMAND_LIST_TYPE type);
-Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateCommandList(Microsoft::WRL::ComPtr<ID3D12Device2> device, Microsoft::WRL::ComPtr<ID3D12CommandAllocator> command_allocator, D3D12_COMMAND_LIST_TYPE type);
+Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device5> device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t num_descriptors);
+Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CreateCommandAllocator(Microsoft::WRL::ComPtr<ID3D12Device5> device, D3D12_COMMAND_LIST_TYPE type);
+Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateCommandList(Microsoft::WRL::ComPtr<ID3D12Device5> device, Microsoft::WRL::ComPtr<ID3D12CommandAllocator> command_allocator, D3D12_COMMAND_LIST_TYPE type);
 
 bool CheckTearingSupport();
 
-Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence(Microsoft::WRL::ComPtr<ID3D12Device2> device);
+Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence(Microsoft::WRL::ComPtr<ID3D12Device5> device);
 HANDLE CreateEventHandle();
 uint64_t Signal(Microsoft::WRL::ComPtr<ID3D12CommandQueue> cmd_queue, Microsoft::WRL::ComPtr<ID3D12Fence> fence, uint64_t& fence_value);
 void WaitForFenceValue(Microsoft::WRL::ComPtr<ID3D12Fence> fence, uint64_t fence_value, HANDLE fenceEvent, std::chrono::milliseconds duration = std::chrono::milliseconds::max());
@@ -43,7 +43,7 @@ void TransitionResource(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_l
 void ClearRTV(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_list, D3D12_CPU_DESCRIPTOR_HANDLE rtv, FLOAT* clear_color);
 void ClearDepth(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_list, D3D12_CPU_DESCRIPTOR_HANDLE dsv, FLOAT depth);
 
-void UpdateBufferResource(Microsoft::WRL::ComPtr<ID3D12Device2> device, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_list, ID3D12Resource** ppDst_resource, ID3D12Resource** ppIntermediate_resource, size_t num_elements, size_t element_size, const void* buffer_data, D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE);
+void UpdateBufferResource(Microsoft::WRL::ComPtr<ID3D12Device5> device, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList2> cmd_list, ID3D12Resource** ppDst_resource, ID3D12Resource** ppIntermediate_resource, size_t num_elements, size_t element_size, const void* buffer_data, D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE);
 
 
 Microsoft::WRL::ComPtr<ID3DBlob> LoadBinary(const std::wstring& filename);

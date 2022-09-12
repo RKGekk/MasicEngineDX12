@@ -9,7 +9,7 @@
 #include "../tools/string_utility.h"
 #include "directx12_wrappers/shader.h"
 
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 #include <d3dcompiler.h>
 
 GenerateMipsPSO::GenerateMipsPSO(Device& device) {

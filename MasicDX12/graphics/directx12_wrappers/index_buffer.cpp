@@ -1,6 +1,6 @@
 #include "index_buffer.h"
 
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 #include <cassert>
 
 D3D12_INDEX_BUFFER_VIEW IndexBuffer::GetIndexBufferView() const {

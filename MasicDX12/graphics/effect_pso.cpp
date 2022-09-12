@@ -11,7 +11,7 @@
 #include "../nodes/light_manager.h"
 
 #include <d3dcompiler.h>
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 #include <wrl/client.h>
 
 EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal) {

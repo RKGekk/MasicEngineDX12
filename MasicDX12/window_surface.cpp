@@ -33,7 +33,6 @@ WindowSurface::~WindowSurface() {
 
 bool WindowSurface::Initialize(const RenderWindowConfig& cfg) {
     m_hInstance = cfg.hInstance;
-    m_dpi_scaling = GetDpiForWindow(m_hwnd) / 96.0f;
 
     m_name = cfg.window_class_w;
     m_title = cfg.window_title_w;
@@ -72,7 +71,7 @@ bool WindowSurface::Initialize(const RenderWindowConfig& cfg) {
 
     DWORD style = WS_OVERLAPPEDWINDOW;
 
-    HWND hWnd = CreateWindowExW(
+    m_hwnd = CreateWindowExW(
         NULL,
         m_name.c_str(),
         m_name.c_str(),
@@ -86,11 +85,13 @@ bool WindowSurface::Initialize(const RenderWindowConfig& cfg) {
         cfg.hInstance,
         NULL
     );
-    assert(hWnd && "Failed to create window");
-    if (!hWnd) {
+    assert(m_hwnd && "Failed to create window");
+    if (!m_hwnd) {
         MessageBoxA(NULL, "Could not create the render window.", "Error", MB_OK | MB_ICONERROR);
         return false;
     }
+    m_dpi_scaling = GetDpiForWindow(m_hwnd) / 96.0f;
+    VRegisterEvents();
 
     return true;
 }
@@ -100,20 +101,24 @@ bool WindowSurface::ProcessMessages() {
 
     ZeroMemory(&msg, sizeof(MSG));
 
-    while (PeekMessage(&msg, m_hwnd, 0, 0, PM_REMOVE)) {
+    BOOL res = PeekMessage(&msg, m_hwnd, 0, 0, PM_REMOVE);
+    PeekMessage(&msg, m_hwnd, 0, 0, PM_REMOVE);
+    if(res){
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-    }
-
-    if (msg.message == WM_NULL) {
-        if (!IsWindow(m_hwnd)) {
-            m_hwnd = NULL;
-            UnregisterClass(m_name.c_str(), m_hInstance);
-            return false;
+        if (msg.message == WM_NULL) {
+            if (!IsWindow(m_hwnd)) {
+                m_hwnd = NULL;
+                UnregisterClass(m_name.c_str(), m_hInstance);
+                return false;
+            }
+        }
+        if (msg.message == WM_QUIT) {
+            res = false;
         }
     }
 
-    return true;
+    return res;
 }
 
 HWND WindowSurface::GetWindowHandle() const {

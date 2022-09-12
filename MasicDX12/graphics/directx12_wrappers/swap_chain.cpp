@@ -39,7 +39,6 @@ SwapChain::SwapChain(Device& device, HWND hWnd, DXGI_FORMAT render_target_format
     hr = dxgi_factory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &allow_tearing, sizeof(BOOL));
     if (SUCCEEDED(hr)) {
         //m_tearing_supported = (allow_tearing == TRUE);
-        m_tearing_supported = false;
     }
 
     RECT window_rect;

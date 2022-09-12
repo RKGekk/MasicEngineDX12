@@ -5,7 +5,7 @@
 #include "../tools/com_exception.h"
 
 DescriptorAllocatorPage::DescriptorAllocatorPage(Device& device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t num_descriptors) : m_device(device), m_heap_type(type), m_num_descriptors_in_heap(num_descriptors) {
-    Microsoft::WRL::ComPtr<ID3D12Device2> d3d12_device = m_device.GetD3D12Device();
+    auto d3d12_device = m_device.GetD3D12Device();
 
     D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {};
     heap_desc.Type = m_heap_type;

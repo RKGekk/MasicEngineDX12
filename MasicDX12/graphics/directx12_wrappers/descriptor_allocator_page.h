@@ -4,7 +4,7 @@
 
 #include <d3d12.h>
 #include <wrl.h>
-#include <d3dx12.h>
+#include <directx/d3dx12.h>
 
 #include <map>
 #include <memory>

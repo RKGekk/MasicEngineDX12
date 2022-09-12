@@ -4,10 +4,10 @@
     <Renderer>Direct3D 12</Renderer>
     <Width>1280</Width>
     <Height>720</Height>
-    <RunFullSpeed>no</RunFullSpeed>
-    <FullScreen>no</FullScreen>
+    <RunFullSpeed>false</RunFullSpeed>
+    <FullScreen>false</FullScreen>
     <FullScreenMax>ture</FullScreenMax>
-    <ScreenTearing>no</ScreenTearing>
+    <ScreenTearing>false</ScreenTearing>
     <DebugUI>true</DebugUI>
   </Graphics>
   <Sound sfxVolume="0.5" musicVolume="0.25"/>
