@@ -3,22 +3,17 @@
 #include <iostream>
 #include <iomanip>
 
-#include <Windows.h>
 #include <DirectXMath.h>
 
 #include "base_event_data.h"
 #include "../tools/string_utility.h"
 
-class EvtData_Window_Close : public BaseEventData {
-    bool m_confirm_close;
-    HWND m_hwnd;
-
+class EvtData_Paint : public BaseEventData {
 public:
-    static const EventTypeId sk_EventType = 0x81acb28c;
+    static const EventTypeId sk_EventType = 0xe5db9f0e;
     static const std::string sk_EventName;
 
-    EvtData_Window_Close();
-    EvtData_Window_Close(HWND hwnd, bool confirm_close);
+    EvtData_Paint();
 
     virtual EventTypeId VGetEventType() const override;
     virtual void VSerialize(std::ostream& out) const override;
@@ -26,8 +21,5 @@ public:
     virtual IEventDataPtr VCopy() const override;
     virtual const std::string& GetName() const override;
 
-    bool GetConfirmation() const;
-    HWND GetHWND();
-
-    friend std::ostream& operator<<(std::ostream& os, const EvtData_Window_Close& evt);
+    friend std::ostream& operator<<(std::ostream& os, const EvtData_Paint& evt);
 };

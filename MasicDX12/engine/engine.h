@@ -32,9 +32,11 @@ public:
 	std::shared_ptr<BaseEngineLogic> GetGameLogic();
 	std::shared_ptr<IRenderer> GetRenderer();
 	static std::shared_ptr<Engine> GetEngine();
+	static void Destroy();
 
 	void Update(IEventDataPtr pEventData);
 	void RenderFrame();
+	LRESULT WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 protected:
 	Engine();

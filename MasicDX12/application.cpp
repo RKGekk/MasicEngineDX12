@@ -7,6 +7,8 @@
 #include <unordered_map>
 
 #include "events/evt_data_update_tick.h"
+#include "events/evt_data_window_close.h"
+#include "events/evt_data_paint.h"
 #include "window_surface.h"
 
 #if defined(min)
@@ -34,6 +36,12 @@ Application::Application(HINSTANCE hInst) : m_hInstance(hInst), m_is_running(fal
 
 void Application::VRegisterEvents() {
     REGISTER_EVENT(EvtData_Update_Tick);
+}
+
+void Application::RegisterAllDelegates() {
+    IEventManager* pGlobalEventManager = IEventManager::Get();
+    pGlobalEventManager->VAddListener({ connect_arg<&Application::CloseWindow>, this }, EvtData_Window_Close::sk_EventType);
+    pGlobalEventManager->VAddListener({ connect_arg<&Application::Paint>, this }, EvtData_Paint::sk_EventType);
 }
 
 bool Application::Initialize(const ApplicationOptions& opt) {
@@ -123,7 +131,6 @@ bool Application::Run(std::shared_ptr<Engine> pGame) {
     pGame->ShowWindow();
 
     while (pGame->ProcessMessages()) {
-        m_timer.Tick();
         if (m_request_quit) {
             PostQuitMessage(0);
             m_request_quit = false;
@@ -149,4 +156,16 @@ const ApplicationOptions& Application::GetApplicationOptions() {
 
 GameTimer& Application::GetTimer() {
     return m_timer;
+}
+
+void Application::CloseWindow(IEventDataPtr pEventData) {
+    std::shared_ptr<EvtData_Window_Close> pCastEventData = std::static_pointer_cast<EvtData_Window_Close>(pEventData);
+    Quit();
+}
+
+void Application::Paint(IEventDataPtr pEventData) {
+    std::shared_ptr<EvtData_Paint> pCastEventData = std::static_pointer_cast<EvtData_Paint>(pEventData);
+    m_timer.Tick();
+    std::shared_ptr<EvtData_Update_Tick> pEvent(new EvtData_Update_Tick(m_timer.GetDeltaDuration(), m_timer.GetTotalDuration()));
+    m_event_manager->VTriggerEvent(pEvent);
 }

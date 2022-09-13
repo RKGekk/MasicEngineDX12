@@ -9,6 +9,8 @@
 #include "../graphics/imgui/imgui_impl_win32.h"
 #include "../graphics/imgui/imgui_impl_dx12.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 ActorMenuUI::ActorMenuUI(std::shared_ptr<ProcessManager> pm) {
 	m_show_menu = true;
 	m_actor_id = 0;
@@ -149,7 +151,8 @@ int ActorMenuUI::VGetZOrder() const {
 
 void ActorMenuUI::VSetZOrder(int const zOrder) {}
 
-LRESULT ActorMenuUI::VOnMsgProc(HWND m_hWnd, UINT m_uMsg, WPARAM m_wParam, LPARAM m_lParam) {
+LRESULT ActorMenuUI::VOnMsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) { return true; }
 	return 0;
 }
 

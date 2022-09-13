@@ -69,7 +69,12 @@ bool Engine::ProcessMessages() {
 }
 
 void Engine::Update(IEventDataPtr pEventData) {
-	
+	std::shared_ptr<EvtData_Update_Tick> pCastEventData = std::static_pointer_cast<EvtData_Update_Tick>(pEventData);
+	if (m_game) {
+		IEventManager::Get()->VUpdate();
+		GameTimer& timer = Application::Get().GetTimer();
+		m_game->VOnUpdate(timer);
+	}
 }
 
 void Engine::RenderFrame() {
@@ -80,8 +85,43 @@ void Engine::RenderFrame() {
 	//m_renderer->VPresent();
 }
 
+LRESULT Engine::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	LRESULT result = 0;
+
+	switch (uMsg) {
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+		case WM_CHAR:
+		case WM_MOUSEMOVE:
+		case WM_LBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_RBUTTONDOWN:
+		case WM_RBUTTONUP:
+		case WM_MBUTTONUP:
+		case WM_MBUTTONDOWN:
+		case WM_MOUSEWHEEL:
+		case MM_JOY1BUTTONDOWN:
+		case MM_JOY1BUTTONUP:
+		case MM_JOY1MOVE:
+		case MM_JOY1ZMOVE:
+		case MM_JOY2BUTTONDOWN:
+		case MM_JOY2BUTTONUP:
+		case MM_JOY2MOVE:
+		case MM_JOY2ZMOVE: {
+			if (!m_game) break;
+			for (GameViewList::reverse_iterator i = m_game->m_game_views.rbegin(); i != m_game->m_game_views.rend(); ++i) {
+				if ((*i)->VOnMsgProc(hwnd, uMsg, wParam, lParam)) {
+					result = true;
+					break;
+				}
+			}
+		}
+		break;
+	}
+	return result;
+}
+
 void Engine::VRegisterEvents() {
-	//REGISTER_EVENT(EvtData_OS_Message);
 	//REGISTER_EVENT(EvtData_Environment_Loaded);
 	//REGISTER_EVENT(EvtData_New_Actor);
 	//REGISTER_EVENT(EvtData_Move_Actor);
@@ -145,4 +185,10 @@ std::shared_ptr<Engine> Engine::GetEngine() {
 		m_pEngine.reset(new Engine());
 	}
 	return m_pEngine;
+}
+
+void Engine::Destroy() {
+	if (m_pEngine) {
+		m_pEngine = nullptr;
+	}
 }

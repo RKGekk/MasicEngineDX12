@@ -41,12 +41,17 @@ public:
     const ApplicationOptions& GetApplicationOptions();
     GameTimer& GetTimer();
 
+    void CloseWindow(IEventDataPtr pEventData);
+    void Paint(IEventDataPtr pEventData);
+
+
 protected:
     Application(HINSTANCE hInst);
     bool Initialize(const ApplicationOptions& opt);
     virtual ~Application();
 
     virtual void VRegisterEvents();
+    virtual void RegisterAllDelegates();
 
 private:
     Application(const Application& copy) = delete;

@@ -5,6 +5,7 @@
 #include "particle_component.h"
 #include "orientation_relation_component.h"
 #include "enemy_component.h"
+#include "camera_component.h"
 
 unsigned int ActorFactory::GetNextActorId() {
     return ++m_last_actorId;
@@ -18,6 +19,7 @@ ActorFactory::ActorFactory() {
     m_component_factory.Register<ParticleComponent>(ActorComponent::GetIdFromName(ParticleComponent::g_Name), ParticleComponent::g_Name);
     m_component_factory.Register<OrientationRelationComponent>(ActorComponent::GetIdFromName(OrientationRelationComponent::g_Name), OrientationRelationComponent::g_Name);
     m_component_factory.Register<EnemyComponent>(ActorComponent::GetIdFromName(EnemyComponent::g_Name), EnemyComponent::g_Name);
+    m_component_factory.Register<CameraComponent>(ActorComponent::GetIdFromName(CameraComponent::g_Name), CameraComponent::g_Name);
 }
 
 std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, const DirectX::XMFLOAT4X4* pInitial_transform, const ActorId servers_actorId) {

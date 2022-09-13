@@ -585,6 +585,9 @@
     <ClCompile Include="window_keycodes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="events\evt_data_paint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1221,6 +1224,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine\movement_controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_paint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

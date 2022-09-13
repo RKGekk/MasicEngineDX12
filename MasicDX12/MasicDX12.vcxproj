@@ -191,6 +191,7 @@
     <ClCompile Include="events\resize_event_args.cpp" />
     <ClCompile Include="events\evt_data_mouse_button_released.cpp" />
     <ClCompile Include="events\mouse_wheel_event_args.cpp" />
+    <ClCompile Include="events\evt_data_paint.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\blend_state.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\depth_stencil_state.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\descripror_table_range.cpp" />
@@ -372,6 +373,7 @@
     <ClInclude Include="events\mouse_motion_event_args.h" />
     <ClInclude Include="events\resize_event_args.h" />
     <ClInclude Include="events\evt_data_mouse_button_released.h" />
+    <ClInclude Include="events\evt_data_paint.h" />
     <ClInclude Include="graphics\directional_light.h" />
     <ClInclude Include="graphics\directx12_wrappers\adapter_reader.h" />
     <ClInclude Include="graphics\directx12_wrappers\blend_state.h" />
