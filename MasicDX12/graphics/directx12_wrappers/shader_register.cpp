@@ -58,3 +58,26 @@ D3D12_ROOT_PARAMETER_TYPE SignatureRegisters::GetParameterType() {
     }
     return result;
 }
+
+ShaderRegister SignatureRegisters::GetType(D3D12_DESCRIPTOR_RANGE_TYPE rt) {
+    ShaderRegister result = {};
+    switch (rt) {
+        case D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV: {
+            result = ShaderRegister::ShaderResource;
+        }
+        break;
+        case D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_CBV: {
+            result = ShaderRegister::ConstantBuffer;;
+        }
+        break;
+        case D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_UAV: {
+            result = ShaderRegister::UnorderedAccess;
+        }
+        break;
+        case D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER: {
+            result = ShaderRegister::Sampler;
+        }
+        break;
+    }
+    return result;
+}

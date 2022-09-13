@@ -17,6 +17,7 @@ struct SignatureRegisters {
     ShaderRegister RegisterType;
     D3D12_DESCRIPTOR_RANGE_TYPE GetType();
     D3D12_ROOT_PARAMETER_TYPE GetParameterType();
+    static ShaderRegister GetType(D3D12_DESCRIPTOR_RANGE_TYPE rt);
 };
 
 struct LocationHasher {

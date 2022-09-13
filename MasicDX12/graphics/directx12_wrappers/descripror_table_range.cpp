@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-RootDescriprorTableRange::RootDescriprorTableRange(SignatureRegisters register_type, uint32_t descriptor_heap_index, uint32_t range_size, D3D12_DESCRIPTOR_RANGE_FLAGS flags) {
+RootDescriprorTableRange::RootDescriprorTableRange(SignatureRegisters register_type, uint32_t descriptor_heap_index, uint32_t range_size, D3D12_DESCRIPTOR_RANGE_FLAGS flags) : m_register_type(register_type.RegisterType) {
     m_range.RangeType = register_type.GetType();
     m_range.NumDescriptors = range_size;
     m_range.OffsetInDescriptorsFromTableStart = descriptor_heap_index;
@@ -11,7 +11,9 @@ RootDescriprorTableRange::RootDescriprorTableRange(SignatureRegisters register_t
     m_range.Flags = flags;
 }
 
-RootDescriprorTableRange::RootDescriprorTableRange(const D3D12_DESCRIPTOR_RANGE1& range) : m_range(range) {}
+RootDescriprorTableRange::RootDescriprorTableRange(const D3D12_DESCRIPTOR_RANGE1& range) : m_range(range) {
+    m_register_type = SignatureRegisters::GetType(range.RangeType);
+}
 
 RootDescriprorTableRange::~RootDescriprorTableRange() {}
 
@@ -30,7 +32,7 @@ SignatureRegisters RootDescriprorTableRange::SignatureRegistersType() const {
 CBDescriptorTableRange::CBDescriptorTableRange(uint16_t base_register, uint16_t register_space, uint32_t range_size, D3D12_DESCRIPTOR_RANGE_FLAGS flags) : RootDescriprorTableRange(SignatureRegisters{ base_register, register_space, ShaderRegister::ConstantBuffer }, D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND, range_size, flags) {}
 
 CBDescriptorTableRange::CBDescriptorTableRange(const D3D12_DESCRIPTOR_RANGE1& range) : RootDescriprorTableRange(range) {
-    assert(range.RangeType == D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_CBV);
+    assert(range.RangeType != D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_CBV);
 }
 
 SRDescriptorTableRange::SRDescriptorTableRange(uint16_t base_register, uint16_t register_space, uint32_t range_size, D3D12_DESCRIPTOR_RANGE_FLAGS flags) : RootDescriprorTableRange(SignatureRegisters{ base_register, register_space, ShaderRegister::ShaderResource }, D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND, range_size, flags) {}

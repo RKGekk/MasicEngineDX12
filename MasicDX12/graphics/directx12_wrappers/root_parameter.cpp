@@ -32,14 +32,12 @@ RootDescriptorTableParameter::RootDescriptorTableParameter(D3D12_SHADER_VISIBILI
 
 RootDescriptorTableParameter::RootDescriptorTableParameter(D3D12_ROOT_DESCRIPTOR_TABLE1 root_table, D3D12_SHADER_VISIBILITY visibility) : RootParameter(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE, visibility) {
 	UINT num_descriptor_ranges = root_table.NumDescriptorRanges;
-	RootDescriptorTableParameter desc_table_param;
-
 	for (UINT j = 0; j < num_descriptor_ranges; ++j) {
 		switch (root_table.pDescriptorRanges[j].RangeType) {
-			case D3D12_DESCRIPTOR_RANGE_TYPE_CBV: desc_table_param.AddDescriptorRange(CBDescriptorTableRange(root_table.pDescriptorRanges[j])); break;
-			case D3D12_DESCRIPTOR_RANGE_TYPE_SRV: desc_table_param.AddDescriptorRange(SRDescriptorTableRange(root_table.pDescriptorRanges[j])); break;
-			case D3D12_DESCRIPTOR_RANGE_TYPE_UAV: desc_table_param.AddDescriptorRange(UADescriptorTableRange(root_table.pDescriptorRanges[j])); break;
-			case D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER: desc_table_param.AddDescriptorRange(SamplerDescriptorTableRange(root_table.pDescriptorRanges[j])); break;
+			case D3D12_DESCRIPTOR_RANGE_TYPE_CBV: AddDescriptorRange(CBDescriptorTableRange(root_table.pDescriptorRanges[j])); break;
+			case D3D12_DESCRIPTOR_RANGE_TYPE_SRV: AddDescriptorRange(SRDescriptorTableRange(root_table.pDescriptorRanges[j])); break;
+			case D3D12_DESCRIPTOR_RANGE_TYPE_UAV: AddDescriptorRange(UADescriptorTableRange(root_table.pDescriptorRanges[j])); break;
+			case D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER: AddDescriptorRange(SamplerDescriptorTableRange(root_table.pDescriptorRanges[j])); break;
 		}
 	}
 }
@@ -77,9 +75,13 @@ RootDescriptorTableParameter& RootDescriptorTableParameter::operator=(RootDescri
 }
 
 void RootDescriptorTableParameter::AddDescriptorRange(const RootDescriprorTableRange& range) {
-	assert(!m_ranges.empty() && m_ranges.back().NumDescriptors == RootDescriprorTableRange::UNBOUNDED_RANGE_SIZE); // Cannot insert any ranges in a table after an unbounded range
+	assert(!(!m_ranges.empty() && m_ranges.back().NumDescriptors == RootDescriprorTableRange::UNBOUNDED_RANGE_SIZE)); // Cannot insert any ranges in a table after an unbounded range
 
-	AddSignatureLocation(range.SignatureRegistersType());
+	uint32_t num_ranges = range.GetRange().NumDescriptors;
+	SignatureRegisters reg = range.SignatureRegistersType();
+	for (int i = 0; i < num_ranges; ++i) {
+		AddSignatureLocation({ (uint16_t)(reg.BaseRegister + i), (uint16_t)reg.RegisterSpace, reg.RegisterType });
+	}
 
 	m_ranges.push_back(range.GetRange());
 	m_parameter.DescriptorTable.NumDescriptorRanges = (UINT)m_ranges.size();
@@ -107,7 +109,20 @@ RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type,
 }
 
 RootDescriptorParameter::RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE type, D3D12_ROOT_DESCRIPTOR1 root_desc, D3D12_SHADER_VISIBILITY visibility) : RootParameter(type, visibility) {
-
+	switch (type) {
+		case D3D12_ROOT_PARAMETER_TYPE_CBV:
+			AddSignatureLocation({ (uint16_t)root_desc.ShaderRegister, (uint16_t)root_desc.RegisterSpace, ShaderRegister::ConstantBuffer });
+			break;
+		case D3D12_ROOT_PARAMETER_TYPE_SRV:
+			AddSignatureLocation({ (uint16_t)root_desc.ShaderRegister, (uint16_t)root_desc.RegisterSpace, ShaderRegister::ShaderResource });
+			break;
+		case D3D12_ROOT_PARAMETER_TYPE_UAV:
+			AddSignatureLocation({ (uint16_t)root_desc.ShaderRegister, (uint16_t)root_desc.RegisterSpace, ShaderRegister::UnorderedAccess });
+			break;
+		default:
+			break;
+	}
+	m_parameter.Descriptor = root_desc;
 }
 
 RootConstantBufferParameter::RootConstantBufferParameter(uint16_t shaderRegister, uint16_t registerSpace, D3D12_SHADER_VISIBILITY visibility) : RootDescriptorParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, { shaderRegister, registerSpace, ShaderRegister::ConstantBuffer }, visibility) {}

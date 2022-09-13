@@ -103,7 +103,7 @@ void RootSignature::SetRootSignatureDesc(const D3D12_VERSIONED_ROOT_SIGNATURE_DE
             }
             RootDescriptorTableParameter table_param = RootDescriptorTableParameter(root_parameter.DescriptorTable, root_parameter.ShaderVisibility);
             for (const SignatureRegisters& location : table_param.SignatureLocations()) {
-                assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+                assert(m_parameter_indices_map.find(location) == m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
                 m_parameter_indices_map[location] = i;
             }
             m_descriptor_table_parameters.push_back(std::move(table_param));
@@ -111,7 +111,7 @@ void RootSignature::SetRootSignatureDesc(const D3D12_VERSIONED_ROOT_SIGNATURE_DE
         if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_CBV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_SRV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_UAV) {
             RootDescriptorParameter desc_param = RootDescriptorParameter(root_parameter.ParameterType, root_parameter.Descriptor, root_parameter.ShaderVisibility);
             for (const SignatureRegisters& location : desc_param.SignatureLocations()) {
-                assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+                assert(m_parameter_indices_map.find(location) == m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
                 m_parameter_indices_map[location] = i;
             }
             m_descriptor_parameters.push_back(std::move(desc_param));
@@ -121,7 +121,7 @@ void RootSignature::SetRootSignatureDesc(const D3D12_VERSIONED_ROOT_SIGNATURE_DE
             m_bytes_used += 4u * root_parameter.Constants.Num32BitValues;
             RootConstantsParameter const_param = RootConstantsParameter(root_parameter.Constants, root_parameter.ShaderVisibility);
             for (const SignatureRegisters& location : const_param.SignatureLocations()) {
-                assert(m_parameter_indices_map.find(location) != m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
+                assert(m_parameter_indices_map.find(location) == m_parameter_indices_map.end()); // Register of such slot, space and type is already occupied in this root signature
                 m_parameter_indices_map[location] = i;
             }
             m_constant_parameters.push_back(std::move(const_param));
