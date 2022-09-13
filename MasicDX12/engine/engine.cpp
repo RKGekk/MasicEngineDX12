@@ -10,10 +10,6 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT uMsg, WPARAM wPara
 
 Engine::Engine() {}
 
-std::unique_ptr<BaseEngineLogic> Engine::VCreateGameAndView() {
-	return std::unique_ptr<BaseEngineLogic>();
-}
-
 Engine::~Engine() {}
 
 bool Engine::Initialize(const RenderWindowConfig& cfg) {
@@ -38,10 +34,8 @@ bool Engine::Initialize(const RenderWindowConfig& cfg) {
 	
 	m_renderer->VOnRestore();
 
-	//m_game = VCreateGameAndView();
-	//if (!m_game) {
-	//	return false;
-	//}
+	m_game = VCreateGameAndView();
+	if (!m_game) return false;
 
 	return true;
 }
@@ -50,15 +44,12 @@ ApplicationOptions& Engine::GetConfig() {
 	return m_options;
 }
 
-//std::unique_ptr<BaseEngineLogic> Engine::VCreateGameAndView() {
-//	std::unique_ptr pGame = std::make_unique<XLogic>();
-//	pGame->Init();
-//
-//	std::shared_ptr<IEngineView> menuView(new MainMenuView(m_renderer.get()));
-//	pGame->VAddView(menuView);
-//
-//	return pGame;
-//}
+std::shared_ptr<BaseEngineLogic> Engine::VCreateGameAndView() {
+	std::shared_ptr pGame = std::make_shared<BaseEngineLogic>();
+	pGame->Init();
+	
+	return pGame;
+}
 
 void Engine::ShowWindow() {
 	return m_renderer->GetRenderWindow()->Show();

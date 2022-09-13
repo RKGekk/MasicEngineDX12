@@ -40,7 +40,7 @@ public:
 
 protected:
 	Engine();
-	virtual std::unique_ptr<BaseEngineLogic> VCreateGameAndView();
+	virtual std::shared_ptr<BaseEngineLogic> VCreateGameAndView();
 	virtual void VRegisterEvents();
 	virtual void RegisterAllDelegates();
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<World>
+  <Actors>
+    <Actor name="cube1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <Mesh>data\objects\cube.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="camera1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="0.000000" y="0.000000" z="-5.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <CameraComponent>
+        <Fov>90.0</Fov>
+        <Near>0.1</Near>
+        <Far>100.0</Far>
+      </CameraComponent>
+    </Actor>
+
+    <Actor name="directLight1" type="LightRenderComponent" resource="data\actors\LightRenderComponent.xml">
+      <TransformComponent>
+        <Position x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <LightRenderComponent>
+        <Color r="0.9" g="0.9" b="0.9" a="1.0"/>
+        <Light type="DirectionalLight" lantern="false">
+          <Ambient r="0.05" g="0.05" b="0.05" a="1.0" />
+          <Diffuse r="0.945" g="0.98" b="1.0" a="1.0" />
+          <Specular r="0.2" g="0.2" b="0.2" a="1.0" />
+          <Attenuation const="0.1" linear="0.0" exp="0.0" />
+          <Shape range="100.0" spot="24.0"/>
+        </Light>
+      </LightRenderComponent>
+    </Actor>
+
+  </Actors>
+  <Scene>
+    <Camera>
+      <SelectName>camera1</SelectName>
+    </Camera>
+  </Scene>
+</World>

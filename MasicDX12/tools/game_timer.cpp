@@ -68,7 +68,10 @@ void GameTimer::Reset() {
     m_paused_time = ZERO_DURATION;
 }
 
-GameTimerDelta::GameTimerDelta() {}
+GameTimerDelta::GameTimerDelta() {
+    m_delta_time_duration = {};
+    m_total_time = {};
+}
 
 GameTimerDelta::GameTimerDelta(const GameClockDuration& delta_time, const GameClockDuration& total_time) : m_delta_time_duration(delta_time), m_total_time(total_time) {}
 

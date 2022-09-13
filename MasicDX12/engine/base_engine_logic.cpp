@@ -26,7 +26,7 @@ BaseEngineLogic::BaseEngineLogic() {
 	m_human_players_attached = 0;
 	m_human_games_loaded = 0;
 	m_actor_factory = nullptr;
-
+	m_life_time = {};
 	m_level_manager = std::make_unique<LevelManager>();
 	m_level_manager->Initialize();
 	//m_physics = std::make_unique<XPhysics>();
@@ -249,6 +249,8 @@ void BaseEngineLogic::VOnUpdate(const GameTimerDelta& delta) {
 
 	switch (m_state) {
 		case BaseEngineState::BGS_Initializing: {
+			std::shared_ptr<IEngineView> menuView = std::make_shared<HumanView>();
+			VAddView(menuView);
 			VChangeState(BaseEngineState::BGS_MainMenu);
 		}
 		break;
@@ -279,7 +281,7 @@ void BaseEngineLogic::VChangeState(BaseEngineState newState) {
 	switch (newState) {
 		case BaseEngineState::BGS_MainMenu: {
 			m_state = newState;
-			if (!VLoadGame("MainMenu.xml"s)) {
+			if (!VLoadGame("main_menu.xml"s)) {
 				Application::Get().Quit();
 			}
 		}

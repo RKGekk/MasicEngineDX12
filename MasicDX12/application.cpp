@@ -58,6 +58,9 @@ bool Application::Initialize(const ApplicationOptions& opt) {
     m_event_manager = std::make_unique<EventManager>("GameCodeApp Event Mgr", true);
     if (!m_event_manager) return false;
 
+    VRegisterEvents();
+    RegisterAllDelegates();
+
     return true;
 }
 

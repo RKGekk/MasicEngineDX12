@@ -1447,4 +1447,7 @@
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="main_menu.xml" />
+  </ItemGroup>
 </Project>
