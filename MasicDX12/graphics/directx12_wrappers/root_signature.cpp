@@ -50,6 +50,7 @@ void RootSignature::Destroy() {
 D3D12_VERSIONED_ROOT_SIGNATURE_DESC RootSignature::CombineRootSignatureDesc(D3D12_ROOT_SIGNATURE_FLAGS flags) {
     D3D12_VERSIONED_ROOT_SIGNATURE_DESC res{};
 
+    res.Version = D3D_ROOT_SIGNATURE_VERSION_1_1;
     res.Desc_1_1.Flags = flags;
 
     res.Desc_1_1.NumParameters = (UINT)m_parameters.size();
