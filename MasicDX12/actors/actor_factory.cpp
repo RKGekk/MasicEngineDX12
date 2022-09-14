@@ -25,23 +25,26 @@ ActorFactory::ActorFactory() {
 std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, const DirectX::XMFLOAT4X4* pInitial_transform, const ActorId servers_actorId) {
 
     pugi::xml_document xml_doc;
-    pugi::xml_parse_result parse_res = xml_doc.load_string(actor_resource.c_str());
+    pugi::xml_parse_result parse_res = xml_doc.load_file(actor_resource.c_str());
     if (!parse_res) return std::shared_ptr<Actor>();
 
     pugi::xml_node root_node = xml_doc.root();
     if (!root_node) return std::shared_ptr<Actor>();
+
+    pugi::xml_node actor_node = root_node.child("Actor");
+    if (!actor_node) return std::shared_ptr<Actor>();
 
     ActorId next_actorId = servers_actorId;
     if (next_actorId == 0) {
         next_actorId = GetNextActorId();
     }
     std::shared_ptr<Actor> pActor(new Actor(next_actorId));
-    if (!pActor->Init(root_node)) {
+    if (!pActor->Init(actor_node)) {
         return std::shared_ptr<Actor>();
     }
 
     bool initial_transform_set = false;
-    for (pugi::xml_node node = root_node.first_child(); node; node = node.next_sibling()) {
+    for (pugi::xml_node node = actor_node.first_child(); node; node = node.next_sibling()) {
         std::shared_ptr<ActorComponent> pComponent(VCreateComponent(node));
         if (pComponent) {
             pActor->AddComponent(pComponent);
@@ -67,7 +70,7 @@ std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resour
 }
 
 std::shared_ptr<ActorComponent> ActorFactory::VCreateComponent(const pugi::xml_node& data) {
-    const char* name = data.value();
+    const char* name = data.name();
     std::shared_ptr<ActorComponent> pComponent(m_component_factory.Create(ActorComponent::GetIdFromName(name)));
 
     if (pComponent) {
@@ -93,7 +96,7 @@ void ActorFactory::ModifyActor(std::shared_ptr<Actor> pActor, const pugi::xml_no
         pActor->SetName(overrides.attribute("name").as_string());
     };
     for (pugi::xml_node node = overrides.first_child(); node; node = node.next_sibling()) {
-        unsigned int componentId = ActorComponent::GetIdFromName(node.value());
+        unsigned int componentId = ActorComponent::GetIdFromName(node.name());
         std::shared_ptr<ActorComponent> pComponent = MakeStrongPtr(pActor->GetComponent<ActorComponent>(componentId));
         if (pComponent) {
             pComponent->VInit(node);

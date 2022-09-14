@@ -174,51 +174,81 @@ void MeshComponent::ImportMaterial(CommandList& command_list, const aiMaterial& 
 
     if (material.GetTextureCount(aiTextureType_AMBIENT) > 0 && material.GetTexture(aiTextureType_AMBIENT, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, true);
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, true);
         pMaterial->SetTexture(Material::TextureType::Ambient, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_EMISSIVE) > 0 && material.GetTexture(aiTextureType_EMISSIVE, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, true);
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, true);
         pMaterial->SetTexture(Material::TextureType::Emissive, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_DIFFUSE) > 0 && material.GetTexture(aiTextureType_DIFFUSE, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, true);
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, true);
         pMaterial->SetTexture(Material::TextureType::Diffuse, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_SPECULAR) > 0 && material.GetTexture(aiTextureType_SPECULAR, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, true);
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, true);
         pMaterial->SetTexture(Material::TextureType::Specular, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_SHININESS) > 0 && material.GetTexture(aiTextureType_SHININESS, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, false);
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, false);
         pMaterial->SetTexture(Material::TextureType::SpecularPower, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_OPACITY) > 0 && material.GetTexture(aiTextureType_OPACITY, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, false);
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, false);
         pMaterial->SetTexture(Material::TextureType::Opacity, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_NORMALS) > 0 && material.GetTexture(aiTextureType_NORMALS, 0, &aiTexture_path) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, false);
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, false);
         pMaterial->SetTexture(Material::TextureType::Normal, texture);
     }
     else if (material.GetTextureCount(aiTextureType_HEIGHT) > 0 && material.GetTexture(aiTextureType_HEIGHT, 0, &aiTexture_path, nullptr, nullptr, &blend_factor) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = command_list.LoadTextureFromFile(parent_path / texture_path, false);
-
+        std::filesystem::path material_file_path = parent_path / texture_path;
+        if (std::filesystem::exists(texture_path) && std::filesystem::is_regular_file(texture_path)) {
+            material_file_path = texture_path;
+        }
+        auto texture = command_list.LoadTextureFromFile(material_file_path, false);
         Material::TextureType texture_type = (texture->BitsPerPixel() >= 24) ? Material::TextureType::Normal : Material::TextureType::Bump;
-
         pMaterial->SetTexture(texture_type, texture);
     }
 

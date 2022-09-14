@@ -186,7 +186,10 @@ bool BaseEngineLogic::VLoadGame(const std::string& level_resource) {
 	pugi::xml_node root_node = xml_doc.root();
 	if (!root_node) return false;
 
-	pugi::xml_node actors_node = root_node.child("Actors");
+	pugi::xml_node world_node = root_node.child("World");
+	if (!world_node) return false;
+
+	pugi::xml_node actors_node = world_node.child("Actors");
 	if (actors_node) {
 		for (pugi::xml_node node = actors_node.first_child(); node; node = node.next_sibling()) {
 			const char* actor_resource = node.attribute("resource").value();
@@ -202,11 +205,11 @@ bool BaseEngineLogic::VLoadGame(const std::string& level_resource) {
 		std::shared_ptr<IEngineView> pView = *it;
 		if (pView->VGetType() == EngineViewType::GameView_Human) {
 			std::shared_ptr<HumanView> pHumanView = std::static_pointer_cast<HumanView, IEngineView>(pView);
-			pHumanView->LoadGame(root_node);
+			pHumanView->LoadGame(world_node);
 		}
 	}
 
-	if (!VLoadGameDelegate(root_node)) { return false; }
+	if (!VLoadGameDelegate(world_node)) { return false; }
 
 	//std::shared_ptr<EvtData_Environment_Loaded> pNewGameEvent(new EvtData_Environment_Loaded);
 	//IEventManager::Get()->VTriggerEvent(pNewGameEvent);
