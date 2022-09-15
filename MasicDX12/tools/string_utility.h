@@ -99,6 +99,8 @@ int ntoint(const pugi::xml_node node_with_int, int def);
 float attrtofloat(const pugi::xml_attribute attr_with_float);
 float attrtofloat(const pugi::xml_attribute attr_with_float, float def);
 
+DirectX::XMFLOAT3 colorfromattr3f(const pugi::xml_node& node_with_color);
+DirectX::XMFLOAT3 colorfromattr3f(const pugi::xml_node& node_with_color, DirectX::XMFLOAT3 def);
 DirectX::XMFLOAT4 colorfromattr4f(const pugi::xml_node& node_with_color);
 DirectX::XMFLOAT4 colorfromattr4f(const pugi::xml_node& node_with_color, DirectX::XMFLOAT4 def);
 DirectX::XMFLOAT3 posfromattr3f(const pugi::xml_node& node_with_pos);

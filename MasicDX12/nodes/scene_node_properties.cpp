@@ -18,7 +18,7 @@ const DirectX::XMFLOAT4X4& SceneNodeProperties::ToWorld4x4() const {
 	return m_to_world;
 }
 
-const DirectX::XMFLOAT4X4& SceneNodeProperties::ToWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::ToWorld4x4T() const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(ToWorld()));
 	return res;
@@ -32,7 +32,7 @@ const DirectX::XMFLOAT4X4& SceneNodeProperties::CumulativeToWorld4x4() const {
 	return m_to_world_cumulative;
 }
 
-const DirectX::XMFLOAT4X4& SceneNodeProperties::CumulativeToWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::CumulativeToWorld4x4T() const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(CumulativeToWorld()));
 	return res;
@@ -172,7 +172,7 @@ const DirectX::XMFLOAT4X4& SceneNodeProperties::FromWorld4x4() const {
 	return m_from_world;
 }
 
-const DirectX::XMFLOAT4X4& SceneNodeProperties::FromWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::FromWorld4x4T() const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(FromWorld()));
 	return res;
@@ -186,7 +186,7 @@ const DirectX::XMFLOAT4X4& SceneNodeProperties::CumulativeFromWorld4x4() const {
 	return m_from_world_cumulative;
 }
 
-const DirectX::XMFLOAT4X4& SceneNodeProperties::CumulativeFromWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::CumulativeFromWorld4x4T() const {
 	DirectX::XMFLOAT4X4 res;
 	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(CumulativeFromWorld()));
 	return res;

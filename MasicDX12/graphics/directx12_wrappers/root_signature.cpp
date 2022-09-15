@@ -179,7 +179,7 @@ RootSignature::ParameterIndex RootSignature::GetParameterIndex(const SignatureRe
 }
 
 uint16_t RootSignature::ParameterCount() const {
-    return m_descriptor_table_parameters.size() + m_descriptor_parameters.size() + m_constant_parameters.size();
+    return (uint16_t)(m_descriptor_table_parameters.size() + m_descriptor_parameters.size() + m_constant_parameters.size());
 }
 
 void RootSignature::AddDescriptorTableParameter(const RootDescriptorTableParameter& table) {

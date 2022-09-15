@@ -1,4 +1,4 @@
-<Actor type="LightRenderComponent" resource="LightRenderComponent.xml">
+<Actor type="LightComponent" resource="LightComponent.xml">
   <TransformComponent>
     <Position x="0.000000" y="0.000000" z="0.000000" />
     <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />

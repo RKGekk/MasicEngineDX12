@@ -39,11 +39,11 @@ public:
 
 	DirectX::XMMATRIX ToWorld() const;
 	const DirectX::XMFLOAT4X4& ToWorld4x4() const;
-	const DirectX::XMFLOAT4X4& ToWorld4x4T() const;
+	DirectX::XMFLOAT4X4 ToWorld4x4T() const;
 
 	DirectX::XMMATRIX CumulativeToWorld() const;
 	const DirectX::XMFLOAT4X4& CumulativeToWorld4x4() const;
-	const DirectX::XMFLOAT4X4& CumulativeToWorld4x4T() const;
+	DirectX::XMFLOAT4X4 CumulativeToWorld4x4T() const;
 
 	DirectX::XMVECTOR Position() const;
 	DirectX::XMFLOAT4 Position4() const;
@@ -73,11 +73,11 @@ public:
 
 	DirectX::XMMATRIX FromWorld() const;
 	const DirectX::XMFLOAT4X4& FromWorld4x4() const;
-	const DirectX::XMFLOAT4X4& FromWorld4x4T() const;
+	DirectX::XMFLOAT4X4 FromWorld4x4T() const;
 
 	DirectX::XMMATRIX CumulativeFromWorld() const;
 	const DirectX::XMFLOAT4X4& CumulativeFromWorld4x4() const;
-	const DirectX::XMFLOAT4X4& CumulativeFromWorld4x4T() const;
+	DirectX::XMFLOAT4X4 CumulativeFromWorld4x4T() const;
 
 	const char* NameCstr() const;
 	const std::string& Name() const;

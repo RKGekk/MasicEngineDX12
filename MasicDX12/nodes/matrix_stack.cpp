@@ -39,7 +39,6 @@ void MatrixStack::MultMatrixLocal(const DirectX::XMFLOAT4X4& other) {
 }
 
 void MatrixStack::LoadIdentity() {
-	DirectX::XMFLOAT4X4 identity;
 	DirectX::XMStoreFloat4x4(&m_MatrixStack.back(), DirectX::XMMatrixIdentity());
 }
 

@@ -283,7 +283,6 @@ void BaseEngineLogic::VChangeState(BaseEngineState newState) {
 	using namespace std::literals;
 	switch (newState) {
 		case BaseEngineState::BGS_MainMenu: {
-			m_state = newState;
 			if (!VLoadGame("main_menu.xml"s)) {
 				Application::Get().Quit();
 			}
@@ -315,13 +314,9 @@ void BaseEngineLogic::VChangeState(BaseEngineState newState) {
 			delay->AttachChild(exec2);
 			exec2->AttachChild(exec3);
 			m_process_manager->AttachProcess(execOne);
-
-			m_state = BaseEngineState::BGS_LoadingGameEnvironment;
 		}
 		break;
-		case BaseEngineState::BGS_Running: {
-			m_state = BaseEngineState::BGS_Running;
-		}
+		case BaseEngineState::BGS_Running: {}
 		break;
 	}
 

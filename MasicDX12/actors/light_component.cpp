@@ -67,7 +67,7 @@ bool LightComponent::Init(const pugi::xml_node& data) {
 	bool is_latern = light_node.attribute("lantern").as_bool();
 	
 	DirectX::XMFLOAT3 default_strength = { 1.0f, 1.0f, 1.0f };
-	props.m_strength = posfromattr3f(light_node.child("Strength"), default_strength);
+	props.m_strength = colorfromattr3f(light_node.child("Strength"), default_strength);
 
 	pugi::xml_node attenuation_node = light_node.child("Attenuation");
 	props.m_attenuation[0] = attenuation_node.attribute("const").as_float();

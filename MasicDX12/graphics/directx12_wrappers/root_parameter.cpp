@@ -79,7 +79,7 @@ void RootDescriptorTableParameter::AddDescriptorRange(const RootDescriprorTableR
 
 	uint32_t num_ranges = range.GetRange().NumDescriptors;
 	SignatureRegisters reg = range.SignatureRegistersType();
-	for (int i = 0; i < num_ranges; ++i) {
+	for (uint32_t i = 0; i < num_ranges; ++i) {
 		AddSignatureLocation({ (uint16_t)(reg.BaseRegister + i), (uint16_t)reg.RegisterSpace, reg.RegisterType });
 	}
 

@@ -80,6 +80,6 @@ D3D12_BLEND BlendState::GetValue(Value value) {
         case Value::InverseDestinationAlpha: return D3D12_BLEND_INV_DEST_ALPHA;
         case Value::DestinationColor: return D3D12_BLEND_DEST_COLOR;
         case Value::InverseDestinationColor: return D3D12_BLEND_INV_DEST_COLOR;
-        default: assert(false, "Should never be hit"); return D3D12_BLEND_ONE;
+        default: assert(false); return D3D12_BLEND_ONE; //Should never be hit
     }
 }

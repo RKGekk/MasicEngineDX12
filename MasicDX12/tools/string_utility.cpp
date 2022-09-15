@@ -156,6 +156,36 @@ float attrtofloat(const pugi::xml_attribute attr_with_float, float def) {
 	return res;
 }
 
+DirectX::XMFLOAT3 colorfromattr3f(const pugi::xml_node& node_with_color) {
+	DirectX::XMFLOAT3 color = { 0.0f, 0.0f, 0.0f };
+
+	if (node_with_color) {
+		std::string sr = node_with_color.attribute("r").value();
+		std::string sg = node_with_color.attribute("g").value();
+		std::string sb = node_with_color.attribute("b").value();
+
+		color.x = std::stof(sr);
+		color.y = std::stof(sg);
+		color.z = std::stof(sb);
+	}
+
+	return color;
+}
+
+DirectX::XMFLOAT3 colorfromattr3f(const pugi::xml_node& node_with_color, DirectX::XMFLOAT3 def) {
+	DirectX::XMFLOAT3 color = def;
+
+	std::string sr = node_with_color.attribute("r").value();
+	std::string sg = node_with_color.attribute("g").value();
+	std::string sb = node_with_color.attribute("b").value();
+
+	color.x = std::stof(sr);
+	color.y = std::stof(sg);
+	color.z = std::stof(sb);
+
+	return color;
+}
+
 DirectX::XMFLOAT4 colorfromattr4f(const pugi::xml_node& node_with_color) {
 	DirectX::XMFLOAT4 color = { 0.0f, 0.0f, 0.0f, 1.0f };
 

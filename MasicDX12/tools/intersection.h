@@ -6,7 +6,6 @@
 #include <DirectXMath.h>
 
 #include "../actors/actor.h"
-#include "../graphics/vertex.h"
 #include "../tools/math_utitity.h"
 
 class Intersection;

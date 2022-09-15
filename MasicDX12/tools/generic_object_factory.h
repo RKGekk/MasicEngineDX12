@@ -3,12 +3,16 @@
 #include <unordered_map>
 #include <string>
 
+using namespace std::literals;
+
 template <class BaseClass, class IdType>
 class GenericObjectFactory {
 	std::unordered_map<IdType, BaseClass* (*)()> m_creationFunctions;
 	std::unordered_map<IdType, std::string> m_names;
 
 public:
+	inline static const std::string NONAME = "No name or not registered"s;
+
 	template <class SubClass>
 	bool Register(IdType id) {
 		auto findIt = m_creationFunctions.find(id);
@@ -47,6 +51,6 @@ public:
 		if (findIt != m_names.end()) {
 			return findIt->second;
 		}
-		return "No name or not registered";
+		return NONAME;
 	}
 };

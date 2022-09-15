@@ -92,8 +92,6 @@ void HumanView::VOnUpdate(const GameTimerDelta& delta) {
 	if (m_pFree_camera_controller) {
 		m_pFree_camera_controller->OnUpdate(delta);
 	}
-	std::shared_ptr<EvtData_Update_Tick> pTickEvent(new EvtData_Update_Tick(delta.GetDeltaDuration(), delta.GetTotalDuration()));
-	IEventManager::Get()->VTriggerEvent(pTickEvent);
 }
 
 EngineViewType HumanView::VGetType() {
@@ -284,7 +282,7 @@ bool HumanView::VLoadGameDelegate(const pugi::xml_node& pLevel_data) {
 	//m_pointer_handlers.push_back(m_pFreeCameraController);
 
 	m_scene->VOnRestore();
-	return false;
+	return true;
 }
 
 void HumanView::VRenderText() {}

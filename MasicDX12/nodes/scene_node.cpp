@@ -235,10 +235,10 @@ void SceneNode::SetPosition(DirectX::XMVECTOR pos) {
 	m_props.m_to_world.m[3][2] = out.z;
 	m_props.m_to_world.m[3][3] = out.w;
 
-	m_props.m_from_world.m[3][0] = -1.0 * out.x;
-	m_props.m_from_world.m[3][1] = -1.0 * out.y;
-	m_props.m_from_world.m[3][2] = -1.0 * out.z;
-	m_props.m_from_world.m[3][3] = -1.0 * out.w;
+	m_props.m_from_world.m[3][0] = -1.0f * out.x;
+	m_props.m_from_world.m[3][1] = -1.0f * out.y;
+	m_props.m_from_world.m[3][2] = -1.0f * out.z;
+	m_props.m_from_world.m[3][3] = -1.0f * out.w;
 
 	UpdateCumulativeTransform();
 }
@@ -249,9 +249,9 @@ void SceneNode::SetPosition3(const DirectX::XMFLOAT3& pos) {
 	m_props.m_to_world.m[3][2] = pos.z;
 	m_props.m_to_world.m[3][3] = 1.0f;
 
-	m_props.m_from_world.m[3][0] = -1.0 * pos.x;
-	m_props.m_from_world.m[3][1] = -1.0 * pos.y;
-	m_props.m_from_world.m[3][2] = -1.0 * pos.z;
+	m_props.m_from_world.m[3][0] = -1.0f * pos.x;
+	m_props.m_from_world.m[3][1] = -1.0f * pos.y;
+	m_props.m_from_world.m[3][2] = -1.0f * pos.z;
 	m_props.m_from_world.m[3][3] = 1.0f;
 
 	UpdateCumulativeTransform();
@@ -263,10 +263,10 @@ void SceneNode::SetPosition4(const DirectX::XMFLOAT4& pos) {
 	m_props.m_to_world.m[3][2] = pos.z;
 	m_props.m_to_world.m[3][3] = pos.w;
 
-	m_props.m_from_world.m[3][0] = -1.0 * pos.x;
-	m_props.m_from_world.m[3][1] = -1.0 * pos.y;
-	m_props.m_from_world.m[3][2] = -1.0 * pos.z;
-	m_props.m_from_world.m[3][3] = -1.0 * pos.w;
+	m_props.m_from_world.m[3][0] = -1.0f * pos.x;
+	m_props.m_from_world.m[3][1] = -1.0f * pos.y;
+	m_props.m_from_world.m[3][2] = -1.0f * pos.z;
+	m_props.m_from_world.m[3][3] = -1.0f * pos.w;
 
 	UpdateCumulativeTransform();
 }
