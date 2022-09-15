@@ -108,6 +108,9 @@ void RootSignature::SetRootSignatureDesc(const D3D12_VERSIONED_ROOT_SIGNATURE_DE
                 m_parameter_indices_map[location] = i;
             }
             m_descriptor_table_parameters.push_back(std::move(table_param));
+            for (UINT j = 0; j < num_descriptor_ranges; ++j) {
+                m_num_descriptors_per_table[i] += root_parameter.DescriptorTable.pDescriptorRanges[j].NumDescriptors;
+            }
         }
         if (root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_CBV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_SRV || root_parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_UAV) {
             RootDescriptorParameter desc_param = RootDescriptorParameter(root_parameter.ParameterType, root_parameter.Descriptor, root_parameter.ShaderVisibility);
