@@ -12,17 +12,19 @@
 
 #include "actor_component.h"
 #include "scene_node_component_interface.h"
+#include "../nodes/light_type.h"
 
 class CommandList;
 class Material;
 class Mesh;
+class LightNode;
 
-class CameraComponent : public SceneNodeComponentInterface {
+class LightComponent : public SceneNodeComponentInterface {
 public:
 	static const std::string g_Name;
 
-	CameraComponent();
-	CameraComponent(const pugi::xml_node& data);
+	LightComponent();
+	LightComponent(const pugi::xml_node& data);
 
 	virtual bool VInit(const pugi::xml_node& data) override;
 	virtual void VPostInit() override;
@@ -34,10 +36,9 @@ public:
 	virtual std::shared_ptr<SceneNode> VGetSceneNode() override;
 
 private:
-	std::shared_ptr<SceneNode> m_scene_node;
-	float m_fov;
-	float m_near;
-	float m_far;
+	LightType GetLightType(const std::string& light_type_string);
+
+	std::shared_ptr<LightNode> m_scene_node;
 
 	bool Init(const pugi::xml_node& data);
 };

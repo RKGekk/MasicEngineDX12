@@ -588,6 +588,9 @@
     <ClCompile Include="events\evt_data_paint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="actors\light_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1229,6 +1232,9 @@
     <ClInclude Include="events\evt_data_paint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="actors\light_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_options.xml">
@@ -1276,7 +1282,7 @@
     <None Include="data\actors\ForceGeneratorComponent.xml">
       <Filter>Resource Files\actors</Filter>
     </None>
-    <None Include="data\actors\LightRenderComponent.xml">
+    <None Include="data\actors\LightComponent.xml">
       <Filter>Resource Files\actors</Filter>
     </None>
     <None Include="data\actors\MeshParticleRenderComponent.xml">
@@ -1346,6 +1352,24 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="main_menu.xml" />
+    <None Include="data\textures\fancy-brass-pattern1_albedo.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\fancy-brass-pattern1_ao.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\fancy-brass-pattern1_height.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\fancy-brass-pattern1_metallic.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\fancy-brass-pattern1_normal-ogl.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\fancy-brass-pattern1_roughness.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">
@@ -1447,25 +1471,5 @@
     <FxCompile Include="data\shaders\VertexShader.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="data\textures\fancy-brass-pattern1_albedo.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\fancy-brass-pattern1_ao.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\fancy-brass-pattern1_metallic.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\fancy-brass-pattern1_height.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\fancy-brass-pattern1_normal-ogl.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\fancy-brass-pattern1_roughness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

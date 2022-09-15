@@ -200,6 +200,7 @@
     <ClCompile Include="graphics\directx12_wrappers\root_parameter.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\shader.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\shader_register.cpp" />
+    <ClCompile Include="actors\light_component.cpp" />
     <ClCompile Include="nodes\light_manager.cpp" />
     <ClCompile Include="nodes\mesh_node.cpp" />
     <ClCompile Include="nodes\qualifier_node.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="actors\base_render_component.h" />
     <ClInclude Include="actors\camera_component.h" />
     <ClInclude Include="actors\enemy_component.h" />
+    <ClInclude Include="actors\light_component.h" />
     <ClInclude Include="actors\scene_node_component_interface.h" />
     <ClInclude Include="engine\actor_menu_ui.h" />
     <ClInclude Include="engine\base_ui.h" />
@@ -573,7 +575,7 @@
     <None Include="data\actors\ForceGeneratorComponent.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\actors\LightRenderComponent.xml">
+    <None Include="data\actors\LightComponent.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\actors\MeshParticleRenderComponent.xml">
