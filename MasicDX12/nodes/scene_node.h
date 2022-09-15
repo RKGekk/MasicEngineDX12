@@ -19,8 +19,8 @@ public:
 	SceneNode(const std::string& name, uint32_t group_id);
 	SceneNode(const std::string& name, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from = nullptr);
 	SceneNode(const std::string& name, uint32_t group_id, const DirectX::XMFLOAT4X4* to, const DirectX::XMFLOAT4X4* from = nullptr);
-	SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from = true);
-	SceneNode(const std::string& name, uint32_t group_id, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from, bool calulate_from = true);
+	SceneNode(const std::string& name, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from = DirectX::XMMatrixIdentity(), bool calulate_from = true);
+	SceneNode(const std::string& name, uint32_t group_id, DirectX::FXMMATRIX to, DirectX::CXMMATRIX from = DirectX::XMMatrixIdentity(), bool calulate_from = true);
 
 	virtual ~SceneNode();
 
@@ -36,13 +36,9 @@ public:
 
 	void UpdateCumulativeTransform();
 	void UpdateCumulativeScale();
+
 	void SetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld);
-	void SetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld, bool calulate_from);
-
-	void SetParent(std::shared_ptr<SceneNode> parent_node);
-	std::shared_ptr<SceneNode> GetParent();
-
-	void SetName(std::string name);
+	void SetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld = DirectX::XMMatrixIdentity(), bool calulate_from = true);
 
 	void SetPosition(DirectX::XMVECTOR pos);
 	void SetPosition3(const DirectX::XMFLOAT3& pos);
@@ -50,6 +46,11 @@ public:
 
 	void SetScale(const DirectX::XMFLOAT3& scale);
 	void SetScale(DirectX::XMVECTOR scale);
+
+	void SetParent(std::shared_ptr<SceneNode> parent_node);
+	std::shared_ptr<SceneNode> GetParent();
+
+	void SetName(std::string name);
 
 	void SetDirtyFlags(uint32_t flags);
 	void SetGroupID(uint32_t id);

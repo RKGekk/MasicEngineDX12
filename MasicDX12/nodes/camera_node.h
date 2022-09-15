@@ -23,6 +23,11 @@ public:
 	float GetFovYRad() const;
 	float GetFovYDeg() const;
 
+	void SetProjection(DirectX::FXMMATRIX proj);
+	void SetProjection(const DirectX::XMFLOAT4X4& proj);
+	void SetProjection(const DirectX::BoundingFrustum& frustum);
+	void SetProjection(float fovy, float aspect, float near_clip, float far_clip);
+
 	DirectX::XMMATRIX GetWorldViewProjection(DirectX::FXMMATRIX world) const;
 	DirectX::XMMATRIX GetWorldViewProjection(const DirectX::XMFLOAT4X4& world) const;
 	DirectX::XMFLOAT4X4 GetWorldViewProjection4x4(DirectX::XMMATRIX world) const;

@@ -28,6 +28,9 @@ public:
 	CameraComponent(const pugi::xml_node& data);
 
 	virtual bool VInit(const pugi::xml_node& data) override;
+	virtual void VPostInit() override;
+	virtual void VUpdate(const GameTimerDelta& delta) override;
+
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;
 

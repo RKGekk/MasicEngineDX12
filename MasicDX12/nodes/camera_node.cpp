@@ -60,6 +60,22 @@ float CameraNode::GetFovYDeg() const {
 	return DirectX::XMConvertToDegrees(m_fovy);
 }
 
+void CameraNode::SetProjection(DirectX::FXMMATRIX proj) {
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), proj);
+}
+
+void CameraNode::SetProjection(const DirectX::XMFLOAT4X4& proj) {
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMLoadFloat4x4(&proj));
+}
+
+void CameraNode::SetProjection(const DirectX::BoundingFrustum& frustum) {
+	SetData(frustum);
+}
+
+void CameraNode::SetProjection(float fovy, float aspect, float near_clip, float far_clip) {
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
+}
+
 DirectX::XMMATRIX CameraNode::GetWorldViewProjection(DirectX::FXMMATRIX world) const {
 	DirectX::XMMATRIX view = Get().CumulativeFromWorld();
 	DirectX::XMMATRIX world_view = DirectX::XMMatrixMultiply(world, view);

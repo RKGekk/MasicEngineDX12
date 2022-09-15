@@ -9,6 +9,7 @@
 #include "../engine/engine.h"
 #include "../graphics/d3d12_renderer.h"
 #include "../nodes/mesh_node.h"
+#include "transform_component.h"
 
 #include <assimp/config.h>
 #include <assimp/Importer.hpp>
@@ -29,6 +30,26 @@ MeshComponent::MeshComponent(const pugi::xml_node& data) {
 
 bool MeshComponent::VInit(const pugi::xml_node& data) {
 	return Init(data);
+}
+
+void MeshComponent::VPostInit() {
+    std::shared_ptr<Actor> act = GetOwner();
+    std::shared_ptr<TransformComponent> tc = act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")).lock();
+    if (tc) {
+        m_scene_node = std::make_shared<SceneNode>(act->GetName(), tc->GetTransform());
+    }
+    else {
+        m_scene_node = std::make_shared<SceneNode>(act->GetName(), DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), false);
+    }
+    m_scene_node->VAddChild(m_loaded_scene);
+}
+
+void MeshComponent::VUpdate(const GameTimerDelta& delta) {
+    std::shared_ptr<Actor> act = GetOwner();
+    std::shared_ptr<TransformComponent> tc = act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")).lock();
+    if (tc) {
+        m_scene_node->SetTransform(tc->GetTransform());
+    }
 }
 
 const std::string& MeshComponent::VGetName() const {
@@ -124,7 +145,7 @@ void MeshComponent::ImportScene(CommandList& command_list, const aiScene& scene,
         ImportMesh(command_list, *(scene.mMeshes[i]));
     }
 
-    m_scene_node = ImportSceneNode(command_list, nullptr, scene.mRootNode);
+    m_loaded_scene = ImportSceneNode(command_list, nullptr, scene.mRootNode);
 }
 
 void MeshComponent::ImportMaterial(CommandList& command_list, const aiMaterial& material, std::filesystem::path parent_path) {

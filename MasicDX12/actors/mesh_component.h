@@ -28,6 +28,9 @@ public:
 	MeshComponent(const pugi::xml_node& data);
 
 	virtual bool VInit(const pugi::xml_node& data) override;
+	virtual void VPostInit() override;
+	virtual void VUpdate(const GameTimerDelta& delta) override;
+
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;
 
@@ -41,6 +44,7 @@ private:
 	std::string m_resource_directory;
 
 	std::shared_ptr<SceneNode> m_scene_node;
+	std::shared_ptr<SceneNode> m_loaded_scene;
 
 	bool Init(const pugi::xml_node& data);
 	bool LoadModel(const std::filesystem::path& file_name);
