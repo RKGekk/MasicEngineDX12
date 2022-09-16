@@ -60,3 +60,5 @@ const std::string& EnemyComponent::GetTargetName() {
 pugi::xml_node EnemyComponent::VGenerateXml() {
 	return pugi::xml_node();
 }
+
+void EnemyComponent::VRegisterEvents() {}

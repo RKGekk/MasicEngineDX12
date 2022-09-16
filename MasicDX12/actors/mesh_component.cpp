@@ -25,32 +25,15 @@ const std::string MeshComponent::g_Name = "MeshComponent";
 MeshComponent::MeshComponent() {}
 
 MeshComponent::MeshComponent(const pugi::xml_node& data) {
-	Init(data);
+    VDelegateInit(data);
 }
 
-bool MeshComponent::VInit(const pugi::xml_node& data) {
-	return Init(data);
+void MeshComponent::VDelegatePostInit() {
+    std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
+    scene_node->VAddChild(m_loaded_scene_node);
 }
 
-void MeshComponent::VPostInit() {
-    std::shared_ptr<Actor> act = GetOwner();
-    std::shared_ptr<TransformComponent> tc = act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")).lock();
-    if (tc) {
-        m_scene_node = std::make_shared<SceneNode>(act->GetName(), tc->GetTransform());
-    }
-    else {
-        m_scene_node = std::make_shared<SceneNode>(act->GetName(), DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), false);
-    }
-    m_scene_node->VAddChild(m_loaded_scene);
-}
-
-void MeshComponent::VUpdate(const GameTimerDelta& delta) {
-    std::shared_ptr<Actor> act = GetOwner();
-    std::shared_ptr<TransformComponent> tc = act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")).lock();
-    if (tc) {
-        m_scene_node->SetTransform(tc->GetTransform());
-    }
-}
+void MeshComponent::VDelegateUpdate(const GameTimerDelta& delta) {}
 
 const std::string& MeshComponent::VGetName() const {
 	return MeshComponent::g_Name;
@@ -58,10 +41,6 @@ const std::string& MeshComponent::VGetName() const {
 
 pugi::xml_node MeshComponent::VGenerateXml() {
 	return pugi::xml_node();
-}
-
-std::shared_ptr<SceneNode> MeshComponent::VGetSceneNode() {
-	return m_scene_node;
 }
 
 const std::string& MeshComponent::GetResourceName() {
@@ -72,7 +51,7 @@ const std::string& MeshComponent::GetResourceDirecory() {
     return m_resource_directory;
 }
 
-bool MeshComponent::Init(const pugi::xml_node& data) {
+bool MeshComponent::VDelegateInit(const pugi::xml_node& data) {
 	m_resource_name = data.child("Mesh").child_value();
 	if (m_resource_name.empty()) return false;
 	std::filesystem::path p(m_resource_name);
@@ -145,7 +124,7 @@ void MeshComponent::ImportScene(CommandList& command_list, const aiScene& scene,
         ImportMesh(command_list, *(scene.mMeshes[i]));
     }
 
-    m_loaded_scene = ImportSceneNode(command_list, nullptr, scene.mRootNode);
+    m_loaded_scene_node = ImportSceneNode(command_list, nullptr, scene.mRootNode);
 }
 
 void MeshComponent::ImportMaterial(CommandList& command_list, const aiMaterial& material, std::filesystem::path parent_path) {

@@ -153,6 +153,7 @@
     <ClCompile Include="actors\actor_factory.cpp" />
     <ClCompile Include="actors\camera_component.cpp" />
     <ClCompile Include="actors\enemy_component.cpp" />
+    <ClCompile Include="actors\base_scene_node_component.cpp" />
     <ClCompile Include="engine\actor_menu_ui.cpp" />
     <ClCompile Include="engine\base_ui.cpp" />
     <ClCompile Include="engine\human_view.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="events\evt_data_move_actor.cpp" />
     <ClCompile Include="events\evt_data_new_particle_component.cpp" />
     <ClCompile Include="events\evt_data_new_render_component.cpp" />
+    <ClCompile Include="events\evt_data_new_scene_component.cpp" />
     <ClCompile Include="events\evt_data_os_message.cpp" />
     <ClCompile Include="events\evt_data_minimize_window.cpp" />
     <ClCompile Include="events\evt_data_request_destroy_actor.cpp" />
@@ -325,7 +327,7 @@
     <ClInclude Include="actors\camera_component.h" />
     <ClInclude Include="actors\enemy_component.h" />
     <ClInclude Include="actors\light_component.h" />
-    <ClInclude Include="actors\scene_node_component_interface.h" />
+    <ClInclude Include="actors\base_scene_node_component.h" />
     <ClInclude Include="engine\actor_menu_ui.h" />
     <ClInclude Include="engine\base_ui.h" />
     <ClInclude Include="engine\movement_controller.h" />
@@ -357,6 +359,7 @@
     <ClInclude Include="events\evt_data_move_actor.h" />
     <ClInclude Include="events\evt_data_new_particle_component.h" />
     <ClInclude Include="events\evt_data_new_render_component.h" />
+    <ClInclude Include="events\evt_data_new_scene_component.h" />
     <ClInclude Include="events\evt_data_request_destroy_actor.h" />
     <ClInclude Include="events\evt_data_request_new_actor.h" />
     <ClInclude Include="events\evt_data_request_start_game.h" />

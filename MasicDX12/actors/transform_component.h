@@ -6,6 +6,9 @@
 #include <DirectXMath.h>
 
 class TransformComponent : public ActorComponent {
+protected:
+    virtual void VRegisterEvents();
+
 private:
     DirectX::XMFLOAT4X4 m_transform;
 
@@ -14,6 +17,8 @@ private:
     DirectX::XMFLOAT4 m_right;
 
     DirectX::XMFLOAT4 m_scale;
+
+    uint32_t m_generation;
 
 public:
     static const std::string g_Name;
@@ -25,11 +30,22 @@ public:
     virtual const std::string& VGetName() const override;
     virtual pugi::xml_node VGenerateXml() override;
 
+    uint32_t GetGeneration();
+
     // transform functions
     const DirectX::XMFLOAT4X4& GetTransform4x4f() const;
+    DirectX::XMFLOAT4X4 GetTransform4x4T() const;
     DirectX::XMMATRIX GetTransform() const;
+    DirectX::XMMATRIX GetTransformT() const;
     DirectX::XMFLOAT4X4 GetInvTransform4x4f() const;
     DirectX::XMMATRIX GetInvTransform() const;
+
+    DirectX::XMFLOAT4X4 GetFullTransform4x4f() const;
+    DirectX::XMFLOAT4X4 GetFullTransform4x4T() const;
+    DirectX::XMMATRIX GetFullTransform() const;
+    DirectX::XMMATRIX GetFullTransformT() const;
+    DirectX::XMFLOAT4X4 GetFullInvTransform4x4f() const;
+    DirectX::XMMATRIX GetFullInvTransform() const;
 
     void SetTransform(const DirectX::XMFLOAT4X4& newTransform);
     void SetTransform(DirectX::FXMMATRIX newTransform);

@@ -31,6 +31,8 @@ public:
     virtual Particle* VGetParticlePtr();
 
 protected:
+    virtual void VRegisterEvents();
+
     Particle m_particle;
     std::weak_ptr<IEnginePhysics> m_pGame_physics;
 };

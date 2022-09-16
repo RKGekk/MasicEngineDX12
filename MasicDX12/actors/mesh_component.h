@@ -14,39 +14,36 @@
 #include <assimp/material.h>
 
 #include "actor_component.h"
-#include "scene_node_component_interface.h"
+#include "base_scene_node_component.h"
 
 class CommandList;
 class Material;
 class Mesh;
 
-class MeshComponent : public SceneNodeComponentInterface {
+class MeshComponent : public BaseSceneNodeComponent {
 public:
 	static const std::string g_Name;
 
 	MeshComponent();
 	MeshComponent(const pugi::xml_node& data);
 
-	virtual bool VInit(const pugi::xml_node& data) override;
-	virtual void VPostInit() override;
-	virtual void VUpdate(const GameTimerDelta& delta) override;
-
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;
 
-	virtual std::shared_ptr<SceneNode> VGetSceneNode() override;
-
 	const std::string& GetResourceName();
 	const std::string& GetResourceDirecory();
+
+protected:
+	virtual bool VDelegateInit(const pugi::xml_node& data) override;
+	virtual void VDelegatePostInit() override;
+	virtual void VDelegateUpdate(const GameTimerDelta& delta) override;
 
 private:
 	std::string m_resource_name;
 	std::string m_resource_directory;
 
-	std::shared_ptr<SceneNode> m_scene_node;
-	std::shared_ptr<SceneNode> m_loaded_scene;
+	std::shared_ptr<SceneNode> m_loaded_scene_node;
 
-	bool Init(const pugi::xml_node& data);
 	bool LoadModel(const std::filesystem::path& file_name);
 
 	void ImportScene(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path);

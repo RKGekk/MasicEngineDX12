@@ -11,33 +11,34 @@
 #include <pugixml/pugixml.hpp>
 
 #include "actor_component.h"
-#include "scene_node_component_interface.h"
+#include "base_scene_node_component.h"
 
 class CommandList;
 class Material;
 class Mesh;
+class CameraNode;
 
-class CameraComponent : public SceneNodeComponentInterface {
+class CameraComponent : public BaseSceneNodeComponent {
 public:
 	static const std::string g_Name;
 
 	CameraComponent();
 	CameraComponent(const pugi::xml_node& data);
 
-	virtual bool VInit(const pugi::xml_node& data) override;
-	virtual void VPostInit() override;
-	virtual void VUpdate(const GameTimerDelta& delta) override;
-
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;
 
-	virtual std::shared_ptr<SceneNode> VGetSceneNode() override;
+protected:
+	virtual bool VDelegateInit(const pugi::xml_node& data) override;
+	virtual void VDelegatePostInit() override;
+	virtual void VDelegateUpdate(const GameTimerDelta& delta) override;
 
 private:
-	std::shared_ptr<SceneNode> m_scene_node;
+	std::shared_ptr<CameraNode> m_loaded_scene_node;
 	float m_fov;
 	float m_near;
 	float m_far;
+	float m_aspect_ratio;
 
 	bool Init(const pugi::xml_node& data);
 };

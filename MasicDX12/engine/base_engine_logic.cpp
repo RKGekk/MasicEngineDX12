@@ -50,6 +50,7 @@ BaseEngineLogic::~BaseEngineLogic() {
 
 bool BaseEngineLogic::Init() {
 	m_actor_factory = VCreateActorFactory();
+	VRegisterEvents();
 	RegisterAllDelegates();
 
 	return true;
@@ -397,6 +398,14 @@ void BaseEngineLogic::RegisterAllDelegates() {
 	pGlobalEventManager->VAddListener({ connect_arg<&BaseEngineLogic::RequestStartGameDelegate>, this }, EvtData_Request_Start_Game::sk_EventType);
 	pGlobalEventManager->VAddListener({ connect_arg<&BaseEngineLogic::EnvironmentLoadedDelegate>, this }, EvtData_Environment_Loaded::sk_EventType);
 	pGlobalEventManager->VAddListener({ connect_arg<&BaseEngineLogic::SphereParticleContactDelegate>, this }, EvtData_Sphere_Particle_Contact::sk_EventType);
+}
+
+void BaseEngineLogic::VRegisterEvents() {
+	REGISTER_EVENT(EvtData_New_Actor);
+	//REGISTER_EVENT(EvtData_Environment_Loaded);
+	//REGISTER_EVENT(EvtData_Move_Actor);
+	//REGISTER_EVENT(EvtData_Destroy_Actor);
+	REGISTER_EVENT(EvtData_Request_New_Actor);
 }
 
 void BaseEngineLogic::RemoveAllDelegates() {

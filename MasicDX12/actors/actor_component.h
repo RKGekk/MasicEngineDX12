@@ -12,6 +12,8 @@ class ActorComponent {
 	friend class ActorFactory;
 
 protected:
+	virtual void VRegisterEvents() = 0;
+
 	StrongActorPtr m_pOwner;
 
 public:

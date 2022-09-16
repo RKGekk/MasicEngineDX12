@@ -16,7 +16,6 @@ public:
     static const std::string g_Name;
     virtual const std::string& VGetName() const override;
 
-public:
     OrientationRelationComponent();
     virtual ~OrientationRelationComponent();
 
@@ -41,6 +40,8 @@ public:
     virtual void VRotateUp(float angle_deg);
 
 protected:
+    virtual void VRegisterEvents();
+
     std::string m_relate_to;
     DirectX::XMFLOAT4 m_at;
     DirectX::XMFLOAT4 m_right;

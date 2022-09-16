@@ -28,6 +28,8 @@ public:
 	virtual pugi::xml_node VGenerateXml() override;
 
 protected:
+	virtual void VRegisterEvents();
+
 	std::string m_target_name;
 	float m_force;
 };

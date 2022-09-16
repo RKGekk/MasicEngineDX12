@@ -43,6 +43,8 @@ pugi::xml_node BaseRenderComponent::VGenerateXml() {
 	return pBaseElement;
 }
 
+void BaseRenderComponent::VRegisterEvents() {}
+
 const DirectX::XMFLOAT4& BaseRenderComponent::GetColor() const {
 	return m_color;
 }

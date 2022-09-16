@@ -25,6 +25,8 @@ pugi::xml_node OrientationRelationComponent::VGenerateXml() {
 	return pugi::xml_node();
 }
 
+void OrientationRelationComponent::VRegisterEvents() {}
+
 bool OrientationRelationComponent::VInit(const pugi::xml_node& data) {
 
 	pugi::xml_node relate_node = data.child("RelateTo");

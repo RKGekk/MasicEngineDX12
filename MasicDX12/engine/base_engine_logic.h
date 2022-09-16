@@ -79,6 +79,7 @@ protected:
 	virtual bool VLoadGameDelegate(const pugi::xml_node& pLevelData);
 
 	void RegisterAllDelegates();
+	virtual void VRegisterEvents();
 	void RemoveAllDelegates();
 
 

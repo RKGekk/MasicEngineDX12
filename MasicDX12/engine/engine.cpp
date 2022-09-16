@@ -112,13 +112,7 @@ LRESULT Engine::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return result;
 }
 
-void Engine::VRegisterEvents() {
-	//REGISTER_EVENT(EvtData_Environment_Loaded);
-	//REGISTER_EVENT(EvtData_New_Actor);
-	//REGISTER_EVENT(EvtData_Move_Actor);
-	//REGISTER_EVENT(EvtData_Destroy_Actor);
-	//REGISTER_EVENT(EvtData_Request_New_Actor);
-}
+void Engine::VRegisterEvents() {}
 
 void Engine::RegisterAllDelegates() {
 	IEventManager* pGlobalEventManager = IEventManager::Get();

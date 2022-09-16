@@ -36,6 +36,8 @@ pugi::xml_node ParticleComponent::VGenerateXml() {
     return pugi::xml_node();
 }
 
+void ParticleComponent::VRegisterEvents() {}
+
 bool ParticleComponent::VInit(const pugi::xml_node& data) {
     m_pGame_physics = Engine::GetEngine()->GetGameLogic()->VGetGamePhysics();
     if (m_pGame_physics.expired()) return false;
