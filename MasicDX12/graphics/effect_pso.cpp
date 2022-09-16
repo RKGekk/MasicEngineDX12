@@ -96,6 +96,7 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     //m_pixel_shader->SetBlendState();
     m_pixel_shader->SetRasterizerState(rasterizer_state);
     //m_pixel_shader->SetDepthStencilState();
+    m_pixel_shader->SetSample(sample_desc);
     
     m_pipeline_state_object = m_device->CreateGraphicsPipelineState("PSOFor"s + pixel_shader_name, m_root_signature, m_vertex_shader, m_pixel_shader);
 
