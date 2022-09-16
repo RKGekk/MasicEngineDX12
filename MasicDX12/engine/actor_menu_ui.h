@@ -9,6 +9,10 @@
 #include "../processes/process_manager.h"
 #include "../actors/actor.h"
 
+#include "../graphics/imgui/imgui.h"
+#include "../graphics/imgui/imgui_impl_win32.h"
+#include "../graphics/imgui/imgui_impl_dx12.h"
+
 class ActorMenuUI : public BaseUI {
 public:
 	ActorMenuUI(std::shared_ptr<ProcessManager> pm);
@@ -29,6 +33,9 @@ protected:
 private:
 	bool m_show_menu = false;
 	std::weak_ptr<ProcessManager> m_pm;
+
+	ImGuiContext* m_pImgui_ctx;
+	HWND m_hwnd;
 
 	int m_actor_id;
 

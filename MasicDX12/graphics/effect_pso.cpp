@@ -57,10 +57,12 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
 
     m_root_signature = m_device->CreateRootSignature("RootSignFor"s + pixel_shader_name, root_signature_description);
 
-    DXGI_FORMAT back_buffer_format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    //DXGI_FORMAT back_buffer_format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    DXGI_FORMAT back_buffer_format = DXGI_FORMAT_R8G8B8A8_UNORM;
     DXGI_FORMAT depth_buffer_format = DXGI_FORMAT_D32_FLOAT;
 
-    DXGI_SAMPLE_DESC sample_desc = m_device->GetMultisampleQualityLevels(back_buffer_format);
+    //DXGI_SAMPLE_DESC sample_desc = m_device->GetMultisampleQualityLevels(back_buffer_format);
+    DXGI_SAMPLE_DESC sample_desc = { 1, 0 };
 
     D3D12_RT_FORMAT_ARRAY rtv_formats = {};
     rtv_formats.NumRenderTargets = 1;

@@ -19,7 +19,8 @@ ScreenElementScene::ScreenElementScene() : Scene() {
 	m_back_buffer_format = renderer->GetBackBufferFormat();
 	m_width = swap_chain->GetWidth();
 	m_height = swap_chain->GetHeight();
-	DXGI_SAMPLE_DESC sample_desc = device->GetMultisampleQualityLevels(m_back_buffer_format);
+	//DXGI_SAMPLE_DESC sample_desc = device->GetMultisampleQualityLevels(m_back_buffer_format);
+	DXGI_SAMPLE_DESC sample_desc = { 1, 0 };
 	auto color_desc = CD3DX12_RESOURCE_DESC::Tex2D(m_back_buffer_format, m_width, m_height, 1, 1, sample_desc.Count, sample_desc.Quality, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 	D3D12_CLEAR_VALUE color_clear_value = {};
 	color_clear_value.Format = color_desc.Format;
@@ -59,6 +60,9 @@ HRESULT ScreenElementScene::VOnRestore() {
 }
 
 HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta) {
+	std::shared_ptr<SceneNode> root_scene_node = GetRootNode()->GetNodesGroup(0);
+	if(!root_scene_node) return S_OK;
+
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
 	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
 	std::shared_ptr<Device> device = renderer->GetDevice();
@@ -68,6 +72,8 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta) {
 
 	std::shared_ptr<HumanView> human_view = engine->GetGameLogic()->GetHumanView();
 	std::shared_ptr<CameraNode> camera = human_view->VGetCamera();
+
+	m_lighting_pso->SetLightManager(m_light_manager);
 
 	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false);
 
@@ -80,12 +86,16 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta) {
 	command_list->SetScissorRect(m_scissor_rect);
 	command_list->SetRenderTarget(m_render_target);
 
-	std::shared_ptr<SceneNode> root_scene_node = GetRootNode()->GetNodesGroup(0);
 	root_scene_node->Accept(opaque_pass);
 
 	auto swap_chain_back_buffer = swap_chain->GetRenderTarget().GetTexture(AttachmentPoint::Color0);
 	auto msaa_render_target = m_render_target.GetTexture(AttachmentPoint::Color0);
-	command_list->ResolveSubresource(swap_chain_back_buffer, msaa_render_target);
+	if (msaa_render_target->GetD3D12ResourceDesc().SampleDesc.Count > 1) {
+		command_list->ResolveSubresource(swap_chain_back_buffer, msaa_render_target);
+	}
+	else {
+		command_list->CopyResource(swap_chain_back_buffer, msaa_render_target);
+	}
 
 	command_queue.ExecuteCommandList(command_list);
 

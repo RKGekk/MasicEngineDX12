@@ -171,4 +171,5 @@ void Application::Paint(IEventDataPtr pEventData) {
     m_timer.Tick();
     std::shared_ptr<EvtData_Update_Tick> pEvent(new EvtData_Update_Tick(m_timer.GetDeltaDuration(), m_timer.GetTotalDuration()));
     m_event_manager->VTriggerEvent(pEvent);
+    Engine::GetEngine()->RenderFrame();
 }

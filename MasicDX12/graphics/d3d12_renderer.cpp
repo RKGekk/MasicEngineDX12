@@ -15,6 +15,8 @@ bool D3DRenderer12::Initialize(std::shared_ptr<WindowSurface> rw) {
 	m_device = Device::Create(m_adapter);
 	m_swap_chain = m_device->CreateSwapChain(m_window_surface->GetWindowHandle(), m_back_buffer_format);
 
+
+
 	return true;
 }
 

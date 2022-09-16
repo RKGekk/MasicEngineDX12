@@ -75,10 +75,10 @@ void Engine::Update(IEventDataPtr pEventData) {
 }
 
 void Engine::RenderFrame() {
-	//BaseEngineLogic* pGame = g_pApp->m_game.get();
-	//for (GameViewList::iterator i = pGame->m_game_views.begin(), end = pGame->m_game_views.end(); i != end; ++i) {
-	//	(*i)->VOnRender(m_timer.TotalTime(), m_timer.DeltaTime());
-	//}
+	if (!m_game) return;
+	for (GameViewList::iterator i = m_game->m_game_views.begin(), end = m_game->m_game_views.end(); i != end; ++i) {
+		(*i)->VOnRender(Application::Get().GetTimer());
+	}
 	//m_renderer->VPresent();
 }
 
