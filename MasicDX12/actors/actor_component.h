@@ -14,6 +14,7 @@ class ActorComponent {
 protected:
 	virtual void VRegisterEvents() = 0;
 
+	inline static bool m_events_registered = false;
 	StrongActorPtr m_pOwner;
 
 public:

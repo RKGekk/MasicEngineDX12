@@ -12,6 +12,12 @@ Engine::Engine() {}
 
 Engine::~Engine() {}
 
+void Engine::Destroy() {
+	if (m_pEngine) {
+		m_pEngine.reset();
+	}
+}
+
 bool Engine::Initialize(const RenderWindowConfig& cfg) {
 	if (!DirectX::XMVerifyCPUSupport()) {
 		MessageBoxA(NULL, "Failed to verify DirectX Math library support.", "Error", MB_OK | MB_ICONERROR);
@@ -170,10 +176,4 @@ std::shared_ptr<Engine> Engine::GetEngine() {
 		m_pEngine.reset(new Engine());
 	}
 	return m_pEngine;
-}
-
-void Engine::Destroy() {
-	if (m_pEngine) {
-		m_pEngine = nullptr;
-	}
 }

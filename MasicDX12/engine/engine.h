@@ -21,6 +21,7 @@ class Application;
 class Engine {
 public:
 	virtual ~Engine();
+	static void Destroy();
 
 	bool Initialize(const RenderWindowConfig& cfg);
 
@@ -32,7 +33,6 @@ public:
 	std::shared_ptr<BaseEngineLogic> GetGameLogic();
 	std::shared_ptr<IRenderer> GetRenderer();
 	static std::shared_ptr<Engine> GetEngine();
-	static void Destroy();
 
 	void Update(IEventDataPtr pEventData);
 	void RenderFrame();

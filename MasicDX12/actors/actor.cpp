@@ -1,5 +1,8 @@
 #include "actor.h"
+
 #include "actor_component.h"
+#include "../events/evt_data_new_actor.h"
+#include "../events/i_event_manager.h"
 
 Actor::Actor(ActorId id) {
     m_id = id;
@@ -20,6 +23,8 @@ void Actor::PostInit() {
     for (auto it = m_components.begin(); it != m_components.end(); ++it) {
         it->second->VPostInit();
     }
+    std::shared_ptr<EvtData_New_Actor> pNewActorEvent = std::make_shared<EvtData_New_Actor>(GetId());
+    IEventManager::Get()->VQueueEvent(pNewActorEvent);
 }
 
 void Actor::Destroy() {
@@ -54,6 +59,13 @@ const ActorComponents& Actor::GetComponents() {
 
 void Actor::AddComponent(StrongActorComponentPtr pComponent) {
     std::pair<ActorComponents::iterator, bool> success = m_components.insert(std::make_pair(pComponent->VGetId(), pComponent));
+}
+
+void Actor::VRegisterEvents() {
+    if (!m_events_registered) {
+        REGISTER_EVENT(EvtData_New_Actor);
+        m_events_registered = true;
+    }
 }
 
 std::string Actor::ToXML() {

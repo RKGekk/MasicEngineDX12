@@ -77,16 +77,16 @@ Application& Application::Get() {
     return *gs_pSingeton;
 }
 
+Application::~Application() {
+    gs_windows.clear();
+    gs_window_by_name.clear();
+}
+
 void Application::Destroy() {
     if (gs_pSingeton) {
         delete gs_pSingeton;
         gs_pSingeton = nullptr;
     }
-}
-
-Application::~Application() {
-    gs_windows.clear();
-    gs_window_by_name.clear();
 }
 
 std::shared_ptr<WindowSurface> Application::CreateRenderWindow(const RenderWindowConfig& cfg) {

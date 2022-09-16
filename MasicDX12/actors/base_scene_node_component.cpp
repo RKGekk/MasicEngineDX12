@@ -46,5 +46,8 @@ void BaseSceneNodeComponent::VUpdate(const GameTimerDelta& delta) {
 void BaseSceneNodeComponent::VOnChanged() {}
 
 void BaseSceneNodeComponent::VRegisterEvents() {
-	REGISTER_EVENT(EvtData_New_Scene_Component);
+	if (!m_events_registered) {
+		REGISTER_EVENT(EvtData_New_Scene_Component);
+		m_events_registered = true;
+	}
 }

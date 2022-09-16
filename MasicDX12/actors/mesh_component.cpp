@@ -108,8 +108,8 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name) {
 }
 
 void MeshComponent::ImportScene(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path) {
-    if (m_scene_node) {
-        m_scene_node.reset();
+    if (m_loaded_scene_node) {
+        m_loaded_scene_node.reset();
     }
 
     m_material_map.clear();

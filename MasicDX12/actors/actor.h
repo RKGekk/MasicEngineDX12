@@ -38,6 +38,7 @@ typedef std::unordered_map<ActorId, std::unordered_set<ComponentId>> ActorCompon
 class Actor {
 private:
     std::string m_resource_name;
+    inline static bool m_events_registered = false;
 
     ActorId m_id;
     std::string m_type_name;
@@ -110,6 +111,8 @@ public:
     }
 
     const ActorComponents& GetComponents();
-
     void AddComponent(StrongActorComponentPtr pComponent);
+
+protected:
+    virtual void VRegisterEvents();
 };
