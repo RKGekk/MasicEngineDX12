@@ -4,6 +4,8 @@
 #include "engine.h"
 #include "../actors/camera_component.h"
 #include "../events/evt_data_update_tick.h"
+#include "../events/evt_data_new_scene_component.h"
+#include "../events/evt_data_destroy_scene_component.h"
 
 #include <DirectXCollision.h>
 
@@ -262,6 +264,16 @@ const std::string& HumanView::VGetName() {
 
 void HumanView::GameStateDelegate(IEventDataPtr pEventData) {}
 
+void HumanView::NewSceneNodeComponentDelegate(IEventDataPtr pEventData) {
+	std::shared_ptr<EvtData_New_Scene_Component> pCastEventData = std::static_pointer_cast<EvtData_New_Scene_Component>(pEventData);
+	m_scene->AddChild(pCastEventData->GetSceneNode().lock());
+}
+
+void HumanView::DestroySceneNodeComponentDelegate(IEventDataPtr pEventData) {
+	std::shared_ptr<EvtData_Destroy_Scene_Component> pCastEventData = std::static_pointer_cast<EvtData_Destroy_Scene_Component>(pEventData);
+	m_scene->RemoveChild(pCastEventData->GetSceneNode().lock());
+}
+
 bool HumanView::VLoadGameDelegate(const pugi::xml_node& pLevel_data) {
 	using namespace std::literals;
 	pugi::xml_node scene_config_node = pLevel_data.child("Scene");
@@ -287,6 +299,14 @@ bool HumanView::VLoadGameDelegate(const pugi::xml_node& pLevel_data) {
 
 void HumanView::VRenderText() {}
 
-void HumanView::RegisterAllDelegates() {}
+void HumanView::RegisterAllDelegates() {
+	IEventManager* pGlobalEventManager = IEventManager::Get();
+	pGlobalEventManager->VAddListener({ connect_arg<&HumanView::NewSceneNodeComponentDelegate>, this }, EvtData_New_Scene_Component::sk_EventType);
+	pGlobalEventManager->VAddListener({ connect_arg<&HumanView::DestroySceneNodeComponentDelegate>, this }, EvtData_Destroy_Scene_Component::sk_EventType);
+}
 
-void HumanView::RemoveAllDelegates() {}
+void HumanView::RemoveAllDelegates() {
+	IEventManager* pGlobalEventManager = IEventManager::Get();
+	pGlobalEventManager->VRemoveListener({ connect_arg<&HumanView::NewSceneNodeComponentDelegate>, this }, EvtData_New_Scene_Component::sk_EventType);
+	pGlobalEventManager->VRemoveListener({ connect_arg<&HumanView::DestroySceneNodeComponentDelegate>, this }, EvtData_Destroy_Scene_Component::sk_EventType);
+}

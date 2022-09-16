@@ -8,6 +8,7 @@
 #include "../events/evt_data_environment_loaded.h"
 #include "../events/evt_data_sphere_particle_contact.h"
 #include "../events/evt_data_destroy_actor.h"
+#include "../events/evt_data_new_scene_component.h"
 #include "../actors/actor_factory.h"
 #include "level_manager.h"
 #include "engine.h"
@@ -99,9 +100,6 @@ StrongActorPtr BaseEngineLogic::VCreateActor(const std::string& actor_resource, 
 }
 
 void BaseEngineLogic::VDestroyActor(const ActorId actorId) {
-	std::shared_ptr<EvtData_Destroy_Actor> pEvent(new EvtData_Destroy_Actor(actorId));
-	IEventManager::Get()->VTriggerEvent(pEvent);
-
 	auto findIt = m_actors.find(actorId);
 	if (findIt != m_actors.end()) {
 		if (findIt->second->GetName() != "NoName") { m_actors_names.erase(findIt->second->GetName()); }

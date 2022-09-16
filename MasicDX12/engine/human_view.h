@@ -58,6 +58,8 @@ public:
 	virtual const std::string& VGetName() override;
 
 	void GameStateDelegate(IEventDataPtr pEventData);
+	void NewSceneNodeComponentDelegate(IEventDataPtr pEventData);
+	void DestroySceneNodeComponentDelegate(IEventDataPtr pEventData);
 
 protected:
 	virtual bool VLoadGameDelegate(const pugi::xml_node& pLevelData);

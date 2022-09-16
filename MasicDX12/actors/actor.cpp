@@ -2,6 +2,7 @@
 
 #include "actor_component.h"
 #include "../events/evt_data_new_actor.h"
+#include "../events/evt_data_destroy_actor.h"
 #include "../events/i_event_manager.h"
 
 Actor::Actor(ActorId id) {
@@ -10,7 +11,10 @@ Actor::Actor(ActorId id) {
     m_resource_name = "Unknown";
 }
 
-Actor::~Actor() {}
+Actor::~Actor() {
+    std::shared_ptr<EvtData_Destroy_Actor> pNewActorEvent = std::make_shared<EvtData_Destroy_Actor>(GetId());
+    IEventManager::Get()->VQueueEvent(pNewActorEvent);
+}
 
 bool Actor::Init(const pugi::xml_node& data) {
     m_name = "NoName";
