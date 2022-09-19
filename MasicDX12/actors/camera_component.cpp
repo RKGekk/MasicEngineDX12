@@ -28,6 +28,10 @@ pugi::xml_node CameraComponent::VGenerateXml() {
 	return pugi::xml_node();
 }
 
+std::shared_ptr<CameraNode> CameraComponent::VGetCameraNode() {
+	return m_loaded_scene_node;
+}
+
 bool CameraComponent::VDelegateInit(const pugi::xml_node& data) {
 	using namespace std::literals;
 

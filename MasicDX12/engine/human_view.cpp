@@ -21,8 +21,8 @@ HumanView::HumanView() {
 	m_bShow_ui = false;
 	m_bShow_debug_ui = Application::Get().GetApplicationOptions().DebugUI;
 	if (m_bShow_debug_ui) {
-		m_actor_menu_ui = std::make_shared<ActorMenuUI>(m_process_manager);
-		VPushElement(m_actor_menu_ui);
+		//m_actor_menu_ui = std::make_shared<ActorMenuUI>(m_process_manager);
+		//VPushElement(m_actor_menu_ui);
 	}
 
 	RegisterAllDelegates();
@@ -253,7 +253,7 @@ void HumanView::VSetCameraByName(std::string camera_name) {
 	if (auto camera_actor = weak_camera_actor.lock()) {
 		auto weak_camera_component = camera_actor->GetComponent<CameraComponent>();
 		if (auto camera_component = weak_camera_component.lock()) {
-			m_camera = std::dynamic_pointer_cast<CameraNode>(camera_component->VGetSceneNode());
+			m_camera = std::dynamic_pointer_cast<CameraNode>(camera_component->VGetCameraNode());
 		}
 	}
 }

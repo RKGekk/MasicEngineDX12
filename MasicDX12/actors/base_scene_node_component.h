@@ -6,6 +6,7 @@
 #include "actor_component.h"
 
 class SceneNode;
+class CameraNode;
 
 class BaseSceneNodeComponent : public ActorComponent {
 public:
@@ -13,7 +14,7 @@ public:
 	~BaseSceneNodeComponent();
 
 	virtual std::shared_ptr<SceneNode> VGetSceneNode();
-
+	
 	virtual bool VInit(const pugi::xml_node& data) override;
 	virtual void VPostInit() override;
 	virtual void VUpdate(const GameTimerDelta& delta) override;

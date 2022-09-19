@@ -9,7 +9,9 @@
 #include "../graphics/material.h"
 #include "../graphics/mesh.h"
 
-SceneVisitor::SceneVisitor(CommandList& command_list, std::shared_ptr<CameraNode> camera, EffectPSO& pso, bool transparent) : m_command_list(command_list), m_camera(camera), m_lighting_pso(pso), m_transparent_pass(transparent) {}
+SceneVisitor::SceneVisitor(CommandList& command_list, std::shared_ptr<CameraNode> camera, EffectPSO& pso, bool transparent) : m_command_list(command_list), m_camera(camera), m_lighting_pso(pso), m_transparent_pass(transparent) {
+	ResetCamera();
+}
 
 void SceneVisitor::ResetCamera() {
 	m_lighting_pso.SetViewMatrix(m_camera->GetView());

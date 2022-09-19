@@ -130,10 +130,10 @@ void SceneNode::UpdateCumulativeTransform() {
 				DirectX::XMLoadFloat4x4(&m_props.m_to_world)
 			)
 		);
-		DirectX::XMStoreFloat4x4(&m_props.m_from_world_cumulative, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&m_props.m_from_world_cumulative)));
+		DirectX::XMStoreFloat4x4(&m_props.m_from_world_cumulative, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&m_props.m_to_world_cumulative)));
 		DirectX::XMStoreFloat3(
 			&m_props.m_scale_cumulative,
-			DirectX::XMVectorAdd(
+			DirectX::XMVectorMultiply(
 				DirectX::XMLoadFloat3(&m_props.m_scale),
 				DirectX::XMLoadFloat3(&pParent->m_props.m_scale_cumulative)
 			)
@@ -156,7 +156,7 @@ void SceneNode::UpdateCumulativeScale() {
 	if (std::shared_ptr<SceneNode> pParent = m_pParent.lock()) {
 		DirectX::XMStoreFloat3(
 			&m_props.m_scale_cumulative,
-			DirectX::XMVectorAdd(
+			DirectX::XMVectorMultiply(
 				DirectX::XMLoadFloat3(&m_props.m_scale),
 				DirectX::XMLoadFloat3(&pParent->m_props.m_scale_cumulative)
 			)

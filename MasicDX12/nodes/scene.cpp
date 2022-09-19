@@ -21,6 +21,16 @@ std::shared_ptr<QualifierNode> Scene::GetRootNode() {
 	return m_root_node;
 }
 
+void Scene::ManageLightNodes(std::shared_ptr<SceneNode> light_node) {
+	if (!light_node) return;
+	if (std::shared_ptr<LightNode> pLight = std::dynamic_pointer_cast<LightNode>(light_node)) {
+		m_light_manager->AddLight(pLight);
+	};
+	for (auto& current_node : light_node->m_children) {
+		ManageLightNodes(current_node);
+	}
+}
+
 Scene::Scene() {
 	using namespace std::literals;
 	m_root_node = std::make_shared<QualifierNode>("Root Node"s);
@@ -49,10 +59,8 @@ HRESULT Scene::OnUpdate() {
 }
 
 bool Scene::AddChild(std::shared_ptr<SceneNode> kid) {
-	std::shared_ptr<LightNode> pLight = std::dynamic_pointer_cast<LightNode>(kid);
-	if (pLight) {
-		m_light_manager->AddLight(pLight);
-	}
+	if (!kid) return false;
+	ManageLightNodes(kid);
 	return m_root_node->VAddChild(kid);
 }
 

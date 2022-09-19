@@ -10,6 +10,7 @@
 #include "../actors/actor.h"
 #include "../graphics/directx12_wrappers/shader.h"
 
+#include "../graphics/gui.h"
 #include "../graphics/imgui/imgui.h"
 #include "../graphics/imgui/imgui_impl_win32.h"
 #include "../graphics/imgui/imgui_impl_dx12.h"
@@ -34,20 +35,14 @@ public:
 	virtual LRESULT CALLBACK VOnMsgProc(HWND m_hWnd, UINT m_uMsg, WPARAM m_wParam, LPARAM m_lParam) override;
 
 protected:
-	void Set(std::shared_ptr<ProcessManager>);
+	void Set(std::shared_ptr<ProcessManager> pm);
 
 private:
 	bool m_show_menu = false;
 	std::weak_ptr<ProcessManager> m_pm;
 
-	ImGuiContext* m_pImgui_ctx;
 	HWND m_hwnd;
-	std::shared_ptr<Texture> m_font_texture;
-	std::shared_ptr<ShaderResourceView> m_font_srv;
-	std::shared_ptr<RootSignature> m_root_signature;
-	std::shared_ptr<PipelineStateObject> m_pipeline_state;
-	std::shared_ptr<VertexShader> m_vertex_shader;
-	std::shared_ptr<PixelShader> m_pixel_shader;
+	std::shared_ptr<GUI> m_gui;
 
 	int m_actor_id;
 
