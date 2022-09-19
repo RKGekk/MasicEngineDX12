@@ -1,0 +1,16 @@
+# Blender MTL File: 'untitled.blend'
+# Material Count: 1
+
+newmtl standardSurface1
+Ns 199.999995
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Normal.png
+map_Kd data\textures\ASIAN_TOWER_BLOCK_standardSurface1_BaseCol.png
+map_Ns data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Roughne.png
+refl data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Metalli.png

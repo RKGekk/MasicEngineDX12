@@ -35,7 +35,7 @@ std::shared_ptr<CameraNode> CameraComponent::VGetCameraNode() {
 bool CameraComponent::VDelegateInit(const pugi::xml_node& data) {
 	using namespace std::literals;
 
-	m_fov = data.child("Fov").text().as_float(m_fov);
+	m_fov = DirectX::XMConvertToRadians(data.child("Fov").text().as_float(m_fov));
 	m_near = data.child("Near").text().as_float(m_near);
 	m_far = data.child("Far").text().as_float(m_far);
 	m_aspect_ratio = Application::Get().GetApplicationOptions().GetAspect();

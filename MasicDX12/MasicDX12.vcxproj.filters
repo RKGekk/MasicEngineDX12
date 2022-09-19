@@ -1385,6 +1385,7 @@
     <None Include="data\textures\fancy-brass-pattern1_roughness.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="data\objects\lpAsianTowerBlock.mtl" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">
@@ -1486,5 +1487,22 @@
     <FxCompile Include="data\shaders\VertexShader.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\textures\ASIAN_TOWER_BLOCK_standardSurface1_BaseCol.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Metalli.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Normal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Roughne.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="data\objects\lpAsianTowerBlock.obj" />
   </ItemGroup>
 </Project>
