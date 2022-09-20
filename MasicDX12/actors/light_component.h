@@ -29,6 +29,8 @@ public:
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;
 
+	virtual std::shared_ptr<LightNode> VGetLightNode();
+
 protected:
 	virtual bool VDelegateInit(const pugi::xml_node& data) override;
 	virtual void VDelegatePostInit() override;

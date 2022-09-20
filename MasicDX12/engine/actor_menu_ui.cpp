@@ -6,6 +6,8 @@
 #include "../actors/particle_component.h"
 #include "../actors/camera_component.h"
 #include "../actors/light_component.h"
+#include "../nodes/light_node.h"
+#include "../nodes/camera_node.h"
 #include "../graphics/d3d12_renderer.h"
 #include "../graphics/i_renderer.h"
 #include "../graphics/directx12_wrappers/command_queue.h"
@@ -103,6 +105,30 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						m_near = 1.0f;
 						m_fov = 1.0f;
 					}
+
+					std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+					if (lc) {
+						m_light_exists = true;
+						const LightProperties& lp = lc->VGetLightNode()->VGetLight();
+
+						m_light_type = lp.m_light_type;
+						m_strength = lp.m_strength;
+						m_attenuation[0] = lp.m_strength.x; // Constant
+						m_attenuation[1] = lp.m_strength.y; // LinearAttenuation
+						m_attenuation[2] = lp.m_strength.z; // Quadratic
+						m_range = lp.m_range;
+						m_spot = lp.m_spot;
+					}
+					else {
+						m_light_exists = false;
+						m_light_type = LightType::DIRECTIONAL;
+						m_strength = {1.0f, 1.0f, 1.0f};
+						m_attenuation[0] = 1.0f; // Constant
+						m_attenuation[1] = 1.0f; // LinearAttenuation
+						m_attenuation[2] = 1.0f; // Quadratic
+						m_range = 1.0f;
+						m_spot = 1.0f;
+					}
 				}
 				else {
 					m_transform_exists = false;
@@ -195,6 +221,68 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						if (cc) {
 							m_camera_exists = true;
 							cc->SetFar(m_far);
+						}
+					}
+
+					if (m_light_exists) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							switch (lc->VGetLightNode()->VGetLight().m_light_type) {
+								case LightType::DIRECTIONAL: ImGui::Text("Directional Light"); break;
+								case LightType::POINT: ImGui::Text("Point Light"); break;
+								case LightType::SPOT: ImGui::Text("Spot Light"); break;
+								default: break;
+							}
+						}
+					}
+					if (m_light_exists && ImGui::ColorEdit4("Strength", ((float*)&m_strength))) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							lc->VGetLightNode()->SetStrength(m_strength);
+						}
+					}
+					if (m_light_exists && ImGui::SliderFloat("Constant Attenuation", ((float*)&m_attenuation[0]), 0.1f, 1.0f)) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							lc->VGetLightNode()->SetAttenuation(m_attenuation[0], m_attenuation[1], m_attenuation[2]);
+						}
+					}
+					if (m_light_exists && ImGui::SliderFloat("Linear Attenuation", ((float*)&m_attenuation[1]), 0.1f, 1.0f)) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							lc->VGetLightNode()->SetAttenuation(m_attenuation[0], m_attenuation[1], m_attenuation[2]);
+						}
+					}
+					if (m_light_exists && ImGui::SliderFloat("Quadratic Attenuation", ((float*)&m_attenuation[2]), 0.1f, 1.0f)) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							lc->VGetLightNode()->SetAttenuation(m_attenuation[0], m_attenuation[1], m_attenuation[2]);
+						}
+					}
+					if (m_light_exists && ImGui::SliderFloat("Range", ((float*)&m_range), 0.1f, 10.0f)) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							lc->VGetLightNode()->SetRange(m_range);
+						}
+					}
+					if (m_light_exists && ImGui::SliderFloat("Spot", ((float*)&m_spot), 0.1f, 10.0f)) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							lc->VGetLightNode()->SetSpot(m_spot);
 						}
 					}
 				}

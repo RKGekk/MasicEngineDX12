@@ -58,6 +58,10 @@ pugi::xml_node LightComponent::VGenerateXml() {
 	return pugi::xml_node();
 }
 
+std::shared_ptr<LightNode> LightComponent::VGetLightNode() {
+	return m_loaded_scene_node;
+}
+
 LightType LightComponent::GetLightType(const std::string& light_type_string) {
 	if (light_type_string == "PointLight") return LightType::POINT;
 	if (light_type_string == "SpotLight") return LightType::SPOT;

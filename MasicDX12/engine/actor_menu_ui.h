@@ -14,6 +14,7 @@
 #include "../graphics/imgui/imgui.h"
 #include "../graphics/imgui/imgui_impl_win32.h"
 #include "../graphics/imgui/imgui_impl_dx12.h"
+#include "../nodes/light_type.h"
 
 class Texture;
 class ShaderResourceView;
@@ -61,4 +62,11 @@ private:
 	float m_fov;
 	float m_near;
 	float m_far;
+
+	bool m_light_exists;
+	LightType m_light_type;
+	DirectX::XMFLOAT3 m_strength;
+	float m_attenuation[3]; // Constant, LinearAttenuation, Quadratic
+	float m_range;
+	float m_spot;
 };

@@ -14,16 +14,21 @@
 class LightNode;
 
 class LightNode : public SceneNode {
-protected:
-	LightProperties m_light_props;
-
 public:
 	LightNode(const std::string& name, const LightProperties& props, const DirectX::XMFLOAT4X4* t);
 	LightNode(const std::string& name, const LightProperties& props, DirectX::FXMMATRIX to);
 
 	const LightProperties& VGetLight() const;
 
+	void SetStrength(DirectX::XMFLOAT3 strength);
+	void SetAttenuation(float constant_attenuation, float linear_attenuation, float quadratic_attenuation);
+	void SetRange(float range);
+	void SetSpot(float spot);
+
 	SpotLight GetSpotLight(DirectX::FXMMATRIX view);
 	PointLight GetPointLight(DirectX::FXMMATRIX view);
 	DirectionalLight GetDirectionalLight(DirectX::FXMMATRIX view);
+
+protected:
+	LightProperties m_light_props;
 };

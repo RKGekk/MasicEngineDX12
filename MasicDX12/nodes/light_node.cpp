@@ -10,6 +10,24 @@ const LightProperties& LightNode::VGetLight() const {
 	return m_light_props;
 }
 
+void LightNode::SetStrength(DirectX::XMFLOAT3 strength) {
+	m_light_props.m_strength = strength;
+}
+
+void LightNode::SetAttenuation(float constant_attenuation, float linear_attenuation, float quadratic_attenuation) {
+	m_light_props.m_attenuation[0] = constant_attenuation;
+	m_light_props.m_attenuation[1] = linear_attenuation;
+	m_light_props.m_attenuation[2] = quadratic_attenuation;
+}
+
+void LightNode::SetRange(float range) {
+	m_light_props.m_range = range;
+}
+
+void LightNode::SetSpot(float spot) {
+	m_light_props.m_spot = spot;
+}
+
 SpotLight LightNode::GetSpotLight(DirectX::FXMMATRIX view) {
 	SpotLight res = SpotLight();
 	
