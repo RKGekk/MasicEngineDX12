@@ -60,6 +60,20 @@ float CameraNode::GetFovYDeg() const {
 	return DirectX::XMConvertToDegrees(m_fovy);
 }
 
+void CameraNode::SetNear(float near_cut) {
+	if (m_frustum.Near == near_cut) return;
+
+	m_frustum.Near = near_cut;
+	DirectX::XMStoreFloat4x4(&m_projection, DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
+}
+
+void CameraNode::SetFar(float far_cut) {
+	if (m_frustum.Far == far_cut) return;
+
+	m_frustum.Far = far_cut;
+	DirectX::XMStoreFloat4x4(&m_projection, DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
+}
+
 void CameraNode::SetProjection(DirectX::FXMMATRIX proj) {
 	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), proj);
 }

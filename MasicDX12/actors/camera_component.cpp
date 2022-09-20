@@ -32,6 +32,33 @@ std::shared_ptr<CameraNode> CameraComponent::VGetCameraNode() {
 	return m_loaded_scene_node;
 }
 
+float CameraComponent::GetFov() {
+	return m_fov;
+}
+
+void CameraComponent::SetFov(float fov) {
+	m_fov = fov;
+	m_loaded_scene_node->SetFovYRad(fov);
+}
+
+float CameraComponent::GetNear() {
+	return m_near;
+}
+
+void CameraComponent::SetNear(float near_cut) {
+	m_near = near_cut;
+	m_loaded_scene_node->SetNear(near_cut);
+}
+
+float CameraComponent::GetFar() {
+	return m_far;
+}
+
+void CameraComponent::SetFar(float far_cut) {
+	m_far = far_cut;
+	m_loaded_scene_node->SetNear(far_cut);
+}
+
 bool CameraComponent::VDelegateInit(const pugi::xml_node& data) {
 	using namespace std::literals;
 

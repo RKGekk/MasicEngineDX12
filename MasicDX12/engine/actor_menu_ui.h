@@ -56,4 +56,9 @@ private:
 	float m_damping;
 	float m_radius;
 	float m_mass;
+
+	bool m_camera_exists;
+	float m_fov;
+	float m_near;
+	float m_far;
 };

@@ -30,6 +30,15 @@ public:
 
 	virtual std::shared_ptr<CameraNode> VGetCameraNode();
 
+	virtual float GetFov();
+	virtual void SetFov(float fov);
+
+	virtual float GetNear();
+	virtual void SetNear(float near_cut);
+
+	virtual float GetFar();
+	virtual void SetFar(float far_cut);
+
 protected:
 	virtual bool VDelegateInit(const pugi::xml_node& data) override;
 	virtual void VDelegatePostInit() override;

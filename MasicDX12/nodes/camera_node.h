@@ -22,6 +22,8 @@ public:
 	void SetFovYDeg(float fovy);
 	float GetFovYRad() const;
 	float GetFovYDeg() const;
+	void SetNear(float near_cut);
+	void SetFar(float far_cut);
 
 	void SetProjection(DirectX::FXMMATRIX proj);
 	void SetProjection(const DirectX::XMFLOAT4X4& proj);

@@ -4,6 +4,8 @@
 #include "../actors/actor_component.h"
 #include "../actors/transform_component.h"
 #include "../actors/particle_component.h"
+#include "../actors/camera_component.h"
+#include "../actors/light_component.h"
 #include "../graphics/d3d12_renderer.h"
 #include "../graphics/i_renderer.h"
 #include "../graphics/directx12_wrappers/command_queue.h"
@@ -87,6 +89,20 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						m_radius = 1.0f;
 						m_mass = 1.0f;
 					}
+
+					std::shared_ptr<CameraComponent> cc = act->GetComponent<CameraComponent>().lock();
+					if (cc) {
+						m_camera_exists = true;
+						m_far = cc->GetFar();
+						m_near = cc->GetNear();
+						m_fov = DirectX::XMConvertToDegrees(cc->GetFov());
+					}
+					else {
+						m_camera_exists = false;
+						m_far = 1.0f;
+						m_near = 1.0f;
+						m_fov = 1.0f;
+					}
 				}
 				else {
 					m_transform_exists = false;
@@ -129,6 +145,7 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 							tc->SetYawPitchRollDeg3f(m_yaw_pith_roll);
 						}
 					}
+
 					if (m_particle_exists && ImGui::SliderFloat("Damping", ((float*)&m_damping), 0.0f, 1.0f)) {
 						m_particle_exists = true;
 						std::shared_ptr<ParticleComponent> pc = act->GetComponent<ParticleComponent>().lock();
@@ -151,6 +168,33 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						if (pc) {
 							m_particle_exists = true;
 							pc->VGetParticle().setMass(m_mass);
+						}
+					}
+
+					if (m_camera_exists && ImGui::SliderFloat("Fov", ((float*)&m_fov), 30.0f, 120.0f)) {
+						m_camera_exists = true;
+						std::shared_ptr<CameraComponent> cc = act->GetComponent<CameraComponent>().lock();
+						if (cc) {
+							m_camera_exists = true;
+							cc->SetFov(DirectX::XMConvertToRadians(m_fov));
+						}
+					}
+
+					if (m_camera_exists && ImGui::SliderFloat("Near", ((float*)&m_near), 0.1f, 1.0f)) {
+						m_camera_exists = true;
+						std::shared_ptr<CameraComponent> cc = act->GetComponent<CameraComponent>().lock();
+						if (cc) {
+							m_camera_exists = true;
+							cc->SetNear(m_near);
+						}
+					}
+
+					if (m_camera_exists && ImGui::SliderFloat("Far", ((float*)&m_far), 10.0f, 1000.0f)) {
+						m_camera_exists = true;
+						std::shared_ptr<CameraComponent> cc = act->GetComponent<CameraComponent>().lock();
+						if (cc) {
+							m_camera_exists = true;
+							cc->SetFar(m_far);
 						}
 					}
 				}
