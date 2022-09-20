@@ -3,6 +3,11 @@
 #include "../events/evt_data_os_message.h"
 #include "../events/evt_data_update_tick.h"
 #include "../graphics/d3d12_renderer.h"
+#include "../graphics/directx12_wrappers/command_queue.h"
+#include "../graphics/directx12_wrappers/command_list.h"
+#include "../graphics/directx12_wrappers/swap_chain.h"
+#include "../graphics/directx12_wrappers/texture.h"
+
 #include "../application.h"
 
 std::shared_ptr<Engine> Engine::m_pEngine = nullptr;
@@ -76,10 +81,17 @@ void Engine::Update(IEventDataPtr pEventData) {
 
 void Engine::RenderFrame() {
 	if (!m_game) return;
+
+	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(GetRenderer());
+	std::shared_ptr<Device> device = renderer->GetDevice();
+	CommandQueue& command_queue = device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT);
+	std::shared_ptr<CommandList> command_list = command_queue.GetCommandList();
+
 	for (GameViewList::iterator i = m_game->m_game_views.begin(), end = m_game->m_game_views.end(); i != end; ++i) {
-		(*i)->VOnRender(Application::Get().GetTimer());
+		(*i)->VOnRender(Application::Get().GetTimer(), command_list);
 	}
-	//m_renderer->VPresent();
+	CommandQueue::FenceValueType fance_value = command_queue.ExecuteCommandList(command_list);
+	m_renderer->VPresent();
 }
 
 LRESULT Engine::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {

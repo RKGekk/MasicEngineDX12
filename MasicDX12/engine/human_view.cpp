@@ -6,6 +6,12 @@
 #include "../events/evt_data_update_tick.h"
 #include "../events/evt_data_new_scene_component.h"
 #include "../events/evt_data_destroy_scene_component.h"
+#include "../graphics/d3d12_renderer.h"
+#include "../graphics/i_renderer.h"
+#include "../graphics/directx12_wrappers/command_queue.h"
+#include "../graphics/directx12_wrappers/command_list.h"
+#include "../graphics/directx12_wrappers/swap_chain.h"
+#include "../graphics/directx12_wrappers/texture.h"
 
 #include <DirectXCollision.h>
 
@@ -21,8 +27,8 @@ HumanView::HumanView() {
 	m_bShow_ui = false;
 	m_bShow_debug_ui = Application::Get().GetApplicationOptions().DebugUI;
 	if (m_bShow_debug_ui) {
-		//m_actor_menu_ui = std::make_shared<ActorMenuUI>(m_process_manager);
-		//VPushElement(m_actor_menu_ui);
+		m_actor_menu_ui = std::make_shared<ActorMenuUI>(m_process_manager);
+		VPushElement(m_actor_menu_ui);
 	}
 
 	RegisterAllDelegates();
@@ -62,7 +68,7 @@ HRESULT HumanView::VOnLostDevice() {
 	return S_OK;
 }
 
-void HumanView::VOnRender(const GameTimerDelta& delta) {
+void HumanView::VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) {
 	m_current_tick = delta.GetTotalDuration();
 	if (m_current_tick == m_last_draw) { return; }
 
@@ -71,11 +77,12 @@ void HumanView::VOnRender(const GameTimerDelta& delta) {
 	const auto one_frame_time = 0.016ms;
 	if (m_run_full_speed || ((m_current_tick - m_last_draw) > one_frame_time)) {
 		auto renderer = Engine::GetEngine()->GetRenderer();
-		if (renderer->VPreRender()) {
+
+		if (renderer->VPreRender(command_list)) {
 			m_screen_elements.sort(SortBy_SharedPtr_Content<IScreenElement>());
 			for (ScreenElementList::iterator i = m_screen_elements.begin(); i != m_screen_elements.end(); ++i) {
 				if ((*i)->VIsVisible()) {
-					(*i)->VOnRender(delta);
+					(*i)->VOnRender(delta, command_list);
 				}
 			}
 			VRenderText();

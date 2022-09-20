@@ -33,7 +33,7 @@ public:
 	virtual HRESULT VOnRestore() override;
 	virtual HRESULT VOnLostDevice() override;
 
-	virtual void VOnRender(const GameTimerDelta& delta) override;
+	virtual void VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) override;
 	virtual void VOnUpdate(const GameTimerDelta& delta) override;
 
 	virtual EngineViewType VGetType() override;

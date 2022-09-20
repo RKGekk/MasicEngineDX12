@@ -29,11 +29,10 @@ ActorMenuUI::ActorMenuUI(std::shared_ptr<ProcessManager> pm) : m_hwnd(nullptr) {
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
 	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
 	std::shared_ptr<Device> device = renderer->GetDevice();
-	std::shared_ptr<SwapChain> swap_chain = renderer->GetSwapChain();
 
 	m_hwnd = renderer->GetRenderWindow()->GetHWND();
 
-	m_gui = device->CreateGUI(m_hwnd, swap_chain->GetRenderTarget());
+	m_gui = device->CreateGUI(m_hwnd, renderer->GetRenderTarget());
 
 	Set(pm);
 }
@@ -44,7 +43,7 @@ HRESULT ActorMenuUI::VOnRestore() {
 	return S_OK;
 }
 
-HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta) {
+HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) {
 	if (!m_show_menu) { return S_OK; }
 
 	m_gui->NewFrame();
@@ -165,11 +164,8 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta) {
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
 	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
 	std::shared_ptr<Device> device = renderer->GetDevice();
-	std::shared_ptr<SwapChain> swap_chain = renderer->GetSwapChain();
-	CommandQueue& command_queue = device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT);
-	std::shared_ptr<CommandList> command_list = command_queue.GetCommandList();
 
-	m_gui->Render(command_list, swap_chain->GetRenderTarget());
+	m_gui->Render(command_list, renderer->GetRenderTarget());
 
 	return S_OK;
 }

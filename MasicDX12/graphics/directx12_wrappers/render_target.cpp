@@ -100,6 +100,19 @@ D3D12_RT_FORMAT_ARRAY RenderTarget::GetRenderTargetFormats() const {
     return rtv_formats;
 }
 
+D3D12_RT_FORMAT_ARRAY RenderTarget::GetRenderTargetFormatsWithDepth() const {
+    D3D12_RT_FORMAT_ARRAY rtv_formats = {};
+
+    for (int i = to_underlying(AttachmentPoint::Color0); i <= to_underlying(AttachmentPoint::DepthStencil); ++i) {
+        auto texture = m_textures[i];
+        if (texture) {
+            rtv_formats.RTFormats[rtv_formats.NumRenderTargets++] = texture->GetD3D12ResourceDesc().Format;
+        }
+    }
+
+    return rtv_formats;
+}
+
 DXGI_FORMAT RenderTarget::GetRenderTargetFormat(AttachmentPoint attachment_point) const {
     return m_textures[to_underlying(attachment_point)]->GetD3D12ResourceDesc().Format;
 }

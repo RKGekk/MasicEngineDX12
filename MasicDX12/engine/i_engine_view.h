@@ -10,6 +10,7 @@
 #include "../tools/game_timer.h"
 
 class IEngineView;
+class CommandList;
 
 typedef unsigned int EngineViewId;
 typedef std::list<std::shared_ptr<IEngineView>> GameViewList;
@@ -19,7 +20,7 @@ public:
 	virtual HRESULT VOnRestore() = 0;
 	virtual HRESULT VOnLostDevice() = 0;
 
-	virtual void VOnRender(const GameTimerDelta& delta) = 0;
+	virtual void VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList>) = 0;
 	virtual void VOnUpdate(const GameTimerDelta& delta) = 0;
 	
 	virtual EngineViewType VGetType() = 0;

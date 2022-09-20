@@ -42,7 +42,10 @@ public:
 
 	virtual bool Initialize(std::shared_ptr<WindowSurface> rw) override;
 
-	virtual bool VPreRender() override;
+	virtual void VSetClearColor(BYTE R, BYTE G, BYTE B, BYTE A) override;
+	virtual void VSetClearColor4f(float R, float G, float B, float A) override;
+
+	virtual bool VPreRender(std::shared_ptr<CommandList> command_list) override;
 	virtual bool VPresent() override;
 	virtual bool VPostRender();
 
@@ -54,6 +57,9 @@ public:
 
 	virtual std::shared_ptr<WindowSurface> GetRenderWindow() override;
 	DXGI_FORMAT GetBackBufferFormat();
+	virtual RenderTarget& GetRenderTarget() override;
+	uint32_t GetRenderTargetWidth() override;
+	uint32_t GetRenderTargetHeight() override;
 
 protected:
 	bool m_vsync_enabled;
@@ -65,4 +71,11 @@ protected:
 	std::shared_ptr<SwapChain> m_swap_chain;
 	std::shared_ptr<WindowSurface> m_window_surface;
 	DXGI_FORMAT m_back_buffer_format;
+	DXGI_FORMAT m_depth_buffer_format;
+	DirectX::XMFLOAT4 m_back_buffer_clear_color;
+	D3D12_DEPTH_STENCIL_VALUE m_depth_clear_value;
+	RenderTarget m_render_target;
+	uint32_t m_width;
+	uint32_t m_height;
+	DXGI_SAMPLE_DESC m_sample_desc;
 };

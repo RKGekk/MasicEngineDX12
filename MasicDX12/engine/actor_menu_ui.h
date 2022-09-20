@@ -26,7 +26,7 @@ public:
 	virtual ~ActorMenuUI();
 
 	virtual HRESULT VOnRestore() override;
-	virtual HRESULT VOnRender(const GameTimerDelta& delta) override;
+	virtual HRESULT VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) override;
 	virtual void VOnUpdate(const GameTimerDelta& delta) override;
 
 	virtual int VGetZOrder() const override;

@@ -19,7 +19,7 @@ public:
 	virtual HRESULT VOnLostDevice() override;
 
 	virtual void VOnUpdate(const GameTimerDelta& delta) override;
-	virtual HRESULT VOnRender(const GameTimerDelta& delta) override;
+	virtual HRESULT VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) override;
 	
 	virtual int VGetZOrder() const override;
 	virtual void VSetZOrder(int const zOrder) override;

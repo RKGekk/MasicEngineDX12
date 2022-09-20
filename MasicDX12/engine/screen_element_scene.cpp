@@ -14,11 +14,10 @@ ScreenElementScene::ScreenElementScene() : Scene() {
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
 	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
 	std::shared_ptr<Device> device = renderer->GetDevice();
-	std::shared_ptr<SwapChain> swap_chain = renderer->GetSwapChain();
 
 	m_back_buffer_format = renderer->GetBackBufferFormat();
-	m_width = swap_chain->GetWidth();
-	m_height = swap_chain->GetHeight();
+	m_width = renderer->GetRenderTargetWidth();
+	m_height = renderer->GetRenderTargetHeight();
 	//DXGI_SAMPLE_DESC sample_desc = device->GetMultisampleQualityLevels(m_back_buffer_format);
 	DXGI_SAMPLE_DESC sample_desc = { 1, 0 };
 	auto color_desc = CD3DX12_RESOURCE_DESC::Tex2D(m_back_buffer_format, m_width, m_height, 1, 1, sample_desc.Count, sample_desc.Quality, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
@@ -59,16 +58,13 @@ HRESULT ScreenElementScene::VOnRestore() {
 	return S_OK;
 }
 
-HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta) {
+HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) {
 	std::shared_ptr<SceneNode> root_scene_node = GetRootNode()->GetNodesGroup(0);
 	if(!root_scene_node) return S_OK;
 
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
 	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
 	std::shared_ptr<Device> device = renderer->GetDevice();
-	std::shared_ptr<SwapChain> swap_chain = renderer->GetSwapChain();
-	CommandQueue& command_queue = device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT);
-	std::shared_ptr<CommandList> command_list = command_queue.GetCommandList();
 
 	std::shared_ptr<HumanView> human_view = engine->GetGameLogic()->GetHumanView();
 	std::shared_ptr<CameraNode> camera = human_view->VGetCamera();
@@ -79,8 +75,10 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta) {
 
 	FLOAT clear_color[] = { 0.4f, 0.6f, 0.9f, 1.0f };
 
-	command_list->ClearTexture(m_render_target.GetTexture(AttachmentPoint::Color0), clear_color);
-	command_list->ClearDepthStencilTexture(m_render_target.GetTexture(AttachmentPoint::DepthStencil), D3D12_CLEAR_FLAG_DEPTH);
+	std::shared_ptr<Texture> render_target_color = m_render_target.GetTexture(AttachmentPoint::Color0);
+	std::shared_ptr<Texture> render_target_depth = m_render_target.GetTexture(AttachmentPoint::DepthStencil);
+	command_list->ClearTexture(render_target_color, clear_color);
+	command_list->ClearDepthStencilTexture(render_target_depth, D3D12_CLEAR_FLAG_DEPTH);
 
 	command_list->SetViewport(m_viewport);
 	command_list->SetScissorRect(m_scissor_rect);
@@ -88,19 +86,15 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta) {
 
 	root_scene_node->Accept(opaque_pass);
 
-	auto swap_chain_back_buffer = swap_chain->GetRenderTarget().GetTexture(AttachmentPoint::Color0);
-	auto msaa_render_target = m_render_target.GetTexture(AttachmentPoint::Color0);
-	if (msaa_render_target->GetD3D12ResourceDesc().SampleDesc.Count > 1) {
-		command_list->ResolveSubresource(swap_chain_back_buffer, msaa_render_target);
+	auto swap_chain_back_buffer_color = renderer->GetRenderTarget().GetTexture(AttachmentPoint::Color0);
+	auto swap_chain_back_buffer_depth = renderer->GetRenderTarget().GetTexture(AttachmentPoint::DepthStencil);
+	if (render_target_color->GetD3D12ResourceDesc().SampleDesc.Count > 1) {
+		command_list->ResolveSubresource(swap_chain_back_buffer_color, render_target_color);
 	}
 	else {
-		command_list->CopyResource(swap_chain_back_buffer, msaa_render_target);
+		command_list->CopyResource(swap_chain_back_buffer_color, render_target_color);
 	}
-
-	command_queue.ExecuteCommandList(command_list);
-
-	swap_chain->Present();
-	swap_chain->WaitForSwapChain();
+	command_list->CopyResource(swap_chain_back_buffer_depth, render_target_depth);
 
 	return S_OK;
 }

@@ -204,6 +204,7 @@
     <ClCompile Include="graphics\directx12_wrappers\shader.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\shader_register.cpp" />
     <ClCompile Include="actors\light_component.cpp" />
+    <ClCompile Include="graphics\i_renderer.cpp" />
     <ClCompile Include="nodes\light_manager.cpp" />
     <ClCompile Include="nodes\mesh_node.cpp" />
     <ClCompile Include="nodes\qualifier_node.cpp" />

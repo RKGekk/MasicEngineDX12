@@ -7,6 +7,7 @@
 
 #include "../tools/game_timer.h"
 
+class CommandList;
 class IScreenElement;
 typedef std::list<std::shared_ptr<IScreenElement>> ScreenElementList;
 
@@ -16,7 +17,7 @@ public:
 
 	virtual HRESULT VOnRestore() = 0;
 	virtual HRESULT VOnLostDevice() = 0;
-	virtual HRESULT VOnRender(const GameTimerDelta& delta) = 0;
+	virtual HRESULT VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList>) = 0;
 	virtual void VOnUpdate(const GameTimerDelta& delta) = 0;
 
 	virtual int VGetZOrder() const = 0;

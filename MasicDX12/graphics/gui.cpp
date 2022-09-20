@@ -138,6 +138,7 @@ GUI::GUI(Device& device, HWND hWnd, const RenderTarget& render_target) : m_devic
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::Sampler }, "sampler0"s);
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ShaderResource }, "DiffuseTexture"s);
     m_pixel_shader->SetRenderTargetFormat(render_target.GetRenderTargetFormats());
+    m_pixel_shader->SetRenderTargetFormat(AttachmentPoint::DepthStencil, render_target.GetDepthStencilFormat());
     m_pixel_shader->SetSample(render_target.GetSampleDesc());
     m_pixel_shader->SetBlendState(CD3DX12_BLEND_DESC(blend_desc));
     m_pixel_shader->SetRasterizerState(CD3DX12_RASTERIZER_DESC(rasterizer_desc));
