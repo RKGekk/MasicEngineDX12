@@ -9,6 +9,7 @@
 #include "../graphics/directx12_wrappers/texture.h"
 #include "../nodes/scene_visitor.h"
 #include "../nodes/qualifier_node.h"
+#include "../nodes/light_manager.h"
 
 ScreenElementScene::ScreenElementScene() : Scene() {
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
@@ -69,6 +70,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	std::shared_ptr<HumanView> human_view = engine->GetGameLogic()->GetHumanView();
 	std::shared_ptr<CameraNode> camera = human_view->VGetCamera();
 
+	m_light_manager->CalcLighting(camera->GetView());
 	m_lighting_pso->SetLightManager(m_light_manager);
 
 	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false);

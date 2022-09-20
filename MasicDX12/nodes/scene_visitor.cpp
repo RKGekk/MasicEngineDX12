@@ -16,14 +16,15 @@ SceneVisitor::SceneVisitor(CommandList& command_list, std::shared_ptr<CameraNode
 void SceneVisitor::ResetCamera() {
 	m_lighting_pso.SetViewMatrix(m_camera->GetView());
 	m_lighting_pso.SetProjectionMatrix(m_camera->GetProjection());
+	
 }
 
 void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
-	auto world = scene_node->Get().CumulativeToWorld();
-	m_lighting_pso.SetWorldMatrix(world);
-
 	std::shared_ptr<MeshNode> pMeshNode = std::dynamic_pointer_cast<MeshNode>(scene_node);
 	if (pMeshNode) {
+		auto world = scene_node->Get().CumulativeToWorld();
+		m_lighting_pso.SetWorldMatrix(world);
+
 		const MeshNode::MeshList& mesh_list = pMeshNode->GetMeshes();
 		for (const auto& mesh : mesh_list) {
 			auto material = mesh->GetMaterial();

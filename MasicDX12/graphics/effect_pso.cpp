@@ -14,7 +14,7 @@
 #include <directx/d3dx12.h>
 #include <wrl/client.h>
 
-EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal) {
+EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal), m_need_transpose(true) {
     using namespace std::literals;
     m_pAligned_mvp = (MVP*)_aligned_malloc(sizeof(MVP), 16);
 
@@ -136,10 +136,24 @@ void EffectPSO::Apply(CommandList& command_list) {
 
     if (m_dirty_flags & DF_Matrices) {
         Matrices m;
+        //if (m_need_transpose) {
+        //    m.ModelMatrix = XMMatrixTranspose(m_pAligned_mvp->World);
+        //    DirectX::XMMATRIX model_view_matrix = m_pAligned_mvp->World * m_pAligned_mvp->View;
+        //    m.ModelViewMatrix = XMMatrixTranspose(model_view_matrix);
+        //    m.ModelViewProjectionMatrix = XMMatrixTranspose(model_view_matrix * m_pAligned_mvp->Projection);
+        //    m.InverseTransposeModelViewMatrix = XMMatrixInverse(nullptr, model_view_matrix);
+        //}
+        //else {
+        //    m.ModelMatrix = m_pAligned_mvp->World;
+        //    m.ModelViewMatrix = m_pAligned_mvp->World * m_pAligned_mvp->View;
+        //    m.ModelViewProjectionMatrix = m.ModelViewMatrix * m_pAligned_mvp->Projection;
+        //    m.InverseTransposeModelViewMatrix = XMMatrixTranspose(XMMatrixInverse(nullptr, m.ModelViewMatrix));
+        //}
         m.ModelMatrix = m_pAligned_mvp->World;
         m.ModelViewMatrix = m_pAligned_mvp->World * m_pAligned_mvp->View;
         m.ModelViewProjectionMatrix = m.ModelViewMatrix * m_pAligned_mvp->Projection;
         m.InverseTransposeModelViewMatrix = XMMatrixTranspose(XMMatrixInverse(nullptr, m.ModelViewMatrix));
+        
 
         command_list.SetGraphicsDynamicConstantBuffer(RootParameters::MatricesCB, m);
     }

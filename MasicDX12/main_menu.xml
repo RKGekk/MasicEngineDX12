@@ -4,7 +4,7 @@
     <Actor name="cube1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="0.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="45.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -19,7 +19,7 @@
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <CameraComponent>
-        <Fov>90.0</Fov>
+        <Fov>65.0</Fov>
         <Near>0.1</Near>
         <Far>100.0</Far>
       </CameraComponent>

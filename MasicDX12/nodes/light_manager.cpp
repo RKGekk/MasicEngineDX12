@@ -10,7 +10,7 @@ LightManager::LightManager() {}
 void LightManager::CalcLighting(DirectX::FXMMATRIX view) {
 	for (auto it = m_lights.begin(); it != m_lights.end(); ++it) {
 		const auto& light_node = *it;
-		if (!(light_node->Get().GetDirtyFlags() & to_underlying(SceneNodeProperties::DirtyFlags::DF_Light))) continue;
+		//if (!(light_node->Get().GetDirtyFlags() & to_underlying(SceneNodeProperties::DirtyFlags::DF_Light))) continue;
 		LightType lt = light_node->VGetLight().m_light_type;
 		switch (lt) {
 			case LightType::DIRECTIONAL: m_dir_lights[m_index_map[light_node]] = light_node->GetDirectionalLight(view); break;

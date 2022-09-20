@@ -26,7 +26,8 @@ public:
 	std::shared_ptr<QualifierNode> GetRootNode();
 
 protected:
-	void ManageLightNodes(std::shared_ptr<SceneNode> light_node);
+	void ManageAddLightNodes(std::shared_ptr<SceneNode> light_node);
+	void ManageRemoveLightNodes(std::shared_ptr<SceneNode> light_node);
 
 	bool m_scene_active = true;
 

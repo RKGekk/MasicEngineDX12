@@ -1,4 +1,7 @@
 #include "scene.h"
+
+#include <functional>
+
 #include "qualifier_node.h"
 #include "camera_node.h"
 #include "../events/evt_data_new_render_component.h"
@@ -21,13 +24,23 @@ std::shared_ptr<QualifierNode> Scene::GetRootNode() {
 	return m_root_node;
 }
 
-void Scene::ManageLightNodes(std::shared_ptr<SceneNode> light_node) {
+void Scene::ManageAddLightNodes(std::shared_ptr<SceneNode> light_node) {
 	if (!light_node) return;
 	if (std::shared_ptr<LightNode> pLight = std::dynamic_pointer_cast<LightNode>(light_node)) {
 		m_light_manager->AddLight(pLight);
 	};
 	for (auto& current_node : light_node->m_children) {
-		ManageLightNodes(current_node);
+		ManageAddLightNodes(current_node);
+	}
+}
+
+void Scene::ManageRemoveLightNodes(std::shared_ptr<SceneNode> light_node) {
+	if (!light_node) return;
+	if (std::shared_ptr<LightNode> pLight = std::dynamic_pointer_cast<LightNode>(light_node)) {
+		m_light_manager->RemoveLight(pLight);
+	};
+	for (auto& current_node : light_node->m_children) {
+		ManageRemoveLightNodes(current_node);
 	}
 }
 
@@ -60,14 +73,11 @@ HRESULT Scene::OnUpdate() {
 
 bool Scene::AddChild(std::shared_ptr<SceneNode> kid) {
 	if (!kid) return false;
-	ManageLightNodes(kid);
+	ManageAddLightNodes(kid);
 	return m_root_node->VAddChild(kid);
 }
 
 bool Scene::RemoveChild(std::shared_ptr<SceneNode> kid) {
-	std::shared_ptr<LightNode> pLight = std::dynamic_pointer_cast<LightNode>(kid);
-	if (pLight) {
-		m_light_manager->RemoveLight(pLight);
-	}
-	return m_root_node->VRemoveChild(kid);
+	ManageRemoveLightNodes(kid);
+	return true;
 }

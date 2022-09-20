@@ -87,6 +87,7 @@ private:
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 
 	MVP* m_pAligned_mvp;
+	bool m_need_transpose;
 
 	CommandList* m_pPrevious_command_list;
 
