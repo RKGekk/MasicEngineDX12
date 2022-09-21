@@ -8,6 +8,7 @@
 #include "../actors/light_component.h"
 #include "../nodes/light_node.h"
 #include "../nodes/camera_node.h"
+#include "../actors/mesh_component.h"
 #include "../graphics/d3d12_renderer.h"
 #include "../graphics/i_renderer.h"
 #include "../graphics/directx12_wrappers/command_queue.h"
@@ -48,6 +49,7 @@ HRESULT ActorMenuUI::VOnRestore() {
 }
 
 HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) {
+	using namespace std;
 	if (!m_show_menu) { return S_OK; }
 
 	m_gui->NewFrame();
@@ -128,6 +130,16 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						m_attenuation[2] = 1.0f; // Quadratic
 						m_range = 1.0f;
 						m_spot = 1.0f;
+					}
+
+					std::shared_ptr<MeshComponent> mc = act->GetComponent<MeshComponent>().lock();
+					if (mc) {
+						m_mesh_exists = true;
+						m_mesh_name = mc->GetResourceName();
+					}
+					else {
+						m_mesh_exists = false;
+						m_mesh_name = ""s;
 					}
 				}
 				else {
@@ -283,6 +295,15 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						if (lc) {
 							m_light_exists = true;
 							lc->VGetLightNode()->SetSpot(m_spot);
+						}
+					}
+
+					if (m_mesh_exists) {
+						m_mesh_exists = true;
+						std::shared_ptr<MeshComponent> mc = act->GetComponent<MeshComponent>().lock();
+						if (mc) {
+							m_mesh_exists = true;
+							ImGui::Text(m_mesh_name.c_str());
 						}
 					}
 				}
