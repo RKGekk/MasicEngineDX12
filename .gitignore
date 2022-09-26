@@ -11,3 +11,5 @@
 *.tlog
 /MasicDX12/x64/Debug
 /x64/Debug
+/MasicDX12/x64/Release
+/x64/Release

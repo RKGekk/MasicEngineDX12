@@ -206,7 +206,7 @@ float4 main(PS_INPUT input) : SV_TARGET {
 		ComputeDirectionalLight(gMaterial, gDirLights[0], bumpedNormalW, toEye, Am, Di, Sp);
 		ambient += Am; diffuse += shadow * Di; spec += shadow * Sp;
 		
-		[unroll]
+		//[unroll]
 		for(int i = 1; i < gDirLightCount; ++i) {
 			float4 A, D, S;
 			ComputeDirectionalLight(gMaterial, gDirLights[i], bumpedNormalW, toEye, A, D, S);
@@ -224,7 +224,7 @@ float4 main(PS_INPUT input) : SV_TARGET {
 		float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		
-		[unroll]
+		//[unroll]
 		for(int i = 0; i < gPointLightCount; ++i) {
 			float4 A, D, S;
 			ComputePointLight(gMaterial, gPointLights[i], input.worldPos, bumpedNormalW, toEye, A, D, S);
@@ -240,7 +240,7 @@ float4 main(PS_INPUT input) : SV_TARGET {
 		float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		
-		[unroll]
+		//[unroll]
 		for(int i = 0; i < gSpotLightCount; ++i) {
 			float4 A, D, S;
 			ComputeSpotLight(gMaterial, gSpotLights[i], input.worldPos, bumpedNormalW, toEye, A, D, S);
