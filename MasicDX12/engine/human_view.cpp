@@ -19,6 +19,10 @@ using namespace std::literals;
 const std::string HumanView::g_Name = "Level"s;
 
 HumanView::HumanView() {
+	std::shared_ptr<Engine> engine = Engine::GetEngine();
+	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
+	std::shared_ptr<Device> device = renderer->GetDevice();
+
 	m_process_manager = std::make_shared<ProcessManager>();
 
 	m_pointer_radius = 1.0f;
@@ -38,6 +42,9 @@ HumanView::HumanView() {
 
 	m_current_tick = {};
 	m_last_draw = {};
+
+	m_hwnd = renderer->GetRenderWindow()->GetHWND();
+	m_gui = device->CreateGUI(m_hwnd, renderer->GetRenderTarget());
 }
 
 HumanView::~HumanView() {
@@ -71,13 +78,12 @@ HRESULT HumanView::VOnLostDevice() {
 void HumanView::VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) {
 	m_current_tick = delta.GetTotalDuration();
 	if (m_current_tick == m_last_draw) { return; }
-
 	if (!m_can_draw) { return; }
 
 	const auto one_frame_time = 0.016ms;
 	if (m_run_full_speed || ((m_current_tick - m_last_draw) > one_frame_time)) {
 		auto renderer = Engine::GetEngine()->GetRenderer();
-
+		m_gui->NewFrame();
 		if (renderer->VPreRender(command_list)) {
 			m_screen_elements.sort(SortBy_SharedPtr_Content<IScreenElement>());
 			for (ScreenElementList::iterator i = m_screen_elements.begin(); i != m_screen_elements.end(); ++i) {
@@ -86,7 +92,7 @@ void HumanView::VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandLi
 				}
 			}
 			VRenderText();
-
+			m_gui->Render(command_list, renderer->GetRenderTarget());
 			m_last_draw = m_current_tick;
 			renderer->VPostRender();
 		}

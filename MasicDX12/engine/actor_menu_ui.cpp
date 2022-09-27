@@ -25,19 +25,11 @@ enum RootParameters {
 	NumRootParameters
 };
 
-ActorMenuUI::ActorMenuUI(std::shared_ptr<ProcessManager> pm) : m_hwnd(nullptr) {
+ActorMenuUI::ActorMenuUI(std::shared_ptr<ProcessManager> pm) {
 	using namespace std::literals;
 
 	m_show_menu = true;
 	m_actor_id = 0;
-
-	std::shared_ptr<Engine> engine = Engine::GetEngine();
-	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
-	std::shared_ptr<Device> device = renderer->GetDevice();
-
-	m_hwnd = renderer->GetRenderWindow()->GetHWND();
-
-	m_gui = device->CreateGUI(m_hwnd, renderer->GetRenderTarget());
 
 	Set(pm);
 }
@@ -51,8 +43,6 @@ HRESULT ActorMenuUI::VOnRestore() {
 HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<CommandList> command_list) {
 	using namespace std;
 	if (!m_show_menu) { return S_OK; }
-
-	m_gui->NewFrame();
 
 	if (ImGui::Begin("Actor Menu")) {
 		if (ImGui::CollapsingHeader("Actors")) {
@@ -317,8 +307,6 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
 	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
 	std::shared_ptr<Device> device = renderer->GetDevice();
-
-	m_gui->Render(command_list, renderer->GetRenderTarget());
 
 	return S_OK;
 }

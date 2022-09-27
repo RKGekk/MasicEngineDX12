@@ -42,9 +42,6 @@ private:
 	bool m_show_menu = false;
 	std::weak_ptr<ProcessManager> m_pm;
 
-	HWND m_hwnd;
-	std::shared_ptr<GUI> m_gui;
-
 	int m_actor_id;
 
 	bool m_transform_exists;

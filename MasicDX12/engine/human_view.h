@@ -63,6 +63,7 @@ public:
 
 protected:
 	virtual bool VLoadGameDelegate(const pugi::xml_node& pLevelData);
+	virtual void VRenderText();
 
 	EngineViewId m_view_id;
 	std::weak_ptr<Actor> m_actor;
@@ -90,7 +91,8 @@ protected:
 	std::shared_ptr<MovementController> m_pFree_camera_controller;
 	std::weak_ptr<Actor> m_pTeapot;
 
-	virtual void VRenderText();
+	HWND m_hwnd;
+	std::shared_ptr<GUI> m_gui;
 
 private:
 	void RegisterAllDelegates();
