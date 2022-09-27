@@ -603,6 +603,9 @@
     <ClCompile Include="graphics\i_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\mesh_node_loader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1251,6 +1254,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="events\evt_data_destroy_scene_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\mesh_node_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

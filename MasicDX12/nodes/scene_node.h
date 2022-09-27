@@ -31,6 +31,7 @@ public:
 
 	virtual bool VAddChild(std::shared_ptr<SceneNode> kid);
 	virtual bool VRemoveChild(std::shared_ptr<SceneNode> cid);
+	virtual const SceneNodeList& VGetChildren() const;
 
 	const SceneNodeProperties& Get() const;
 

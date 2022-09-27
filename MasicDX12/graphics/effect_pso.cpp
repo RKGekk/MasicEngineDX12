@@ -136,24 +136,10 @@ void EffectPSO::Apply(CommandList& command_list) {
 
     if (m_dirty_flags & DF_Matrices) {
         Matrices m;
-        //if (m_need_transpose) {
-        //    m.ModelMatrix = XMMatrixTranspose(m_pAligned_mvp->World);
-        //    DirectX::XMMATRIX model_view_matrix = m_pAligned_mvp->World * m_pAligned_mvp->View;
-        //    m.ModelViewMatrix = XMMatrixTranspose(model_view_matrix);
-        //    m.ModelViewProjectionMatrix = XMMatrixTranspose(model_view_matrix * m_pAligned_mvp->Projection);
-        //    m.InverseTransposeModelViewMatrix = XMMatrixInverse(nullptr, model_view_matrix);
-        //}
-        //else {
-        //    m.ModelMatrix = m_pAligned_mvp->World;
-        //    m.ModelViewMatrix = m_pAligned_mvp->World * m_pAligned_mvp->View;
-        //    m.ModelViewProjectionMatrix = m.ModelViewMatrix * m_pAligned_mvp->Projection;
-        //    m.InverseTransposeModelViewMatrix = XMMatrixTranspose(XMMatrixInverse(nullptr, m.ModelViewMatrix));
-        //}
         m.ModelMatrix = m_pAligned_mvp->World;
         m.ModelViewMatrix = m_pAligned_mvp->World * m_pAligned_mvp->View;
         m.ModelViewProjectionMatrix = m.ModelViewMatrix * m_pAligned_mvp->Projection;
         m.InverseTransposeModelViewMatrix = XMMatrixTranspose(XMMatrixInverse(nullptr, m.ModelViewMatrix));
-        
 
         command_list.SetGraphicsDynamicConstantBuffer(RootParameters::MatricesCB, m);
     }

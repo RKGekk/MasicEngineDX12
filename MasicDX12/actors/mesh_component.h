@@ -51,7 +51,7 @@ private:
 	void ImportMesh(CommandList& command_list, const aiMesh& ai_mesh);
 	static DirectX::BoundingBox CreateBoundingBox(const aiAABB& aabb);
 
-	std::shared_ptr<SceneNode> ImportSceneNode(CommandList& command_list, std::shared_ptr<SceneNode> parent, const aiNode* aiNode);
+	std::shared_ptr<SceneNode> ImportSceneNode(std::shared_ptr<SceneNode> parent, const aiNode* aiNode);
 
 	using MaterialMap = std::map<std::string, std::shared_ptr<Material>>;
 	using MaterialList = std::vector<std::shared_ptr<Material>>;

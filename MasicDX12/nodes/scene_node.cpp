@@ -117,6 +117,10 @@ bool SceneNode::VRemoveChild(std::shared_ptr<SceneNode> cid) {
 	return true;
 }
 
+const SceneNodeList& SceneNode::VGetChildren() const {
+	return m_children;
+}
+
 const SceneNodeProperties& SceneNode::Get() const {
 	return m_props;
 }

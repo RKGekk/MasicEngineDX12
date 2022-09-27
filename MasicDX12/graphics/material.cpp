@@ -3,6 +3,8 @@
 #include "material.h"
 #include "directx12_wrappers/texture.h"
 
+#include <utility>
+
 static MaterialProperties* NewMaterialProperties(const MaterialProperties& props) {
     MaterialProperties* material_properties = (MaterialProperties*)_aligned_malloc(sizeof(MaterialProperties), 16);
     *material_properties = props;
@@ -165,6 +167,14 @@ const MaterialProperties& Material::GetMaterialProperties() const {
 
 void Material::SetMaterialProperties(const MaterialProperties& material_properties) {
     *m_material_properties = material_properties;
+}
+
+const std::string& Material::GetName() const {
+    return m_name;
+}
+
+void Material::SetName(std::string name) {
+    m_name = std::move(name);
 }
 
 const MaterialProperties Material::Zero = {

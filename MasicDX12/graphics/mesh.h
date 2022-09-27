@@ -6,6 +6,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 
 class CommandList;
 class IndexBuffer;
@@ -40,6 +41,9 @@ public:
 	const DirectX::BoundingBox& GetAABB() const;
 	const DirectX::BoundingSphere& GetSphere() const;
 
+	const std::string& GetName() const;
+	void SetName(std::string name);
+
 private:
 	BufferMap m_vertex_buffers;
 	std::shared_ptr<IndexBuffer> m_index_buffer;
@@ -48,4 +52,6 @@ private:
 	D3D12_PRIMITIVE_TOPOLOGY m_primitive_topology;
 	DirectX::BoundingBox m_AABB;
 	DirectX::BoundingSphere m_sphere;
+
+	std::string m_name;
 };

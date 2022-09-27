@@ -4,6 +4,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 
 class Texture;
 
@@ -133,6 +134,9 @@ public:
 	const MaterialProperties& GetMaterialProperties() const;
 	void SetMaterialProperties(const MaterialProperties& material_properties);
 
+	const std::string& GetName() const;
+	void SetName(std::string name);
+
 	static const MaterialProperties Zero;
 	static const MaterialProperties Red;
 	static const MaterialProperties Green;
@@ -175,5 +179,5 @@ private:
 
 	MaterialPropertiesPtr m_material_properties;
 	TextureMap m_textures;
-
+	std::string m_name;
 };

@@ -4,6 +4,8 @@
 #include "directx12_wrappers/index_buffer.h"
 #include "directx12_wrappers/vertex_buffer.h"
 
+#include <utility>
+
 Mesh::Mesh() : m_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST) {}
 
 const Mesh::BufferMap& Mesh::GetVertexBuffers() const {
@@ -76,4 +78,12 @@ const DirectX::BoundingBox& Mesh::GetAABB() const {
 
 const DirectX::BoundingSphere& Mesh::GetSphere() const {
     return m_sphere;
+}
+
+const std::string& Mesh::GetName() const {
+    return m_name;
+}
+
+void Mesh::SetName(std::string name) {
+    m_name = std::move(name);
 }

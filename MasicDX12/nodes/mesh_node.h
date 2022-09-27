@@ -13,9 +13,9 @@ public:
 	using MeshList = std::vector<std::shared_ptr<Mesh>>;
 
 	MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform);
-	MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform, MeshList meshes);
+	MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform, const MeshList& meshes);
 	MeshNode(const std::string& name, DirectX::FXMMATRIX transform);
-	MeshNode(const std::string& name, DirectX::FXMMATRIX transform, MeshList meshes);
+	MeshNode(const std::string& name, DirectX::FXMMATRIX transform, const MeshList& meshes);
 
 	virtual HRESULT VOnRestore() override;
 

@@ -209,6 +209,7 @@
     <ClCompile Include="graphics\i_renderer.cpp" />
     <ClCompile Include="nodes\light_manager.cpp" />
     <ClCompile Include="nodes\mesh_node.cpp" />
+    <ClCompile Include="nodes\mesh_node_loader.cpp" />
     <ClCompile Include="nodes\qualifier_node.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\primitive_topology.cpp" />
     <ClCompile Include="nodes\scene_visitor.cpp" />
@@ -427,6 +428,7 @@
     <ClInclude Include="events\mouse_wheel_event_args.h" />
     <ClInclude Include="graphics\point_light.h" />
     <ClInclude Include="graphics\spot_light.h" />
+    <ClInclude Include="nodes\mesh_node_loader.h" />
     <ClInclude Include="nodes\i_visibility.h" />
     <ClInclude Include="nodes\light_manager.h" />
     <ClInclude Include="nodes\mesh_node.h" />
