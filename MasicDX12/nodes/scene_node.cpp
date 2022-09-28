@@ -78,6 +78,7 @@ HRESULT SceneNode::VOnUpdate() {
 		(*i)->VOnUpdate();
 		++i;
 	}
+	m_props.m_dirty_flags = 0u;
 	return S_OK;
 }
 

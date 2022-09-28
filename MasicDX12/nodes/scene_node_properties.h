@@ -38,12 +38,24 @@ public:
 	SceneNodeProperties();
 
 	DirectX::XMMATRIX ToWorld() const;
+	DirectX::XMMATRIX ToWorldT() const;
 	const DirectX::XMFLOAT4X4& ToWorld4x4() const;
 	DirectX::XMFLOAT4X4 ToWorld4x4T() const;
 
+	DirectX::XMMATRIX FullToWorld() const;
+	DirectX::XMMATRIX FullToWorldT() const;
+	DirectX::XMFLOAT4X4 FullToWorld4x4() const;
+	DirectX::XMFLOAT4X4 FullToWorld4x4T() const;
+
 	DirectX::XMMATRIX CumulativeToWorld() const;
+	DirectX::XMMATRIX CumulativeToWorldT() const;
 	const DirectX::XMFLOAT4X4& CumulativeToWorld4x4() const;
 	DirectX::XMFLOAT4X4 CumulativeToWorld4x4T() const;
+
+	DirectX::XMMATRIX FullCumulativeToWorld() const;
+	DirectX::XMMATRIX FullCumulativeToWorldT() const;
+	DirectX::XMFLOAT4X4 FullCumulativeToWorld4x4() const;
+	DirectX::XMFLOAT4X4 FullCumulativeToWorld4x4T() const;
 
 	DirectX::XMVECTOR Position() const;
 	DirectX::XMFLOAT4 Position4() const;

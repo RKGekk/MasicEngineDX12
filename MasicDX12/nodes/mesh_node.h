@@ -18,6 +18,7 @@ public:
 	MeshNode(const std::string& name, DirectX::FXMMATRIX transform, const MeshList& meshes);
 
 	virtual HRESULT VOnRestore() override;
+	virtual HRESULT VOnUpdate() override;
 
 	bool AddMesh(std::shared_ptr<Mesh> mesh);
 	void RemoveMesh(std::shared_ptr<Mesh> mesh);
@@ -28,6 +29,8 @@ public:
 	const DirectX::BoundingSphere& GetSphere() const;
 
 protected:
+	void RecalcAABB();
+
 	using MeshList = std::vector<std::shared_ptr<Mesh>>;
 
 	MeshList m_meshes;
