@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <string>
 #include <memory>
-#include <map>
 #include <vector>
 
 #include <DirectXMath.h>
@@ -26,6 +25,7 @@ public:
 
 	MeshComponent();
 	MeshComponent(const pugi::xml_node& data);
+	virtual ~MeshComponent();
 
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;
@@ -45,19 +45,5 @@ private:
 	std::shared_ptr<SceneNode> m_loaded_scene_node;
 
 	bool LoadModel(const std::filesystem::path& file_name);
-
-	void ImportScene(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path);
-	void ImportMaterial(CommandList& command_list, const aiMaterial& material, std::filesystem::path parent_path);
-	void ImportMesh(CommandList& command_list, const aiMesh& ai_mesh);
-	static DirectX::BoundingBox CreateBoundingBox(const aiAABB& aabb);
-
-	std::shared_ptr<SceneNode> ImportSceneNode(std::shared_ptr<SceneNode> parent, const aiNode* aiNode);
-
-	using MaterialMap = std::map<std::string, std::shared_ptr<Material>>;
-	using MaterialList = std::vector<std::shared_ptr<Material>>;
-	using MeshList = std::vector<std::shared_ptr<Mesh>>;
-
-	MaterialMap m_material_map;
-	MaterialList m_materials;
-	MeshList m_meshes;
+	static std::shared_ptr<SceneNode> DeepCopyNode(const std::shared_ptr<SceneNode>& node);
 };

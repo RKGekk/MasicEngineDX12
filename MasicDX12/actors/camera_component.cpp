@@ -3,6 +3,8 @@
 #include "../tools/string_utility.h"
 #include "../nodes/camera_node.h"
 #include "../application.h"
+#include "../events/evt_data_destroy_scene_component.h"
+#include "../events/i_event_manager.h"
 #include "transform_component.h"
 
 const std::string CameraComponent::g_Name = "CameraComponent";
@@ -11,6 +13,13 @@ CameraComponent::CameraComponent() : m_fov(90.0f), m_near(0.1f), m_far(100.0f), 
 
 CameraComponent::CameraComponent(const pugi::xml_node& data) : m_fov(90.0f), m_near(0.1f), m_far(100.0f), m_aspect_ratio(1.0f) {
 	VDelegateInit(data);
+}
+
+CameraComponent::~CameraComponent() {
+	std::shared_ptr<Actor> act = GetOwner();
+	std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
+	std::shared_ptr<EvtData_Destroy_Scene_Component> pNewActorEvent = std::make_shared<EvtData_Destroy_Scene_Component>(act->GetId(), VGetId(), scene_node);
+	IEventManager::Get()->VQueueEvent(pNewActorEvent);
 }
 
 void CameraComponent::VDelegatePostInit() {

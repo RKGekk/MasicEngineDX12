@@ -29,12 +29,8 @@
 
 #include <cassert>
 
-using MeshFileName = std::string;
 using MaterialList = std::vector<std::shared_ptr<Material>>;
 using MeshList = std::vector<std::shared_ptr<Mesh>>;
-using NodeMap = std::unordered_map<MeshFileName, std::shared_ptr<SceneNode>>;
-
-static NodeMap gs_node_map;
 
 DirectX::BoundingBox CreateBoundingBox(const aiAABB& aabb) {
     DirectX::XMVECTOR min = DirectX::XMVectorSet(aabb.mMin.x, aabb.mMin.y, aabb.mMin.z, 1.0f);
@@ -254,23 +250,6 @@ void ImportMaterial(MaterialList& material_list, CommandList& command_list, cons
     }
 }
 
-std::shared_ptr<SceneNode> DeepCopyNode(const std::shared_ptr<SceneNode>& node) {
-    if (!node) return nullptr;
-    std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(node);
-
-    const auto& node_props = node->Get();
-    const auto& mesh_list = mesh_node->GetMeshes();
-    auto node_copy = std::make_shared<MeshNode>(node_props.Name(), node_props.ToWorld4x4(), mesh_list);
-
-    for (const auto& child_to_copy : node->VGetChildren()) {
-        auto child_to_copy_node_copy = DeepCopyNode(child_to_copy);
-        node_copy->VAddChild(child_to_copy_node_copy);
-        child_to_copy_node_copy->SetParent(node_copy);
-    }
-
-    return node_copy;
-}
-
 std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* aiNode) {
     if (!aiNode) {
         return nullptr;
@@ -309,7 +288,7 @@ std::shared_ptr<SceneNode> ImportScene(CommandList& command_list, const aiScene&
     return ImportSceneNode(mesh_list, nullptr, scene.mRootNode);
 }
 
-std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(const std::filesystem::path& file_name) {
+std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(CommandList& command_list, const std::filesystem::path& file_name) {
 
     std::filesystem::path file_path = file_name;
     std::filesystem::path export_path = std::filesystem::path(file_path).replace_extension("assbin");
@@ -323,10 +302,6 @@ std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(const std::filesystem
     }
 
     std::string file_path_str = file_path.string();
-
-    if (gs_node_map.count(file_path_str)) {
-        return DeepCopyNode(gs_node_map[file_path_str]);
-    }
 
     Assimp::Importer importer;
     const aiScene* scene;
@@ -351,16 +326,5 @@ std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(const std::filesystem
         return std::shared_ptr<SceneNode>();
     }
 
-    std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(Engine::GetEngine()->GetRenderer());
-    std::shared_ptr<Device> device = renderer->GetDevice();
-    CommandQueue& command_queue = device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COPY);
-    std::shared_ptr<CommandList> command_list = command_queue.GetCommandList();
-
-    std::shared_ptr<SceneNode> loaded_node = ImportScene(*command_list, *scene, parent_path);
-    gs_node_map[file_path_str] = loaded_node;
-
-    command_queue.ExecuteCommandList(command_list);
-    command_queue.Flush();
-
-    return DeepCopyNode(loaded_node);
+    return ImportScene(command_list, *scene, parent_path);
 }

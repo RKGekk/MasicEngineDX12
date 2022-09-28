@@ -19,6 +19,7 @@ Engine::~Engine() {}
 
 void Engine::Destroy() {
 	if (m_pEngine) {
+		m_pEngine->m_game.reset();
 		m_pEngine.reset();
 	}
 }

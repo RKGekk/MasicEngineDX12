@@ -25,6 +25,7 @@ public:
 
 	LightComponent();
 	LightComponent(const pugi::xml_node& data);
+	virtual ~LightComponent();
 
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;

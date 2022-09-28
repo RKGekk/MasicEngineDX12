@@ -4,6 +4,8 @@
 #include "../nodes/light_node.h"
 #include "../application.h"
 #include "transform_component.h"
+#include "../events/evt_data_destroy_scene_component.h"
+#include "../events/i_event_manager.h"
 
 const std::string LightComponent::g_Name = "LightComponent";
 
@@ -11,6 +13,13 @@ LightComponent::LightComponent() {}
 
 LightComponent::LightComponent(const pugi::xml_node& data) {
 	VDelegateInit(data);
+}
+
+LightComponent::~LightComponent() {
+	std::shared_ptr<Actor> act = GetOwner();
+	std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
+	std::shared_ptr<EvtData_Destroy_Scene_Component> pNewActorEvent = std::make_shared<EvtData_Destroy_Scene_Component>(act->GetId(), VGetId(), scene_node);
+	IEventManager::Get()->VQueueEvent(pNewActorEvent);
 }
 
 bool LightComponent::VDelegateInit(const pugi::xml_node& data) {

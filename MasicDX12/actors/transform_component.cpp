@@ -22,6 +22,8 @@ TransformComponent::TransformComponent(const pugi::xml_node& data) {
     Init(data);
 }
 
+TransformComponent::~TransformComponent() {}
+
 const std::string& TransformComponent::VGetName() const {
     return g_Name;
 }

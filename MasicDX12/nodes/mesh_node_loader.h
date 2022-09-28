@@ -15,7 +15,7 @@ public:
 	MeshNodeLoader& operator=(const MeshNodeLoader&) = delete;
 	MeshNodeLoader& operator=(MeshNodeLoader&&) = delete;
 
-	static std::shared_ptr<SceneNode> ImportSceneNode(const std::filesystem::path& file_name);
+	static std::shared_ptr<SceneNode> ImportSceneNode(CommandList& command_list, const std::filesystem::path& file_name);
 
 private:
 	MeshNodeLoader() = default;

@@ -24,6 +24,7 @@ public:
 
 	CameraComponent();
 	CameraComponent(const pugi::xml_node& data);
+	virtual ~CameraComponent();
 
 	virtual const std::string& VGetName() const override;
 	virtual pugi::xml_node VGenerateXml() override;

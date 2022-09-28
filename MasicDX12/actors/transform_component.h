@@ -25,6 +25,7 @@ public:
 
     TransformComponent();
     TransformComponent(const pugi::xml_node& data);
+    virtual ~TransformComponent();
 
     virtual bool VInit(const pugi::xml_node& data) override;
     virtual const std::string& VGetName() const override;

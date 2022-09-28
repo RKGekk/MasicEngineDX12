@@ -12,8 +12,8 @@ Actor::Actor(ActorId id) {
 }
 
 Actor::~Actor() {
-    std::shared_ptr<EvtData_Destroy_Actor> pNewActorEvent = std::make_shared<EvtData_Destroy_Actor>(GetId());
-    IEventManager::Get()->VQueueEvent(pNewActorEvent);
+    std::shared_ptr<EvtData_Destroy_Actor> pDestroyActorEvent = std::make_shared<EvtData_Destroy_Actor>(GetId());
+    IEventManager::Get()->VQueueEvent(pDestroyActorEvent);
 }
 
 bool Actor::Init(const pugi::xml_node& data) {

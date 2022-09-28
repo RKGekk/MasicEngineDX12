@@ -11,7 +11,7 @@ class CameraNode;
 class BaseSceneNodeComponent : public ActorComponent {
 public:
 	BaseSceneNodeComponent();
-	~BaseSceneNodeComponent();
+	virtual ~BaseSceneNodeComponent();
 
 	virtual std::shared_ptr<SceneNode> VGetSceneNode();
 	
