@@ -18,6 +18,7 @@ public:
 	using MeshName = std::string;
 	using MeshList = std::unordered_set<std::shared_ptr<MeshNode>>;
 	using MeshMap = std::unordered_map<MeshName, MeshList>;
+	using SiblingsByParentMap = std::unordered_map<std::shared_ptr<SceneNode>, MeshMap>;
 
 	MeshManager();
 
@@ -29,6 +30,16 @@ public:
 	const MeshList& GetMeshList(MeshName mesh_name) const;
 	const MeshMap& GetMeshMap() const;
 
+	int CountSiblingsByParent(const std::shared_ptr<SceneNode>& parent) const;
+	const MeshMap& GetSiblingsByParent(const std::shared_ptr<SceneNode>& parent) const;
+	int CountSiblingsMeshList(const std::shared_ptr<SceneNode>& parent, MeshName mesh_name) const;
+	const MeshList& GetSiblingsMeshList(const std::shared_ptr<SceneNode>& parent, MeshName mesh_name) const;
+	const SiblingsByParentMap& GetSiblingsByParentMap() const;
+
 protected:
+	void ManageAddSiblingsMap(std::shared_ptr<MeshNode> mesh_node);
+	void ManageDeleteSiblingsMap(std::shared_ptr<MeshNode> mesh_node);
+
 	MeshMap m_mesh_map;
+	SiblingsByParentMap m_siblings_by_parent_map;
 };
