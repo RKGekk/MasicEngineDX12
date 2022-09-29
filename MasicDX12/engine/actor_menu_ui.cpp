@@ -299,14 +299,8 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 				}
 			}
 		}
-		ImGui::End();
 	}
-
-	
-
-	std::shared_ptr<Engine> engine = Engine::GetEngine();
-	std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
-	std::shared_ptr<Device> device = renderer->GetDevice();
+	ImGui::End();
 
 	return S_OK;
 }

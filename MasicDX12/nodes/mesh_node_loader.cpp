@@ -250,12 +250,10 @@ void ImportMaterial(MaterialList& material_list, CommandList& command_list, cons
     }
 }
 
-std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* aiNode) {
-    if (!aiNode) {
-        return nullptr;
-    }
+std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* aiNode, const std::string& file_name) {
+    if (!aiNode) return nullptr;
 
-    auto node = std::make_shared<MeshNode>(aiNode->mName.C_Str(), DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
+    auto node = std::make_shared<MeshNode>(file_name + aiNode->mName.C_Str(), DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
     node->SetParent(parent);
 
     if (aiNode->mName.length > 0) {
@@ -270,7 +268,7 @@ std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<S
     }
 
     for (unsigned int i = 0; i < aiNode->mNumChildren; ++i) {
-        auto child = ImportSceneNode(mesh_list, node, aiNode->mChildren[i]);
+        auto child = ImportSceneNode(mesh_list, node, aiNode->mChildren[i], file_name);
         node->VAddChild(child);
     }
 
@@ -278,14 +276,14 @@ std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<S
 }
 
 
-std::shared_ptr<SceneNode> ImportScene(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path) {
+std::shared_ptr<SceneNode> ImportScene(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path, const std::string& file_name) {
     MaterialList material_list;
     MeshList mesh_list;
 
     ImportMaterial(material_list, command_list, scene, parent_path);
     ImportMesh(mesh_list, material_list, command_list, scene);
     
-    return ImportSceneNode(mesh_list, nullptr, scene.mRootNode);
+    return ImportSceneNode(mesh_list, nullptr, scene.mRootNode, file_name);
 }
 
 std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(CommandList& command_list, const std::filesystem::path& file_name) {
@@ -326,5 +324,5 @@ std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(CommandList& command_
         return std::shared_ptr<SceneNode>();
     }
 
-    return ImportScene(command_list, *scene, parent_path);
+    return ImportScene(command_list, *scene, parent_path, file_path_str);
 }

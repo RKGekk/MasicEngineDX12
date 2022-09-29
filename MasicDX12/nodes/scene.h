@@ -6,6 +6,7 @@
 #include "scene_node.h"
 
 class LightManager;
+class MeshManager;
 class QualifierNode;
 
 class Scene {
@@ -23,14 +24,16 @@ public:
 	void ActivateScene(bool is_active);
 
 	std::shared_ptr<LightManager> GetLightManager();
+	std::shared_ptr<MeshManager> GetMeshManager();
 	std::shared_ptr<QualifierNode> GetRootNode();
 
 protected:
-	void ManageAddLightNodes(std::shared_ptr<SceneNode> light_node);
-	void ManageRemoveLightNodes(std::shared_ptr<SceneNode> light_node);
+	void ManageAddNodes(std::shared_ptr<SceneNode> node);
+	void ManageRemoveNodes(std::shared_ptr<SceneNode> node);
 
 	bool m_scene_active = true;
 
 	std::shared_ptr<QualifierNode> m_root_node;
 	std::shared_ptr<LightManager> m_light_manager;
+	std::shared_ptr<MeshManager> m_mesh_manager;
 };

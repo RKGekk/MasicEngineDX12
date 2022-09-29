@@ -39,72 +39,34 @@ int LightManager::GetLightCount(std::shared_ptr<SceneNode> node) {
 }
 
 
-void LightManager::AddLight(std::shared_ptr<LightNode> light) {
-	auto res = m_lights.insert(light);
-	if (!res.second) return;
-
-	LightType lt = light->VGetLight().m_light_type;
-	switch (lt) {
-		case LightType::DIRECTIONAL: {
-			m_index_map.insert({ *res.first, m_dir_lights.size() });
-			m_dir_lights.push_back(light->GetDirectionalLight(DirectX::XMMatrixIdentity()));
-		}
-		break;
-		case LightType::POINT: {
-			m_index_map.insert({ *res.first, m_point_lights.size() });
-			m_point_lights.push_back(light->GetPointLight(DirectX::XMMatrixIdentity()));
-		}
-		break;
-		case LightType::SPOT: {
-			m_index_map.insert({ *res.first, m_spot_lights.size() });
-			m_spot_lights.push_back(light->GetSpotLight(DirectX::XMMatrixIdentity()));
-		}
-		break;
-		default:
-			assert(false);
-			break;
+void LightManager::AddLight(std::shared_ptr<SceneNode> node) {
+	if (!node) return;
+	std::shared_ptr<LightNode> light_node = std::dynamic_pointer_cast<LightNode>(node);
+	if (light_node) {
+		ManageInsert(light_node);
+	}
+	const SceneNodeList& children = node->VGetChildren();
+	auto i = children.cbegin();
+	auto end = children.cend();
+	while (i != end) {
+		AddLight(*i);
+		++i;
 	}
 }
 
-void LightManager::RemoveLight(std::shared_ptr<LightNode> light_node) {
-	Lights::iterator it = m_lights.find(light_node);
-	if (it == m_lights.end()) return;
-
-	LightType lt = light_node->VGetLight().m_light_type;
-	switch (lt) {
-		case LightType::DIRECTIONAL: {
-			uint32_t index = m_index_map[light_node];
-			m_dir_lights.erase(m_dir_lights.begin() + index);
-			m_index_map.erase(light_node);
-			for (auto& p : m_index_map) {
-				if ((p.first)->VGetLight().m_light_type == LightType::DIRECTIONAL && p.second > index) --p.second;
-			}
-		}
-		break;
-		case LightType::POINT: {
-			uint32_t index = m_index_map[light_node];
-			m_point_lights.erase(m_point_lights.begin() + index);
-			m_index_map.erase(light_node);
-			for (auto& p : m_index_map) {
-				if ((p.first)->VGetLight().m_light_type == LightType::POINT && p.second > index) --p.second;
-			}
-		}
-		break;
-		case LightType::SPOT: {
-			uint32_t index = m_index_map[light_node];
-			m_spot_lights.erase(m_spot_lights.begin() + index);
-			m_index_map.erase(light_node);
-			for (auto& p : m_index_map) {
-				if ((p.first)->VGetLight().m_light_type == LightType::SPOT && p.second > index) --p.second;
-			}
-		}
-		break;
-		default:
-			assert(false);
-			break;
+void LightManager::RemoveLight(std::shared_ptr<SceneNode> node) {
+	if (!node) return;
+	std::shared_ptr<LightNode> light_node = std::dynamic_pointer_cast<LightNode>(node);
+	if (light_node) {
+		ManageDelete(light_node);
 	}
-
-	size_t ct = m_lights.erase(light_node);
+	const SceneNodeList& children = node->VGetChildren();
+	auto i = children.cbegin();
+	auto end = children.cend();
+	while (i != end) {
+		RemoveLight(*i);
+		++i;
+	}
 }
 
 std::vector<DirectionalLight>& LightManager::GetDirLights() {
@@ -129,4 +91,78 @@ std::vector<SpotLight>& LightManager::GetSpotLights() {
 
 size_t LightManager::GetSpotLightsCount() {
 	return m_spot_lights.size();
+}
+
+void LightManager::ManageInsert(std::shared_ptr<LightNode> light) {
+	auto res = m_lights.insert(light);
+	if (!res.second) return;
+
+	LightType lt = light->VGetLight().m_light_type;
+	switch (lt) {
+		case LightType::DIRECTIONAL:
+		{
+			m_index_map.insert({ *res.first, m_dir_lights.size() });
+			m_dir_lights.push_back(light->GetDirectionalLight(DirectX::XMMatrixIdentity()));
+		}
+		break;
+		case LightType::POINT:
+		{
+			m_index_map.insert({ *res.first, m_point_lights.size() });
+			m_point_lights.push_back(light->GetPointLight(DirectX::XMMatrixIdentity()));
+		}
+		break;
+		case LightType::SPOT:
+		{
+			m_index_map.insert({ *res.first, m_spot_lights.size() });
+			m_spot_lights.push_back(light->GetSpotLight(DirectX::XMMatrixIdentity()));
+		}
+		break;
+		default:
+			assert(false);
+			break;
+	}
+}
+
+void LightManager::ManageDelete(std::shared_ptr<LightNode> light_node) {
+	Lights::iterator it = m_lights.find(light_node);
+	if (it == m_lights.end()) return;
+
+	LightType lt = light_node->VGetLight().m_light_type;
+	switch (lt) {
+		case LightType::DIRECTIONAL:
+		{
+			uint32_t index = m_index_map[light_node];
+			m_dir_lights.erase(m_dir_lights.begin() + index);
+			m_index_map.erase(light_node);
+			for (auto& p : m_index_map) {
+				if ((p.first)->VGetLight().m_light_type == LightType::DIRECTIONAL && p.second > index) --p.second;
+			}
+		}
+		break;
+		case LightType::POINT:
+		{
+			uint32_t index = m_index_map[light_node];
+			m_point_lights.erase(m_point_lights.begin() + index);
+			m_index_map.erase(light_node);
+			for (auto& p : m_index_map) {
+				if ((p.first)->VGetLight().m_light_type == LightType::POINT && p.second > index) --p.second;
+			}
+		}
+		break;
+		case LightType::SPOT:
+		{
+			uint32_t index = m_index_map[light_node];
+			m_spot_lights.erase(m_spot_lights.begin() + index);
+			m_index_map.erase(light_node);
+			for (auto& p : m_index_map) {
+				if ((p.first)->VGetLight().m_light_type == LightType::SPOT && p.second > index) --p.second;
+			}
+		}
+		break;
+		default:
+			assert(false);
+			break;
+	}
+
+	size_t ct = m_lights.erase(light_node);
 }

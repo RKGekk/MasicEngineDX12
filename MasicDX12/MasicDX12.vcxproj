@@ -207,6 +207,7 @@
     <ClCompile Include="graphics\directx12_wrappers\shader_register.cpp" />
     <ClCompile Include="actors\light_component.cpp" />
     <ClCompile Include="graphics\i_renderer.cpp" />
+    <ClCompile Include="nodes\mesh_manager.cpp" />
     <ClCompile Include="nodes\light_manager.cpp" />
     <ClCompile Include="nodes\mesh_node.cpp" />
     <ClCompile Include="nodes\mesh_node_loader.cpp" />
@@ -428,6 +429,7 @@
     <ClInclude Include="events\mouse_wheel_event_args.h" />
     <ClInclude Include="graphics\point_light.h" />
     <ClInclude Include="graphics\spot_light.h" />
+    <ClInclude Include="nodes\mesh_manager.h" />
     <ClInclude Include="nodes\mesh_node_loader.h" />
     <ClInclude Include="nodes\i_visibility.h" />
     <ClInclude Include="nodes\light_manager.h" />
