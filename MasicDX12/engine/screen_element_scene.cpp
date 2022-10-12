@@ -10,6 +10,7 @@
 #include "../nodes/scene_visitor.h"
 #include "../nodes/qualifier_node.h"
 #include "../nodes/light_manager.h"
+#include "../nodes/mesh_manager.h"
 
 ScreenElementScene::ScreenElementScene() : Scene() {
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
@@ -45,6 +46,7 @@ ScreenElementScene::ScreenElementScene() : Scene() {
 	m_render_target.AttachTexture(AttachmentPoint::DepthStencil, depth_texture);
 
 	m_lighting_pso = std::make_shared<EffectPSO>(device, true, false);
+	m_lighting_instanced_pso = std::make_shared<EffectInstancedPSO>(device);
 
 	m_viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, static_cast<float>(m_width), static_cast<float>(m_height));
 	m_scissor_rect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
@@ -72,6 +74,8 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 	m_light_manager->CalcLighting(camera->GetView());
 	m_lighting_pso->SetLightManager(m_light_manager);
+	m_lighting_instanced_pso->SetLightManager(m_light_manager);
+	m_lighting_instanced_pso->SetMeshManager(m_mesh_manager);
 
 	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false);
 
@@ -87,6 +91,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	command_list->SetRenderTarget(m_render_target);
 
 	root_scene_node->Accept(opaque_pass);
+	m_lighting_instanced_pso->Apply(*command_list, delta);
 
 	auto swap_chain_back_buffer_color = renderer->GetRenderTarget().GetTexture(AttachmentPoint::Color0);
 	auto swap_chain_back_buffer_depth = renderer->GetRenderTarget().GetTexture(AttachmentPoint::DepthStencil);

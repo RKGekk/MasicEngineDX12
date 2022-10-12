@@ -9,6 +9,7 @@
 #include "../nodes/scene_node.h"
 #include "../graphics/directx12_wrappers/render_target.h"
 #include "../graphics/effect_pso.h"
+#include "../graphics/effect_instanced_pso.h"
 
 class ScreenElementScene : public IScreenElement, public Scene {
 public:
@@ -39,6 +40,7 @@ private:
 	uint32_t m_width;
 	uint32_t m_height;
 	std::shared_ptr<EffectPSO> m_lighting_pso;
+	std::shared_ptr<EffectInstancedPSO> m_lighting_instanced_pso;
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissor_rect;
 };

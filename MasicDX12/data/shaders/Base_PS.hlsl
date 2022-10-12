@@ -23,17 +23,12 @@ struct Material {
 	float BumpIntensity; // When using bump textures (height maps) we need
                               // to scale the height values so the normals are visible.
     //------------------------------------ ( 16 bytes )
-	bool HasAmbientTexture;
-	bool HasEmissiveTexture;
-	bool HasDiffuseTexture;
-	bool HasSpecularTexture;
+	uint HasTexture;
+	uint Padding1;
+	uint Padding2;
+	uint Padding3;
     //------------------------------------ ( 16 bytes )
-	bool HasSpecularPowerTexture;
-	bool HasNormalTexture;
-	bool HasBumpTexture;
-	bool HasOpacityTexture;
-    //------------------------------------ ( 16 bytes )
-    // Total:                              ( 16 * 8 = 128 bytes )
+    // Total:                              ( 16 * 7 = 112 bytes )
 };
 
 #if ENABLE_LIGHTING
@@ -113,10 +108,12 @@ Texture2D AmbientTexture : register(t3);
 Texture2D EmissiveTexture : register(t4);
 Texture2D DiffuseTexture : register(t5);
 Texture2D SpecularTexture : register(t6);
-Texture2D SpecularPowerTexture : register(t7);
+Texture2D SpecularPowerTexture : register(t7); // aiTextureType_SHININESS->roughness
 Texture2D NormalTexture : register(t8);
 Texture2D BumpTexture : register(t9);
 Texture2D OpacityTexture : register(t10);
+Texture2D DisplacementTexture : register(t11);
+Texture2D MetalnessTexture : register(t12);
 
 SamplerState TextureSampler : register(s0);
 
@@ -290,11 +287,22 @@ float4 SampleTexture(Texture2D t, float2 uv, float4 c) {
 }
 
 float4 main(PixelShaderInput IN) : SV_Target {
+    const uint HAS_AMBIENT_TEXTURE = 1u;
+	const uint HAS_EMISSIVE_TEXTURE = 2u;
+	const uint HAS_DIFFUSE_TEXTURE = 4u;
+	const uint HAS_SPECULAR_TEXTURE = 8u;
+	const uint HAS_SPECULAR_POWER_TEXTURE = 16u; // aiTextureType_SHININESS->roughness
+	const uint HAS_NORMAL_TEXTURE = 32u;
+	const uint HAS_BUMP_TEXTURE = 64u;
+	const uint HAS_OPACITY_TEXTURE = 128u;
+	const uint HAS_DISPLACEMENT_TEXTURE = 256u;
+    const uint HAS_METALNESS_TEXTURE = 512u;
+    
 	Material material = MaterialCB;
 
     // By default, use the alpha component of the diffuse color.
 	float alpha = material.Diffuse.a;
-	if (material.HasOpacityTexture) {
+	if (material.HasTexture & HAS_OPACITY_TEXTURE) {
 		alpha = OpacityTexture.Sample(TextureSampler, IN.TexCoord.xy).r;
 	}
 
@@ -310,25 +318,25 @@ float4 main(PixelShaderInput IN) : SV_Target {
 	float specularPower = material.SpecularPower;
 	float2 uv = IN.TexCoord.xy;
 
-	if (material.HasAmbientTexture) {
+	if (material.HasTexture & HAS_AMBIENT_TEXTURE) {
 		ambient = SampleTexture(AmbientTexture, uv, ambient);
 	}
     
-	if (material.HasEmissiveTexture) {
+	if (material.HasTexture & HAS_EMISSIVE_TEXTURE) {
 		emissive = SampleTexture(EmissiveTexture, uv, emissive);
 	}
     
-	if (material.HasDiffuseTexture) {
+	if (material.HasTexture & HAS_DIFFUSE_TEXTURE) {
 		diffuse = SampleTexture(DiffuseTexture, uv, diffuse);
 	}
     
-	if (material.HasSpecularPowerTexture) {
+	if (material.HasTexture & HAS_SPECULAR_POWER_TEXTURE) {
 		specularPower *= SpecularPowerTexture.Sample(TextureSampler, uv).r;
 	}
 
 	float3 N;
     // Normal mapping
-	if (material.HasNormalTexture) {
+	if (material.HasTexture & HAS_NORMAL_TEXTURE) {
 		float3 tangent = normalize(IN.TangentVS);
 		float3 bitangent = normalize(IN.BitangentVS);
 		float3 normal = normalize(IN.NormalVS);
@@ -337,7 +345,7 @@ float4 main(PixelShaderInput IN) : SV_Target {
 
 		N = DoNormalMapping(TBN, NormalTexture, uv);
 	}
-	else if (material.HasBumpTexture) {
+	else if (material.HasTexture & HAS_BUMP_TEXTURE) {
 		float3 tangent = normalize(IN.TangentVS);
 		float3 bitangent = normalize(IN.BitangentVS);
 		float3 normal = normalize(IN.NormalVS);
@@ -358,11 +366,9 @@ float4 main(PixelShaderInput IN) : SV_Target {
     ambient *= lit.Ambient;
     // Specular power less than 1 doesn't really make sense.
     // Ignore specular on materials with a specular power less than 1.
-    if (material.SpecularPower > 1.0f)
-    {
+    if (material.SpecularPower > 1.0f) {
         specular = material.Specular;
-        if (material.HasSpecularTexture)
-        {
+        if (material.HasTexture & HAS_SPECULAR_TEXTURE) {
             specular = SampleTexture( SpecularTexture, uv, specular );
         }
         specular *= lit.Specular;

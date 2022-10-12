@@ -88,11 +88,16 @@ public:
 		return CopyByteAddressBuffer(sizeof(T), &data);
 	}
 
-	std::shared_ptr<StructuredBuffer> CopyStructuredBuffer(size_t num_elements, size_t element_size, const void* buffer_data);
+	std::shared_ptr<StructuredBuffer> CopyStructuredBuffer(size_t num_elements, size_t element_size, const void* buffer_data, D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 	template<typename T>
 	std::shared_ptr<StructuredBuffer> CopyStructuredBuffer(const std::vector<T>& buffer_data) {
 		return CopyStructuredBuffer(buffer_data.size(), sizeof(T), buffer_data.data());
+	}
+
+	template<typename T>
+	std::shared_ptr<StructuredBuffer> CopyStructuredBuffer(const std::vector<T>& buffer_data, D3D12_RESOURCE_FLAGS flags) {
+		return CopyStructuredBuffer(buffer_data.size(), sizeof(T), buffer_data.data(), flags);
 	}
 
 	void SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY primitive_topology);

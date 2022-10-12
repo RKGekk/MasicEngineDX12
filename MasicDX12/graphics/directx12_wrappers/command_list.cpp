@@ -231,8 +231,8 @@ std::shared_ptr<ByteAddressBuffer> CommandList::CopyByteAddressBuffer(size_t buf
 	return byte_address_buffer;
 }
 
-std::shared_ptr<StructuredBuffer> CommandList::CopyStructuredBuffer(size_t num_elements, size_t element_size, const void* buffer_data) {
-	auto d3d12_resource = CopyBuffer(num_elements * element_size, buffer_data, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+std::shared_ptr<StructuredBuffer> CommandList::CopyStructuredBuffer(size_t num_elements, size_t element_size, const void* buffer_data, D3D12_RESOURCE_FLAGS flags) {
+	auto d3d12_resource = CopyBuffer(num_elements * element_size, buffer_data, flags);
 	std::shared_ptr<StructuredBuffer> structured_buffer = m_device.CreateStructuredBuffer(d3d12_resource, num_elements, element_size);
 
 	return structured_buffer;

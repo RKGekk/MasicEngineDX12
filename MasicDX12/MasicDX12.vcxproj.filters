@@ -609,6 +609,9 @@
     <ClCompile Include="nodes\mesh_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\effect_instanced_pso.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1265,6 +1268,9 @@
     <ClInclude Include="nodes\mesh_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\effect_instanced_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_options.xml">
@@ -1515,5 +1521,7 @@
     <FxCompile Include="data\shaders\VertexShader.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
+    <FxCompile Include="data\shaders\BaseInstanced_PS.hlsl" />
+    <FxCompile Include="data\shaders\BaseInstanced_VS.hlsl" />
   </ItemGroup>
 </Project>

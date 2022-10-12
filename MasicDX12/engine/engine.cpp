@@ -91,7 +91,7 @@ void Engine::RenderFrame() {
 	for (GameViewList::iterator i = m_game->m_game_views.begin(), end = m_game->m_game_views.end(); i != end; ++i) {
 		(*i)->VOnRender(Application::Get().GetTimer(), command_list);
 	}
-	CommandQueue::FenceValueType fance_value = command_queue.ExecuteCommandList(command_list);
+	CommandQueue::FenceValueType fence_value = command_queue.ExecuteCommandList(command_list);
 	m_renderer->VPresent();
 }
 

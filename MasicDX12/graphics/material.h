@@ -20,27 +20,20 @@ struct alignas(16) MaterialProperties {
 		const DirectX::XMFLOAT4 emissive = { 0, 0, 0, 1 },
 		const DirectX::XMFLOAT4 reflectance = { 0, 0, 0, 0 },
 		const float opacity = 1.0f,
-		const float indexOfRefraction = 0.0f,
+		const float indexOfRefraction = 1.45f,
 		const float bumpIntensity = 1.0f,
 		const float alphaThreshold = 0.1f
 	)
-		: Diffuse(diffuse)
-		, Specular(specular)
-		, Emissive(emissive)
-		, Ambient(ambient)
-		, Reflectance(reflectance)
-		, Opacity(opacity)
-		, SpecularPower(specularPower)
-		, IndexOfRefraction(indexOfRefraction)
-		, BumpIntensity(bumpIntensity)
-		, HasAmbientTexture(false)
-		, HasEmissiveTexture(false)
-		, HasDiffuseTexture(false)
-		, HasSpecularTexture(false)
-		, HasSpecularPowerTexture(false)
-		, HasNormalTexture(false)
-		, HasBumpTexture(false)
-		, HasOpacityTexture(false) {}
+		: Diffuse(diffuse),
+		  Specular(specular),
+		  Emissive(emissive),
+		  Ambient(ambient),
+		  Reflectance(reflectance),
+		  Opacity(opacity),
+		  SpecularPower(specularPower),
+		  IndexOfRefraction(indexOfRefraction),
+		  BumpIntensity(bumpIntensity),
+		  HasTexture(0u) {}
 
 	DirectX::XMFLOAT4 Diffuse;
 	//1------------------------------------ ( 16 bytes )
@@ -63,22 +56,27 @@ struct alignas(16) MaterialProperties {
 	float BumpIntensity;		// When using bump textures (height maps) we need to scale the height values so the normals are visible.
 	//6------------------------------------ ( 16 bytes )
 
-	uint32_t HasAmbientTexture;
-	uint32_t HasEmissiveTexture;
-	uint32_t HasDiffuseTexture;
-	uint32_t HasSpecularTexture;
+	uint32_t HasTexture;
+	uint32_t Padding1;
+	uint32_t Padding2;
+	uint32_t Padding3;
 	//7------------------------------------ ( 16 bytes )
 
-	uint32_t HasSpecularPowerTexture;
-	uint32_t HasNormalTexture;
-	uint32_t HasBumpTexture;
-	uint32_t HasOpacityTexture;
-	//8------------------------------------ ( 16 bytes )
-	//Total:                                ( 16 * 8 = 128 bytes )
+	//Total:                                ( 16 * 8 = 112 bytes )
 };
 
 class Material {
 public:
+	static const uint32_t HAS_AMBIENT_TEXTURE = 1u;
+	static const uint32_t HAS_EMISSIVE_TEXTURE = 2u;
+	static const uint32_t HAS_DIFFUSE_TEXTURE = 4u;
+	static const uint32_t HAS_SPECULAR_TEXTURE = 8u;
+	static const uint32_t HAS_SPECULAR_POWER_TEXTURE = 16u;
+	static const uint32_t HAS_NORMAL_TEXTURE = 32u;
+	static const uint32_t HAS_BUMP_TEXTURE = 64u;
+	static const uint32_t HAS_OPACITY_TEXTURE = 128u;
+	static const uint32_t HAS_DISPLACEMENT_TEXTURE = 256u;
+	static const uint32_t HAS_METALNESS_TEXTURE = 512u;
 
 	enum class TextureType {
 		Ambient,
@@ -89,6 +87,8 @@ public:
 		Normal,
 		Bump,
 		Opacity,
+		Displacement,
+		Metalness,
 		NumTypes,
 	};
 

@@ -76,18 +76,21 @@ const std::string& MeshComponent::GetResourceDirecory() {
 }
 
 bool MeshComponent::VDelegateInit(const pugi::xml_node& data) {
+    bool is_instanced = data.child("IsInstanced").text().as_bool();
 	m_resource_name = data.child("Mesh").child_value();
 	if (m_resource_name.empty()) return false;
 	std::filesystem::path p(m_resource_name);
 	m_resource_directory = p.parent_path().string();
-	return LoadModel(p);
+	return LoadModel(p, is_instanced);
 }
 
-bool MeshComponent::LoadModel(const std::filesystem::path& file_name) {
+bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_instanced) {
     std::string file_path_str = file_name.string();
 
     if (gs_node_map.count(file_path_str)) {
         m_loaded_scene_node = DeepCopyNode(gs_node_map[file_path_str]);
+        std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(m_loaded_scene_node);
+        mesh_node->SetIsInstanced(is_instanced);
         gs_copy_counter_map[file_path_str]++;
         return true;
     }
@@ -104,6 +107,8 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name) {
 
     gs_node_map[file_path_str] = loaded_scene;
     m_loaded_scene_node = DeepCopyNode(loaded_scene);
+    std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(m_loaded_scene_node);
+    mesh_node->SetIsInstanced(is_instanced);
     gs_copy_counter_map[file_path_str]++;
 
     return true;

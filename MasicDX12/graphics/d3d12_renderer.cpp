@@ -95,6 +95,10 @@ DXGI_FORMAT D3DRenderer12::GetBackBufferFormat() {
 	return m_back_buffer_format;
 }
 
+DXGI_FORMAT D3DRenderer12::GetDepthBufferFormat() {
+	return m_depth_buffer_format;
+}
+
 RenderTarget& D3DRenderer12::GetRenderTarget() {
 	return m_render_target;
 }

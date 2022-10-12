@@ -22,6 +22,7 @@ void SceneVisitor::ResetCamera() {
 void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 	std::shared_ptr<MeshNode> pMeshNode = std::dynamic_pointer_cast<MeshNode>(scene_node);
 	if (!pMeshNode) return;
+	if (pMeshNode->GetIsInstanced()) return;
 
 	//auto world = scene_node->Get().CumulativeToWorld();
 	auto world = scene_node->Get().FullCumulativeToWorld();

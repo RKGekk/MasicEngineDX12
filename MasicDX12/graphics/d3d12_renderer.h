@@ -57,6 +57,7 @@ public:
 
 	virtual std::shared_ptr<WindowSurface> GetRenderWindow() override;
 	DXGI_FORMAT GetBackBufferFormat();
+	DXGI_FORMAT GetDepthBufferFormat();
 	virtual RenderTarget& GetRenderTarget() override;
 	uint32_t GetRenderTargetWidth() override;
 	uint32_t GetRenderTargetHeight() override;

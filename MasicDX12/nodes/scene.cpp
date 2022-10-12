@@ -37,7 +37,9 @@ void Scene::ManageAddNodes(std::shared_ptr<SceneNode> node) {
 		m_light_manager->AddLight(node);
 	};
 	if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(node)) {
-		m_mesh_manager->AddMesh(node);
+		if (pMesh->GetIsInstanced()) {
+			m_mesh_manager->AddMesh(node);
+		}
 	};
 	for (auto& current_node : node->m_children) {
 		ManageAddNodes(current_node);

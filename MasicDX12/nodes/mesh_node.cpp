@@ -4,17 +4,17 @@
 
 #include <algorithm>
 
-MeshNode::MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform) : SceneNode(name, &transform) {}
+MeshNode::MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform) : SceneNode(name, &transform), m_instanced(false) {}
 
-MeshNode::MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform, const MeshList& meshes) : SceneNode(name, &transform) {
+MeshNode::MeshNode(const std::string& name, const DirectX::XMFLOAT4X4& transform, const MeshList& meshes) : SceneNode(name, &transform), m_instanced(false) {
     for (const auto& mesh : meshes) {
         AddMesh(mesh);
     }
 }
 
-MeshNode::MeshNode(const std::string& name, DirectX::FXMMATRIX transform) : SceneNode(name, transform, DirectX::XMMatrixIdentity(), true) {}
+MeshNode::MeshNode(const std::string& name, DirectX::FXMMATRIX transform) : SceneNode(name, transform, DirectX::XMMatrixIdentity(), true), m_instanced(false) {}
 
-MeshNode::MeshNode(const std::string& name, DirectX::FXMMATRIX transform, const MeshList& meshes) : SceneNode(name, transform, DirectX::XMMatrixIdentity(), true) {
+MeshNode::MeshNode(const std::string& name, DirectX::FXMMATRIX transform, const MeshList& meshes) : SceneNode(name, transform, DirectX::XMMatrixIdentity(), true), m_instanced(false) {
     for (const auto& mesh : meshes) {
         AddMesh(mesh);
     }
@@ -54,8 +54,14 @@ bool MeshNode::AddMesh(std::shared_ptr<Mesh> mesh) {
     DirectX::BoundingBox aabb_original = mesh->GetAABB();
     DirectX::BoundingBox aabb_transformed;
     aabb_original.Transform(aabb_transformed, m_props.FullCumulativeToWorld());
-    DirectX::BoundingBox::CreateMerged(m_AABB_merged, m_AABB_merged, aabb_transformed);
-    DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_merged, m_AABB_merged);
+    if (m_meshes.size() == 1u) {
+        m_AABB_merged = aabb_transformed;
+        DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_merged, m_AABB_merged);
+    }
+    else {
+        DirectX::BoundingBox::CreateMerged(m_AABB_merged, m_AABB_merged, aabb_transformed);
+        DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_merged, m_AABB_merged);
+    }
 
     return true;
 }
@@ -92,13 +98,24 @@ const DirectX::BoundingSphere& MeshNode::GetSphere() const {
     return m_sphere_merged;
 }
 
+bool MeshNode::GetIsInstanced() const {
+    return m_instanced;
+}
+
+void MeshNode::SetIsInstanced(bool is_instanced) {
+    m_instanced = is_instanced;
+}
+
 void MeshNode::RecalcAABB() {
     DirectX::BoundingBox aabb_max;
-    for (const auto& mesh : m_meshes) {
+    int sz = m_meshes.size();
+    for (int i = 0u; i < sz; ++i) {
+        const auto& mesh = m_meshes[i];
         DirectX::BoundingBox aabb_original = mesh->GetAABB();
         DirectX::BoundingBox aabb_transformed;
         aabb_original.Transform(aabb_transformed, m_props.FullCumulativeToWorld());
-        DirectX::BoundingBox::CreateMerged(aabb_max, aabb_max, aabb_transformed);
+        if (i == 0) aabb_max = aabb_transformed;
+        else DirectX::BoundingBox::CreateMerged(aabb_max, aabb_max, aabb_transformed);
         m_AABB_merged = aabb_max;
         DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_merged, m_AABB_merged);
     }

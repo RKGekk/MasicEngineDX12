@@ -112,53 +112,64 @@ std::shared_ptr<Texture> Material::GetTexture(TextureType ID) const {
 
 void Material::SetTexture(TextureType type, std::shared_ptr<Texture> texture) {
     m_textures[type] = texture;
-
+    bool has_texture = (texture != nullptr);
+    uint32_t texture_type_bit = 0u;
     switch (type) {
-        case TextureType::Ambient:
-        {
-            m_material_properties->HasAmbientTexture = (texture != nullptr);
+        case TextureType::Ambient: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_AMBIENT_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_AMBIENT_TEXTURE;
         }
         break;
-        case TextureType::Emissive:
-        {
-            m_material_properties->HasEmissiveTexture = (texture != nullptr);
+        case TextureType::Emissive: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_EMISSIVE_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_EMISSIVE_TEXTURE;
         }
         break;
-        case TextureType::Diffuse:
-        {
-            m_material_properties->HasDiffuseTexture = (texture != nullptr);
+        case TextureType::Diffuse: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_DIFFUSE_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_DIFFUSE_TEXTURE;
         }
         break;
-        case TextureType::Specular:
-        {
-            m_material_properties->HasSpecularTexture = (texture != nullptr);
+        case TextureType::Specular: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_SPECULAR_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_SPECULAR_TEXTURE;
         }
         break;
-        case TextureType::SpecularPower:
-        {
-            m_material_properties->HasSpecularPowerTexture = (texture != nullptr);
+        case TextureType::SpecularPower: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_SPECULAR_POWER_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_SPECULAR_POWER_TEXTURE;
         }
         break;
-        case TextureType::Normal:
-        {
-            m_material_properties->HasNormalTexture = (texture != nullptr);
+        case TextureType::Normal: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_NORMAL_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_NORMAL_TEXTURE;
         }
         break;
-        case TextureType::Bump:
-        {
-            m_material_properties->HasBumpTexture = (texture != nullptr);
+        case TextureType::Bump: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_BUMP_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_BUMP_TEXTURE;
         }
         break;
-        case TextureType::Opacity:
-        {
-            m_material_properties->HasOpacityTexture = (texture != nullptr);
+        case TextureType::Opacity: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_OPACITY_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_OPACITY_TEXTURE;
+        }
+        break;
+        case TextureType::Displacement: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_DISPLACEMENT_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_DISPLACEMENT_TEXTURE;
+        }
+        break;
+        case TextureType::Metalness: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_METALNESS_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_METALNESS_TEXTURE;
         }
         break;
     }
 }
 
 bool Material::IsTransparent() const {
-    return (m_material_properties->Opacity < 1.0f || m_material_properties->HasOpacityTexture);
+    return (m_material_properties->Opacity < 1.0f || (m_material_properties->HasTexture & HAS_OPACITY_TEXTURE));
 }
 
 const MaterialProperties& Material::GetMaterialProperties() const {

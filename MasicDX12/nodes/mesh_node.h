@@ -28,12 +28,16 @@ public:
 	const DirectX::BoundingBox& GetAABB() const;
 	const DirectX::BoundingSphere& GetSphere() const;
 
+	bool GetIsInstanced() const;
+	void SetIsInstanced(bool is_instanced);
+
 protected:
 	void RecalcAABB();
 
 	using MeshList = std::vector<std::shared_ptr<Mesh>>;
 
 	MeshList m_meshes;
+	bool m_instanced;
 	DirectX::BoundingBox m_AABB_merged;
 	DirectX::BoundingSphere m_sphere_merged;
 };

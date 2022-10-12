@@ -9,6 +9,7 @@
 #include "../tools/com_exception.h"
 #include "../tools/string_utility.h"
 #include "../nodes/light_manager.h"
+#include "../tools/memory_utility.h"
 
 #include <d3dcompiler.h>
 #include <directx/d3dx12.h>
@@ -38,8 +39,7 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
         D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
         D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
         D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
-
-    CD3DX12_DESCRIPTOR_RANGE1 descriptor_rage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 8, 3);
+    CD3DX12_DESCRIPTOR_RANGE1 descriptor_rage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, to_underlying(Material::TextureType::NumTypes), 3);
 
     CD3DX12_ROOT_PARAMETER1 root_parameters[RootParameters::NumRootParameters];
     root_parameters[RootParameters::MatricesCB].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
@@ -90,6 +90,8 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     m_pixel_shader->AddRegister({ 8, 0, ShaderRegister::ShaderResource }, "NormalTexture"s);
     m_pixel_shader->AddRegister({ 9, 0, ShaderRegister::ShaderResource }, "BumpTexture"s);
     m_pixel_shader->AddRegister({ 10, 0, ShaderRegister::ShaderResource }, "OpacityTexture"s);
+    m_pixel_shader->AddRegister({ 11, 0, ShaderRegister::ShaderResource }, "DisplacementTexture"s);
+    m_pixel_shader->AddRegister({ 12, 0, ShaderRegister::ShaderResource }, "MetalnessTexture"s);
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::Sampler }, "TextureSampler"s);
     m_pixel_shader->SetRenderTargetFormat(rtv_formats);
     m_pixel_shader->SetRenderTargetFormat(AttachmentPoint::DepthStencil, depth_buffer_format);
@@ -160,6 +162,8 @@ void EffectPSO::Apply(CommandList& command_list) {
             BindTexture(command_list, 5, m_material->GetTexture(TextureType::Normal));
             BindTexture(command_list, 6, m_material->GetTexture(TextureType::Bump));
             BindTexture(command_list, 7, m_material->GetTexture(TextureType::Opacity));
+            BindTexture(command_list, 8, m_material->GetTexture(TextureType::Displacement));
+            BindTexture(command_list, 9, m_material->GetTexture(TextureType::Metalness));
         }
     }
 
