@@ -19,6 +19,7 @@ class Texture;
 class LightManager;
 class MeshManager;
 class StructuredBuffer;
+class CameraNode;
 
 class EffectInstancedPSO {
 public:
@@ -29,21 +30,13 @@ public:
 	};
 
 	struct alignas(16) PerPassData {
-		DirectX::XMMATRIX ModelMatrix;
-		DirectX::XMMATRIX ModelViewMatrix;
-		DirectX::XMMATRIX InverseTransposeModelViewMatrix;
-		DirectX::XMMATRIX ModelViewProjectionMatrix;
-
 		DirectX::XMMATRIX ViewMatrix;
-		DirectX::XMMATRIX InverseViewMatrix;
 		DirectX::XMMATRIX InverseTransposeViewMatrix;
 
 		DirectX::XMMATRIX ProjectionMatrix;
-		DirectX::XMMATRIX InverseProjectionMatrix;
 		DirectX::XMMATRIX InverseTransposeProjectionMatrix;
 
 		DirectX::XMMATRIX ViewProjectionMatrix;
-		DirectX::XMMATRIX InverseViewProjectionMatrix;
 		DirectX::XMMATRIX InverseTransposeViewProjectionMatrix;
 
 		float RenderTargetSizeX;
@@ -76,6 +69,7 @@ public:
 	void SetLightManager(std::shared_ptr<LightManager> light_manager);
 	void SetMeshManager(std::shared_ptr<MeshManager> mesh_manager);
 
+	void SetViewMatrix(const CameraNode& camera);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
 	void XM_CALLCONV SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix);
 	void SetNearZ(float near_z);

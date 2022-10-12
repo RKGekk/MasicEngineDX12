@@ -39,6 +39,7 @@ public:
 	using InstanceMap = std::unordered_map<MeshName, std::vector<InstanceData>>;
 	using InstanceBufferMap = std::unordered_map<MeshName, std::shared_ptr<StructuredBuffer>>;
 	using InstanceBufferViewMap = std::unordered_map<MeshName, std::shared_ptr<ShaderResourceView>>;
+	//using InstanceBufferDescAllocMap = std::unordered_map<MeshName, DescriptorAllocation>;
 	using InstanceIndexMap = std::unordered_map<MeshName, std::vector<InstanceIndexData>>;
 
 	MeshManager();
@@ -50,9 +51,9 @@ public:
 	int GetMeshCount(MeshName mesh_name);
 	const MeshList& GetMeshList(MeshName mesh_name) const;
 	const MeshMap& GetMeshMap() const;
-	uint32_t GetGeneration();
 
 	void CalcInstances(const CameraNode& camera);
+	void UpdateInstancesBuffer();
 
 	InstanceMap& GetInstanceMap();
 	std::vector<InstanceData>& GetInstanceData(MeshName mesh_name);
@@ -69,9 +70,8 @@ protected:
 	MeshMap m_mesh_map;
 	InstanceMap m_instance_map;
 	InstanceIndexMap m_instance_index_map;
-	uint32_t m_generation;
 
-	uint32_t m_instance_generation;
 	InstanceBufferMap m_instance_buffer_map;
 	InstanceBufferViewMap m_instance_buffer_view_map;
+	//InstanceBufferDescAllocMap m_instance_buffer_desc_alloc_map;
 };

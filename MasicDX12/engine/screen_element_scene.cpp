@@ -73,9 +73,12 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	std::shared_ptr<CameraNode> camera = human_view->VGetCamera();
 
 	m_light_manager->CalcLighting(camera->GetView());
+	m_mesh_manager->CalcInstances(*camera);
 	m_lighting_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetMeshManager(m_mesh_manager);
+	m_lighting_instanced_pso->SetViewMatrix(*camera);
+	m_lighting_instanced_pso->SetRenderTargetSize({ (float)m_width, (float)m_height });
 
 	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false);
 

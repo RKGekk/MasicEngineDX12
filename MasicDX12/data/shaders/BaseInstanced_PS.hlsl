@@ -1,6 +1,6 @@
 struct PixelShaderInput {
 	float4 PositionHS  : SV_Position;
-	float3 PositionWS  : POSITION;
+	float4 PositionWS  : POSITION;
 	float3 NormalWS    : NORMAL;
 	float3 TangentWS   : TANGENT;
 	float3 BitangentWS : BITANGENT;
@@ -89,15 +89,12 @@ struct LightProperties {
 
 struct PerPassData {
 	matrix ViewMatrix;
-	matrix InverseViewMatrix;
 	matrix InverseTransposeViewMatrix;
 	
 	matrix ProjectionMatrix;
-	matrix InverseProjectionMatrix;
 	matrix InverseTransposeProjectionMatrix;
 	
 	matrix ViewProjectionMatrix;
-	matrix InverseViewProjectionMatrix;
 	matrix InverseTransposeViewProjectionMatrix;
 	
 	float2 RenderTargetSize;
@@ -510,14 +507,14 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 
 	float shadow = 1.0f;
 	float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float3 eye_position_w = gPerPassData.InverseViewMatrix._41_42_43;
-    float3 to_eye_ws = normalize(eye_position_w - ps_in.PositionWS);
+    float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._14_24_34;
+    float3 to_eye_ws = normalize(eye_position_w - ps_in.PositionWS.xyz);
     
 	BlinnPhongSpecMaterial pbr = (BlinnPhongSpecMaterial)0.0f;
     pbr.FresnelR0 = fresnelR0;
     pbr.Shininess = specular_power;
 
-    LightResult lit = DoLightingWS(ps_in.PositionWS, normal_t_ws, to_eye_ws, pbr);
+    LightResult lit = DoLightingWS(ps_in.PositionWS.xyz, normal_t_ws, to_eye_ws, pbr);
     diffuse_albedo *= lit.Diffuse;
     ambient *= lit.Ambient;
     // Specular power less than 1 doesn't really make sense.

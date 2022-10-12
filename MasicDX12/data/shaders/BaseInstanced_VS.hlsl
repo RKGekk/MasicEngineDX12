@@ -1,15 +1,12 @@
 struct PerPassData {
-	matrix ViewMatrix;
-	matrix InverseViewMatrix;
-	matrix InverseTransposeViewMatrix;
+	float4x4 ViewMatrix;
+	float4x4 InverseTransposeViewMatrix;
 	
-	matrix ProjectionMatrix;
-	matrix InverseProjectionMatrix;
-	matrix InverseTransposeProjectionMatrix;
+	float4x4 ProjectionMatrix;
+	float4x4 InverseTransposeProjectionMatrix;
 	
-	matrix ViewProjectionMatrix;
-	matrix InverseViewProjectionMatrix;
-	matrix InverseTransposeViewProjectionMatrix;
+	float4x4 ViewProjectionMatrix;
+	float4x4 InverseTransposeViewProjectionMatrix;
 	
 	float2 RenderTargetSize;
     float2 InverseRenderTargetSize;
@@ -22,9 +19,9 @@ struct PerPassData {
 ConstantBuffer<PerPassData> gPerPassData : register(b0);
 
 struct InstanceData {
-	matrix World;
-	matrix InverseTransposeWorld;
-	matrix TexureUVTransform;
+	float4x4 World;
+	float4x4 InverseTransposeWorld;
+	float4x4 TexureUVTransform;
 };
 
 StructuredBuffer<InstanceData> gInstanceData : register(t0, space1);
@@ -39,15 +36,16 @@ struct InstanceIndexData {
 StructuredBuffer<InstanceIndexData> gInstanceIndexData : register(t1, space1);
 
 struct VertexPositionNormalTangentBitangentTexture {
-	float3 PositionLS : POSITION;
-	float3 NormalLS   : NORMAL;
-	float3 TangentLS  : TANGENT;
-	float2 TextureUV  : TEXCOORD;
+	float3 PositionLS  : POSITION;
+	float3 NormalLS    : NORMAL;
+	float3 TangentLS   : TANGENT;
+	float3 BitangentLS : BITANGENT;
+	float3 TextureUV   : TEXCOORD;
 };
 
 struct VertexShaderOutput {
 	float4 PositionHS  : SV_Position;
-	float3 PositionWS  : POSITION;
+	float4 PositionWS  : POSITION;
 	float3 NormalWS    : NORMAL;
 	float3 TangentWS   : TANGENT;
 	float3 BitangentWS : BITANGENT;
@@ -63,8 +61,10 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture vs_in, uint 
 	float4x4 world_inv_t = instance_data.InverseTransposeWorld;
 	float4x4 texture_transform = instance_data.TexureUVTransform;
 	
+	//float4 wp = world._41_42_43_44;
+	//float4 pos_ws = mul(float4(vs_in.PositionLS, 1.0f), world) + wp;
 	float4 pos_ws = mul(float4(vs_in.PositionLS, 1.0f), world);
-    vout.PositionWS = pos_ws.xyz;
+    vout.PositionWS = pos_ws;
 	
 	float4 pos_hs = mul(gPerPassData.ViewProjectionMatrix, pos_ws);
 	vout.PositionHS = pos_hs;
@@ -75,10 +75,11 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture vs_in, uint 
 	float3 tangent_ws = mul(vs_in.TangentLS, (float3x3)world_inv_t);
 	vout.TangentWS = tangent_ws;
 	
-	float3 bitangent_ws = cross(normal_ws, tangent_ws);
+	//float3 bitangent_ws = cross(normal_ws, tangent_ws);
+	float3 bitangent_ws = mul(vs_in.BitangentLS, (float3x3)world_inv_t);
 	vout.BitangentWS = bitangent_ws;
 	
-	float4 texure_uv = mul(float4(vs_in.TextureUV, 0.0f, 1.0f), texture_transform);
+	float4 texure_uv = mul(float4(vs_in.TextureUV, 1.0f), texture_transform);
 	vout.TextureUV = texure_uv.xy;
 	
 	return vout;

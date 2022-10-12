@@ -6,6 +6,7 @@ SceneNodeProperties::SceneNodeProperties() {
 	m_scale = { 1.0f, 1.0f, 1.0f };
 	m_active = true;
 	m_dirty_flags = to_underlying(SceneNodeProperties::DirtyFlags::DF_All);
+	m_generation = 0u;
 	m_group_id = 0u;
 }
 
@@ -261,4 +262,8 @@ uint32_t SceneNodeProperties::GetDirtyFlags() const {
 
 uint32_t SceneNodeProperties::GetGroupID() const {
 	return m_group_id;
+}
+
+uint32_t SceneNodeProperties::GetGeneration() const {
+	return m_generation;
 }

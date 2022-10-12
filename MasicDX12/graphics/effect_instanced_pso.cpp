@@ -13,6 +13,7 @@
 #include "../tools/com_exception.h"
 #include "../tools/memory_utility.h"
 #include "../tools/string_utility.h"
+#include "../nodes/camera_node.h"
 #include "../nodes/light_manager.h"
 #include "../nodes/mesh_manager.h"
 #include "../nodes/mesh_node.h"
@@ -42,18 +43,21 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
         D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
         D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
         D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
-    CD3DX12_DESCRIPTOR_RANGE1 descriptor_rage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, to_underlying(Material::TextureType::NumTypes), 3);
+    CD3DX12_DESCRIPTOR_RANGE1 descriptor_rage_texture(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, to_underlying(Material::TextureType::NumTypes), 3);
+    CD3DX12_DESCRIPTOR_RANGE1 descriptor_rage_instance(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 1);
 
     CD3DX12_ROOT_PARAMETER1 root_parameters[to_underlying(RootParameters::NumRootParameters)];
+
     root_parameters[to_underlying(RootParameters::PerPassData)].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL);
-    root_parameters[to_underlying(RootParameters::InstanceData)].InitAsShaderResourceView(0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+    //root_parameters[to_underlying(RootParameters::InstanceData)].InitAsShaderResourceView(0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+    root_parameters[to_underlying(RootParameters::InstanceData)].InitAsDescriptorTable(1, &descriptor_rage_instance, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[to_underlying(RootParameters::InstanceIndexData)].InitAsShaderResourceView(1, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[to_underlying(RootParameters::MaterialCB)].InitAsConstantBufferView(0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::LightPropertiesCB)].InitAsConstants(sizeof(LightProperties) / 4, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::PointLights)].InitAsShaderResourceView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::SpotLights)].InitAsShaderResourceView(1, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::DirectionalLights)].InitAsShaderResourceView(2, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
-    root_parameters[to_underlying(RootParameters::Textures)].InitAsDescriptorTable(1, &descriptor_rage, D3D12_SHADER_VISIBILITY_PIXEL);
+    root_parameters[to_underlying(RootParameters::Textures)].InitAsDescriptorTable(1, &descriptor_rage_texture, D3D12_SHADER_VISIBILITY_PIXEL);
 
     CD3DX12_STATIC_SAMPLER_DESC anisotropic_sampler(0, D3D12_FILTER_ANISOTROPIC);
 
@@ -81,9 +85,10 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     m_vertex_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "gPerPassData"s);
     m_vertex_shader->AddRegister({ 0, 1, ShaderRegister::ShaderResource }, "gInstanceData"s);
     m_vertex_shader->AddRegister({ 1, 1, ShaderRegister::ShaderResource }, "gInstanceIndexData"s);
-    m_vertex_shader->SetInputAssemblerLayout(VertexPositionNormalTangentTexture::InputLayout);
+    m_vertex_shader->SetInputAssemblerLayout(VertexPositionNormalTangentBitangentTexture::InputLayout);
     m_vertex_shader->SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
+    m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "gPerPassData"s);
     m_pixel_shader->AddRegister({ 0, 1, ShaderRegister::ConstantBuffer }, "MaterialCB"s);
     m_pixel_shader->AddRegister({ 1, 0, ShaderRegister::ConstantBuffer }, "LightPropertiesCB");
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ShaderResource }, "PointLights"s);
@@ -132,7 +137,7 @@ void EffectInstancedPSO::SetLightManager(std::shared_ptr<LightManager> light_man
 
 void EffectInstancedPSO::SetMeshManager(std::shared_ptr<MeshManager> mesh_manager) {
     m_mesh_manager = mesh_manager;
-    m_dirty_flags |= DF_InstanceData;
+    m_dirty_flags |= DF_InstanceData | DF_PerPassData;
 }
 
 inline void EffectInstancedPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
@@ -151,16 +156,13 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
     if (m_dirty_flags & DF_PerPassData) {
         PerPassData per_pass_data;
         per_pass_data.ViewMatrix = m_pAligned_mvp->View;
-        per_pass_data.InverseViewMatrix = DirectX::XMMatrixInverse(nullptr, per_pass_data.ViewMatrix);
-        per_pass_data.InverseTransposeViewMatrix = DirectX::XMMatrixTranspose(per_pass_data.InverseViewMatrix);
+        per_pass_data.InverseTransposeViewMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, per_pass_data.ViewMatrix));
 
         per_pass_data.ProjectionMatrix = m_pAligned_mvp->Projection;
-        per_pass_data.InverseProjectionMatrix = DirectX::XMMatrixInverse(nullptr, per_pass_data.ProjectionMatrix);
-        per_pass_data.InverseTransposeProjectionMatrix = DirectX::XMMatrixTranspose(per_pass_data.InverseProjectionMatrix);
+        per_pass_data.InverseTransposeProjectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, per_pass_data.ProjectionMatrix));
 
         per_pass_data.ViewProjectionMatrix = per_pass_data.ViewMatrix * m_pAligned_mvp->Projection;
-        per_pass_data.InverseViewProjectionMatrix = DirectX::XMMatrixInverse(nullptr, per_pass_data.ViewProjectionMatrix);
-        per_pass_data.InverseTransposeViewProjectionMatrix = DirectX::XMMatrixTranspose(per_pass_data.InverseViewProjectionMatrix);
+        per_pass_data.InverseTransposeViewProjectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, per_pass_data.ViewProjectionMatrix));
 
         per_pass_data.RenderTargetSizeX = m_render_target_size.x;
         per_pass_data.RenderTargetSizeY = m_render_target_size.y;
@@ -199,8 +201,10 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
 
     const MeshManager::MeshMap& mesh_map = m_mesh_manager->GetMeshMap();
     for (const auto& [mesh_name, mesh_list] : mesh_map) {
-        std::shared_ptr<StructuredBuffer> instance_buffer = m_mesh_manager->GetInstanceBuffer(mesh_name);
-        command_list.SetShaderResourceView(to_underlying(RootParameters::InstanceData), instance_buffer);
+        auto instance_buffer_view = m_mesh_manager->GetInstanceBufferView(mesh_name);
+        //auto instance_data = m_mesh_manager->GetInstanceData(mesh_name);
+        command_list.SetShaderResourceView(to_underlying(RootParameters::InstanceData), 0, instance_buffer_view);
+        //command_list.SetGraphicsDynamicStructuredBuffer(to_underlying(RootParameters::InstanceIndexData), instance_data);
 
         const auto& instance_index_list = m_mesh_manager->GetInstanceIndexData(mesh_name);
         command_list.SetGraphicsDynamicStructuredBuffer(to_underlying(RootParameters::InstanceIndexData), instance_index_list);
@@ -226,6 +230,8 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
                 BindTexture(command_list, 5, material->GetTexture(TextureType::Normal));
                 BindTexture(command_list, 6, material->GetTexture(TextureType::Bump));
                 BindTexture(command_list, 7, material->GetTexture(TextureType::Opacity));
+                BindTexture(command_list, 8, material->GetTexture(TextureType::Displacement));
+                BindTexture(command_list, 9, material->GetTexture(TextureType::Metalness));
             }
 
             command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
@@ -250,6 +256,14 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
     }
 
     m_dirty_flags = DF_None;
+}
+
+void EffectInstancedPSO::SetViewMatrix(const CameraNode& camera) {
+    m_pAligned_mvp->View = camera.GetView();
+    m_pAligned_mvp->Projection = camera.GetProjection();
+    m_near_z = camera.GetFrustum().Near;
+    m_far_z = camera.GetFrustum().Far;
+    m_dirty_flags |= DF_PerPassData | DF_Near_Far | DF_Near_Far;
 }
 
 void XM_CALLCONV EffectInstancedPSO::SetViewMatrix(DirectX::FXMMATRIX view_matrix) {

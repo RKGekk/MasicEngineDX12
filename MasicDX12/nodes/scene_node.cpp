@@ -149,6 +149,7 @@ void SceneNode::UpdateCumulativeTransform() {
 		m_props.m_from_world_cumulative = m_props.m_from_world;
 		m_props.m_scale_cumulative = m_props.m_scale;
 	}
+	++m_props.m_generation;
 	SceneNodeList::iterator i = m_children.begin();
 	SceneNodeList::iterator end = m_children.end();
 	while (i != end) {
@@ -170,6 +171,7 @@ void SceneNode::UpdateCumulativeScale() {
 	else {
 		m_props.m_scale_cumulative = m_props.m_scale;
 	}
+	++m_props.m_generation;
 	SceneNodeList::iterator i = m_children.begin();
 	SceneNodeList::iterator end = m_children.end();
 	while (i != end) {
