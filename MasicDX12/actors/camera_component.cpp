@@ -27,7 +27,11 @@ void CameraComponent::VDelegatePostInit() {
 	scene_node->VAddChild(m_loaded_scene_node);
 }
 
-void CameraComponent::VDelegateUpdate(const GameTimerDelta& delta) {}
+void CameraComponent::VDelegateUpdate(const GameTimerDelta& delta) {
+	if (m_current_gen_updated) {
+		m_loaded_scene_node->UpdateFrustum();
+	}
+}
 
 const std::string& CameraComponent::VGetName() const {
 	return CameraComponent::g_Name;

@@ -320,9 +320,9 @@ std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<S
     auto node = std::make_shared<MeshNode>(file_name + aiNode->mName.C_Str(), DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
     node->SetParent(parent);
 
-    if (aiNode->mName.length > 0) {
+    /*if (aiNode->mName.length > 0) {
         node->SetName(aiNode->mName.C_Str());
-    }
+    }*/
 
     for (unsigned int i = 0; i < aiNode->mNumMeshes; ++i) {
         assert(aiNode->mMeshes[i] < mesh_list.size());

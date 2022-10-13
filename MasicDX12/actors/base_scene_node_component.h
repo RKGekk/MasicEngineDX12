@@ -27,6 +27,8 @@ protected:
 	virtual void VDelegatePostInit() = 0;
 	virtual void VDelegateUpdate(const GameTimerDelta& delta) = 0;
 
+	bool m_current_gen_updated;
+
 private:
 	std::shared_ptr<SceneNode> m_scene_node;
 	uint32_t m_generation;

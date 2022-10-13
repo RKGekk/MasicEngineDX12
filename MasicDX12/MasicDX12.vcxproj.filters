@@ -1426,6 +1426,7 @@
     <None Include="data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Roughne.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="data\objects\road_traffic_sign.mtl" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">
@@ -1529,5 +1530,22 @@
     </FxCompile>
     <FxCompile Include="data\shaders\BaseInstanced_PS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstanced_VS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="data\objects\road_traffic_sign.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\textures\road_bump.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\textures\road_diffuse.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\textures\road_normal.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\textures\road_roughness.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

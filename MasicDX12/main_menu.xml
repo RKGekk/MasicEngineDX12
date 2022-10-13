@@ -37,6 +37,30 @@
       </MeshComponent>
     </Actor>
 
+    <Actor name="cube4" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-1.000000" y="-1.000000" z="-1.000000" />
+        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\road_traffic_sign.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="cube5" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="1.000000" y="-1.000000" z="-1.000000" />
+        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\road_traffic_sign.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
     <Actor name="camera1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="1.000000" y="0.000000" z="-5.000000" />

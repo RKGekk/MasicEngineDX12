@@ -41,6 +41,10 @@ const DirectX::BoundingFrustum& CameraNode::GetFrustum() const {
 	return m_frustum;
 }
 
+void CameraNode::UpdateFrustum() {
+	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMLoadFloat4x4(&m_projection));
+}
+
 void CameraNode::SetFovYRad(float fovy) {
 	if (m_fovy == fovy) return;
 

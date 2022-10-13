@@ -12,6 +12,7 @@
 #include "../nodes/light_manager.h"
 #include "../nodes/mesh_manager.h"
 #include "../nodes/mesh_node.h"
+#include "../nodes/camera_node.h"
 #include "../events/evt_data_modified_scene_component.h"
 
 ScreenElementScene::ScreenElementScene() : Scene() {

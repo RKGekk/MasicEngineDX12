@@ -18,6 +18,7 @@ public:
 	virtual HRESULT VOnRestore() override;
 
 	const DirectX::BoundingFrustum& GetFrustum() const;
+	void UpdateFrustum();
 	void SetFovYRad(float fovy);
 	void SetFovYDeg(float fovy);
 	float GetFovYRad() const;

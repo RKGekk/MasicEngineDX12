@@ -90,6 +90,7 @@ const MeshManager::MeshMap& MeshManager::GetMeshMap() const {
 
 void MeshManager::CalcInstances(const CameraNode& camera) {
 	using namespace DirectX;
+	BoundingFrustum world_space_frustum = camera.GetFrustum();
 	for (const auto& [key, value] : m_mesh_map) {
 		auto& index_list = m_instance_index_map[key];
 		index_list.clear();
@@ -98,7 +99,7 @@ void MeshManager::CalcInstances(const CameraNode& camera) {
 		int sz = mesh_list.size();
 		for (int i = 0; i < sz; ++i) {
 			const auto& mesh = mesh_list[i];
-			BoundingFrustum world_space_frustum = camera.GetFrustum();
+			
 			const BoundingBox& aabb = mesh->GetAABB();
 			
 			bool frust_conatains_mesh = world_space_frustum.Contains(aabb) != DirectX::DISJOINT;
