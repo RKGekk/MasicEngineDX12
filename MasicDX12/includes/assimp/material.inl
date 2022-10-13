@@ -45,12 +45,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#ifdef __GNUC__
-#   pragma GCC system_header
-#endif
-
-#define WIN32_LEAN_AND_MEAN
-
 #if defined(min)
 #undef min
 #endif
@@ -59,6 +53,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef max
 #endif
 
+#ifdef __GNUC__
+#   pragma GCC system_header
+#endif
 
 // ---------------------------------------------------------------------------
 AI_FORCE_INLINE aiPropertyTypeInfo ai_real_to_property_type_info(float) {

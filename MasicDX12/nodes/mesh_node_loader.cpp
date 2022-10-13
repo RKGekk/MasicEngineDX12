@@ -17,6 +17,14 @@
 #include "../graphics/d3d12_renderer.h"
 #include "../nodes/mesh_node.h"
 
+#if defined(min)
+#undef min
+#endif
+
+#if defined(max)
+#undef max
+#endif
+
 #include <assimp/scene.h>
 #include <assimp/mesh.h>
 #include <assimp/material.h>

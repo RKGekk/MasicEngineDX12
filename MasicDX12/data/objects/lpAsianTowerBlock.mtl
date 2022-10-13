@@ -12,5 +12,5 @@ d 1.000000
 illum 2
 map_Kn data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Normal.png
 map_Kd data\textures\ASIAN_TOWER_BLOCK_standardSurface1_BaseCol.png
-map_Ns data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Roughne.png
-refl data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Metalli.png
+map_Pr data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Roughne.png
+map_Pm data\textures\ASIAN_TOWER_BLOCK_standardSurface1_Metalli.png

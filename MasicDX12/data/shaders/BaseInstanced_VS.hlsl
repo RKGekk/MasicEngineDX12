@@ -75,8 +75,8 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture vs_in, uint 
 	float3 tangent_ws = mul(vs_in.TangentLS, (float3x3)world_inv_t);
 	vout.TangentWS = tangent_ws;
 	
-	//float3 bitangent_ws = cross(normal_ws, tangent_ws);
-	float3 bitangent_ws = mul(vs_in.BitangentLS, (float3x3)world_inv_t);
+	float3 bitangent_ws = cross(normal_ws, tangent_ws);
+	//float3 bitangent_ws = mul(vs_in.BitangentLS, (float3x3)world_inv_t);
 	vout.BitangentWS = bitangent_ws;
 	
 	float4 texure_uv = mul(float4(vs_in.TextureUV, 1.0f), texture_transform);
