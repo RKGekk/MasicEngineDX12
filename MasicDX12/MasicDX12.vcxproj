@@ -156,6 +156,7 @@
     <ClCompile Include="actors\camera_component.cpp" />
     <ClCompile Include="actors\enemy_component.cpp" />
     <ClCompile Include="actors\base_scene_node_component.cpp" />
+    <ClCompile Include="events\evt_data_modified_scene_component.cpp" />
     <ClCompile Include="graphics\effect_instanced_pso.cpp" />
     <ClCompile Include="engine\actor_menu_ui.cpp" />
     <ClCompile Include="engine\base_ui.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="actors\enemy_component.h" />
     <ClInclude Include="actors\light_component.h" />
     <ClInclude Include="actors\base_scene_node_component.h" />
+    <ClInclude Include="events\evt_data_modified_scene_component.h" />
     <ClInclude Include="graphics\effect_instanced_pso.h" />
     <ClInclude Include="engine\actor_menu_ui.h" />
     <ClInclude Include="engine\base_ui.h" />

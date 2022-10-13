@@ -11,6 +11,8 @@
 #include "../nodes/qualifier_node.h"
 #include "../nodes/light_manager.h"
 #include "../nodes/mesh_manager.h"
+#include "../nodes/mesh_node.h"
+#include "../events/evt_data_modified_scene_component.h"
 
 ScreenElementScene::ScreenElementScene() : Scene() {
 	std::shared_ptr<Engine> engine = Engine::GetEngine();
@@ -50,6 +52,12 @@ ScreenElementScene::ScreenElementScene() : Scene() {
 
 	m_viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, static_cast<float>(m_width), static_cast<float>(m_height));
 	m_scissor_rect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
+
+	RegisterAllDelegates();
+}
+
+ScreenElementScene::~ScreenElementScene() {
+	RemoveAllDelegates();
 }
 
 void ScreenElementScene::VOnUpdate(const GameTimerDelta& delta) {
@@ -134,4 +142,33 @@ void ScreenElementScene::VSetVisible(bool visible) {
 
 bool ScreenElementScene::VAddChild(std::shared_ptr<SceneNode> kid) {
 	return Scene::AddChild(kid);
+}
+
+void ScreenElementScene::ModifiedSceneNodeComponentDelegate(IEventDataPtr pEventData) {
+	std::shared_ptr<EvtData_Modified_Scene_Component> pCastEventData = std::static_pointer_cast<EvtData_Modified_Scene_Component>(pEventData);
+	std::shared_ptr<SceneNode> node = pCastEventData->GetSceneNode().lock();
+
+	if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(node)) {
+		if (pMesh->GetIsInstanced() && m_mesh_manager->GetMeshCount(pMesh)) {
+			m_mesh_manager->UpdateInstancesBuffer();
+		}
+	};
+	
+	for (const auto& child_node : node->VGetChildren()) {
+		if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(child_node)) {
+			if (pMesh->GetIsInstanced() && m_mesh_manager->GetMeshCount(pMesh)) {
+				m_mesh_manager->UpdateInstancesBuffer();
+			}
+		};
+	}
+}
+
+void ScreenElementScene::RegisterAllDelegates() {
+	IEventManager* pGlobalEventManager = IEventManager::Get();
+	pGlobalEventManager->VAddListener({ connect_arg<&ScreenElementScene::ModifiedSceneNodeComponentDelegate>, this }, EvtData_Modified_Scene_Component::sk_EventType);
+}
+
+void ScreenElementScene::RemoveAllDelegates() {
+	IEventManager* pGlobalEventManager = IEventManager::Get();
+	pGlobalEventManager->VRemoveListener({ connect_arg<&ScreenElementScene::ModifiedSceneNodeComponentDelegate>, this }, EvtData_Modified_Scene_Component::sk_EventType);
 }

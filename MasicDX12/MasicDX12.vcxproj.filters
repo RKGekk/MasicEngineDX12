@@ -612,6 +612,9 @@
     <ClCompile Include="graphics\effect_instanced_pso.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="events\evt_data_modified_scene_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1269,6 +1272,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\effect_instanced_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="events\evt_data_modified_scene_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

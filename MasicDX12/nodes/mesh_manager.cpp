@@ -72,7 +72,8 @@ void MeshManager::RemoveMesh(std::shared_ptr<SceneNode> node) {
 }
 
 int MeshManager::GetMeshCount(std::shared_ptr<SceneNode> node) {
-	return m_mesh_map.size();
+	MeshName mesh_name = node->Get().Name();
+	return m_mesh_map.count(mesh_name);
 }
 
 int MeshManager::GetMeshCount(MeshName mesh_name) {
@@ -118,7 +119,7 @@ void MeshManager::UpdateInstancesBuffer() {
 			const auto& mesh_node = mesh_list[i];
 			const auto& props = mesh_node->Get();
 			InstanceData id = {};
-			id.World = props.FullCumulativeToWorld4x4();
+			id.World = props.FullCumulativeToWorld4x4T();
 			XMMATRIX world = XMLoadFloat4x4(&id.World);
 			XMMATRIX inv_world_t = XMMatrixTranspose(XMMatrixInverse(nullptr, world));
 			XMStoreFloat4x4(&id.InverseTransposeWorld, inv_world_t);

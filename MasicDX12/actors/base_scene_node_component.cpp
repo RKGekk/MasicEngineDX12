@@ -5,6 +5,7 @@
 #include "transform_component.h"
 #include "../events/evt_data_new_scene_component.h"
 #include "../events/evt_data_destroy_scene_component.h"
+#include "../events/evt_data_modified_scene_component.h"
 #include "../events/i_event_manager.h"
 
 BaseSceneNodeComponent::BaseSceneNodeComponent() : m_generation(0u) {}
@@ -39,10 +40,14 @@ void BaseSceneNodeComponent::VPostInit() {
 void BaseSceneNodeComponent::VUpdate(const GameTimerDelta& delta) {
 	std::shared_ptr<Actor> act = GetOwner();
 	std::shared_ptr<TransformComponent> tc = act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")).lock();
-	if (tc && (tc->GetGeneration() > m_generation)) {
+	uint32_t tc_gen = tc->GetGeneration();
+	if (tc && (tc_gen > m_generation)) {
 		std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
 		scene_node->SetTransform(tc->GetTransform());
 		scene_node->SetScale(tc->GetScale3f());
+		m_generation = tc_gen;
+		std::shared_ptr<EvtData_Modified_Scene_Component> pEvent(new EvtData_Modified_Scene_Component(m_pOwner->GetId(), VGetId(), scene_node));
+		IEventManager::Get()->VTriggerEvent(pEvent);
 	}
 	VDelegateUpdate(delta);
 }

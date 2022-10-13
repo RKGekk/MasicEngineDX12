@@ -10,11 +10,12 @@
 #include "../graphics/directx12_wrappers/render_target.h"
 #include "../graphics/effect_pso.h"
 #include "../graphics/effect_instanced_pso.h"
+#include "../events/i_event_data.h"
 
 class ScreenElementScene : public IScreenElement, public Scene {
 public:
 	ScreenElementScene();
-	virtual ~ScreenElementScene() {}
+	virtual ~ScreenElementScene();
 
 	virtual HRESULT VOnRestore() override;
 	virtual HRESULT VOnLostDevice() override;
@@ -32,6 +33,8 @@ public:
 
 	virtual bool VAddChild(std::shared_ptr<SceneNode> kid);
 
+	void ModifiedSceneNodeComponentDelegate(IEventDataPtr pEventData);
+
 private:
 	bool m_is_visible = true;
 	RenderTarget m_render_target;
@@ -43,4 +46,8 @@ private:
 	std::shared_ptr<EffectInstancedPSO> m_lighting_instanced_pso;
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissor_rect;
+
+private:
+	void RegisterAllDelegates();
+	void RemoveAllDelegates();
 };

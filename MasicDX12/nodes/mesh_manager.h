@@ -39,7 +39,6 @@ public:
 	using InstanceMap = std::unordered_map<MeshName, std::vector<InstanceData>>;
 	using InstanceBufferMap = std::unordered_map<MeshName, std::shared_ptr<StructuredBuffer>>;
 	using InstanceBufferViewMap = std::unordered_map<MeshName, std::shared_ptr<ShaderResourceView>>;
-	//using InstanceBufferDescAllocMap = std::unordered_map<MeshName, DescriptorAllocation>;
 	using InstanceIndexMap = std::unordered_map<MeshName, std::vector<InstanceIndexData>>;
 
 	MeshManager();
@@ -73,5 +72,4 @@ protected:
 
 	InstanceBufferMap m_instance_buffer_map;
 	InstanceBufferViewMap m_instance_buffer_view_map;
-	//InstanceBufferDescAllocMap m_instance_buffer_desc_alloc_map;
 };
