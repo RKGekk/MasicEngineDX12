@@ -507,7 +507,8 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 
 	float shadow = 1.0f;
 	float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._14_24_34;
+    //float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._14_24_34;
+    float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._41_42_43;
     float3 to_eye_ws = normalize(eye_position_w - ps_in.PositionWS.xyz);
     
 	BlinnPhongSpecMaterial pbr = (BlinnPhongSpecMaterial)0.0f;

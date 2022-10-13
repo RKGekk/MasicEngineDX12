@@ -88,7 +88,7 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_in
     std::string file_path_str = file_name.string();
 
     if (gs_node_map.count(file_path_str)) {
-        m_loaded_scene_node = DeepCopyNode(gs_node_map[file_path_str]);
+        m_loaded_scene_node = DeepCopyNode(gs_node_map[file_path_str], is_instanced);
         std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(m_loaded_scene_node);
         mesh_node->SetIsInstanced(is_instanced);
         gs_copy_counter_map[file_path_str]++;
@@ -106,7 +106,7 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_in
     command_queue.Flush();
 
     gs_node_map[file_path_str] = loaded_scene;
-    m_loaded_scene_node = DeepCopyNode(loaded_scene);
+    m_loaded_scene_node = DeepCopyNode(loaded_scene, is_instanced);
     std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(m_loaded_scene_node);
     mesh_node->SetIsInstanced(is_instanced);
     gs_copy_counter_map[file_path_str]++;
@@ -114,16 +114,17 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_in
     return true;
 }
 
-std::shared_ptr<SceneNode> MeshComponent::DeepCopyNode(const std::shared_ptr<SceneNode>& node) {
+std::shared_ptr<SceneNode> MeshComponent::DeepCopyNode(const std::shared_ptr<SceneNode>& node, bool is_instanced) {
     if (!node) return nullptr;
     std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(node);
 
     const auto& node_props = node->Get();
     const auto& mesh_list = mesh_node->GetMeshes();
     auto node_copy = std::make_shared<MeshNode>(node_props.Name(), node_props.ToWorld4x4(), mesh_list);
+    node_copy->SetIsInstanced(is_instanced);
 
     for (const auto& child_to_copy : node->VGetChildren()) {
-        auto child_to_copy_node_copy = DeepCopyNode(child_to_copy);
+        auto child_to_copy_node_copy = DeepCopyNode(child_to_copy, is_instanced);
         node_copy->VAddChild(child_to_copy_node_copy);
         child_to_copy_node_copy->SetParent(node_copy);
     }
