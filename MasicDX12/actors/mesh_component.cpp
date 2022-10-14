@@ -81,14 +81,15 @@ const std::string& MeshComponent::GetResourceDirecory() {
 
 bool MeshComponent::VDelegateInit(const pugi::xml_node& data) {
     bool is_instanced = data.child("IsInstanced").text().as_bool();
+    bool is_inv_y_texture = data.child("IsInvYNormalTexture").text().as_bool();
 	m_resource_name = data.child("Mesh").child_value();
 	if (m_resource_name.empty()) return false;
 	std::filesystem::path p(m_resource_name);
 	m_resource_directory = p.parent_path().string();
-	return LoadModel(p, is_instanced);
+	return LoadModel(p, is_instanced, is_inv_y_texture);
 }
 
-bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_instanced) {
+bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_instanced, bool is_inv_y_texture) {
     std::string file_path_str = file_name.string();
 
     if (gs_node_map.count(file_path_str)) {
@@ -104,7 +105,7 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_in
     CommandQueue& command_queue = device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COPY);
     std::shared_ptr<CommandList> command_list = command_queue.GetCommandList();
 
-    std::shared_ptr<SceneNode> loaded_scene = MeshNodeLoader::ImportSceneNode(*command_list, file_name);
+    std::shared_ptr<SceneNode> loaded_scene = MeshNodeLoader::ImportSceneNode(*command_list, file_name, is_inv_y_texture);
 
     command_queue.ExecuteCommandList(command_list);
     command_queue.Flush();

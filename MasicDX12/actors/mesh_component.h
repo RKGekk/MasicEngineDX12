@@ -44,6 +44,6 @@ private:
 
 	std::shared_ptr<SceneNode> m_loaded_scene_node;
 
-	bool LoadModel(const std::filesystem::path& file_name, bool is_instanced);
+	bool LoadModel(const std::filesystem::path& file_name, bool is_instanced, bool is_inv_y_texture);
 	static std::shared_ptr<SceneNode> DeepCopyNode(const std::shared_ptr<SceneNode>& node, bool is_instanced);
 };

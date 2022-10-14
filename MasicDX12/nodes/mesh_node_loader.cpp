@@ -119,7 +119,7 @@ void ImportMesh(MeshList& mesh_list, MaterialList& material_list, CommandList& c
     }
 }
 
-void ImportMaterial(MaterialList& material_list, CommandList& command_list, const aiMaterial& material, std::filesystem::path parent_path) {
+void ImportMaterial(MaterialList& material_list, CommandList& command_list, const aiMaterial& material, std::filesystem::path parent_path, bool is_inv_y_texture) {
     aiString material_name;
     aiString aiTexture_path;
     aiTextureOp aiBlend_operation;
@@ -135,6 +135,7 @@ void ImportMaterial(MaterialList& material_list, CommandList& command_list, cons
     float bump_intensity;
 
     std::shared_ptr<Material> pMaterial = std::make_shared<Material>();
+    pMaterial->SetInvYNormalTextureFlag(is_inv_y_texture);
 
     aiString mat_name = material.GetName();
     if (mat_name.length > 0u) {
@@ -308,9 +309,9 @@ void ImportMaterial(MaterialList& material_list, CommandList& command_list, cons
     material_list.push_back(pMaterial);
 }
 
-void ImportMaterial(MaterialList& material_list, CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path) {
+void ImportMaterial(MaterialList& material_list, CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path, bool is_inv_y_texture) {
     for (unsigned int i = 0u; i < scene.mNumMaterials; ++i) {
-        ImportMaterial(material_list, command_list, *(scene.mMaterials[i]), parent_path);
+        ImportMaterial(material_list, command_list, *(scene.mMaterials[i]), parent_path, is_inv_y_texture);
     }
 }
 
@@ -340,17 +341,17 @@ std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<S
 }
 
 
-std::shared_ptr<SceneNode> ImportScene(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path, const std::string& file_name) {
+std::shared_ptr<SceneNode> ImportScene(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path, const std::string& file_name, bool is_inv_y_texture) {
     MaterialList material_list;
     MeshList mesh_list;
 
-    ImportMaterial(material_list, command_list, scene, parent_path);
+    ImportMaterial(material_list, command_list, scene, parent_path, is_inv_y_texture);
     ImportMesh(mesh_list, material_list, command_list, scene);
     
     return ImportSceneNode(mesh_list, nullptr, scene.mRootNode, file_name);
 }
 
-std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(CommandList& command_list, const std::filesystem::path& file_name) {
+std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(CommandList& command_list, const std::filesystem::path& file_name, bool is_inv_y_texture) {
 
     std::filesystem::path file_path = file_name;
     std::filesystem::path export_path = std::filesystem::path(file_path).replace_extension("assbin");
@@ -388,5 +389,5 @@ std::shared_ptr<SceneNode> MeshNodeLoader::ImportSceneNode(CommandList& command_
         return std::shared_ptr<SceneNode>();
     }
 
-    return ImportScene(command_list, *scene, parent_path, file_path_str);
+    return ImportScene(command_list, *scene, parent_path, file_path_str, is_inv_y_texture);
 }

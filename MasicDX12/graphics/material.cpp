@@ -168,6 +168,11 @@ void Material::SetTexture(TextureType type, std::shared_ptr<Texture> texture) {
     }
 }
 
+void Material::SetInvYNormalTextureFlag(bool is_inv_y_texture) {
+    if(is_inv_y_texture) m_material_properties->HasTexture |= HAS_NORMAL_INV_Y_TEXTURE;
+    else m_material_properties->HasTexture *= ~HAS_NORMAL_INV_Y_TEXTURE;
+}
+
 bool Material::IsTransparent() const {
     return (m_material_properties->Opacity < 1.0f || (m_material_properties->HasTexture & HAS_OPACITY_TEXTURE));
 }

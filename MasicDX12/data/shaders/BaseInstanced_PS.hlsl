@@ -146,6 +146,10 @@ float3 LinearToSRGB(float3 x) {
 	return x < 0.0031308 ? 12.92 * x : 1.13005 * sqrt(abs(x - 0.00228)) - 0.13448 * x + 0.005719;
 }
 
+float3 SRGBToLinear(float3 x) {
+	return x < 0.04045f ? x / 12.92 : pow((x + 0.055) / 1.055, 2.4);
+}
+
 float DoDiffuse(float3 N, float3 L) {
     return max(0, dot(N, L));
 }
@@ -384,9 +388,11 @@ float3 DoNormalMapping(float3x3 tbn, float3 normal_map_sample) {
 	return normalize(bumped_normal);
 }
 
-float3 DoNormalMapping(float3x3 tbn, Texture2D tex, float2 uv) {
+float3 DoNormalMapping(float3x3 tbn, Texture2D tex, float2 uv, bool need_inv_y) {
 	float3 normal_map_sample = tex.Sample(TextureSampler, uv).xyz;
+    //float3 normal_map_sample = LinearToSRGB(tex.Sample(TextureSampler, uv).xyz);
 	float3 normal_t = ExpandNormal(normal_map_sample);
+    //if(need_inv_y) normal_t *= -1.0f;
 
     // Transform normal from tangent space to view space.
 	float3 bumped_normal = mul(normal_t, tbn);
@@ -442,6 +448,7 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 	const uint HAS_OPACITY_TEXTURE        = 128u;
 	const uint HAS_DISPLACEMENT_TEXTURE   = 256u;
     const uint HAS_METALNESS_TEXTURE      = 512u;
+    const uint HAS_NORMAL_INV_Y_TEXTURE   = 1024u;
     
 	Material material = gMaterialData;
     
@@ -466,6 +473,8 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 	float4 diffuse_albedo = material.Diffuse;
     if (material.HasTexture & HAS_DIFFUSE_TEXTURE) {
 		diffuse_albedo = SampleTexture(DiffuseTexture, texture_uv, diffuse_albedo);
+        //diffuse_albedo.xyz = SRGBToLinear(diffuse_albedo.xyz);
+        //diffuse_albedo.xyz = LinearToSRGB(diffuse_albedo.xyz);
 	}
     
 	float specular_power = material.SpecularPower;
@@ -482,23 +491,26 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 	}
 
 	float3 normal_t_ws;
+    //normal_t_ws = normalize(ps_in.NormalWS);
     // Normal mapping
 	if (material.HasTexture & HAS_NORMAL_TEXTURE) {
+        float3 normal_ws = normalize(ps_in.NormalWS);
+        //float3 tangent_ws = normalize(ps_in.TangentWS - dot(ps_in.TangentWS, normal_ws) * normal_ws);
 		float3 tangent_ws = normalize(ps_in.TangentWS);
 		float3 bitangent_ws = normalize(ps_in.BitangentWS);
-        float3 normal_ws = normalize(ps_in.NormalWS);
-
+        //float3 bitangent_ws = cross(normal_ws, tangent_ws);
+    
 		float3x3 tbn_ws = float3x3(tangent_ws, bitangent_ws, normal_ws);
-
-		normal_t_ws = DoNormalMapping(tbn_ws, NormalTexture, texture_uv);
+    
+		normal_t_ws = DoNormalMapping(tbn_ws, NormalTexture, texture_uv, material.HasTexture & HAS_NORMAL_INV_Y_TEXTURE);
 	}
 	else if (material.HasTexture & HAS_BUMP_TEXTURE) {
 		float3 tangent_ws = normalize(ps_in.TangentWS);
 		float3 bitangent_ws = normalize(ps_in.BitangentWS);
         float3 normal_ws = normalize(ps_in.NormalWS);
-
+    
 		float3x3 tbn_ws = float3x3(tangent_ws, -bitangent_ws, normal_ws);
-
+    
 		normal_t_ws = DoBumpMapping(tbn_ws, BumpTexture, texture_uv, material.BumpIntensity);
 	}
 	else {
@@ -527,6 +539,8 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
         }
         specular *= lit.Specular;
     }
-
-	return float4((emissive + ambient + diffuse_albedo + specular).rgb * shadow, alpha * material.Opacity);
+    
+    float4 result = float4((emissive + ambient + diffuse_albedo + specular).rgb * shadow, alpha * material.Opacity);
+    return float4(LinearToSRGB(result.xyz), result.a);
+	//return result;
 }

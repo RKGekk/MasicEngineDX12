@@ -243,6 +243,7 @@ void CommandList::SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY primitive_topology
 }
 
 std::shared_ptr<Texture> CommandList::LoadTextureFromFile(const std::wstring& file_name, bool sRGB) {
+	using namespace DirectX;
 	std::shared_ptr<Texture> texture;
 	std::filesystem::path file_path(file_name);
 	if (!std::filesystem::exists(file_path)) {
@@ -268,7 +269,7 @@ std::shared_ptr<Texture> CommandList::LoadTextureFromFile(const std::wstring& fi
 			ThrowIfFailed(LoadFromTGAFile(file_name.c_str(), &metadata, scratch_image));
 		}
 		else {
-			ThrowIfFailed(LoadFromWICFile(file_name.c_str(), DirectX::WIC_FLAGS_FORCE_RGB, &metadata, scratch_image));
+			ThrowIfFailed(LoadFromWICFile(file_name.c_str(), DirectX::WIC_FLAGS_FORCE_RGB | DirectX::WIC_FLAGS_IGNORE_SRGB, &metadata, scratch_image));
 		}
 
 		if (sRGB) {

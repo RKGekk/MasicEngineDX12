@@ -44,7 +44,7 @@ SpotLight LightNode::GetSpotLight(DirectX::FXMMATRIX view) {
 	res.SpotAngle = m_light_props.m_spot;
 	res.ConstantAttenuation = m_light_props.m_attenuation[0];
 	res.LinearAttenuation = m_light_props.m_attenuation[1];
-	res.QuadraticAttenuation = m_light_props.m_attenuation[3];
+	res.QuadraticAttenuation = m_light_props.m_attenuation[2];
 
 	return res;
 }
@@ -60,7 +60,7 @@ PointLight LightNode::GetPointLight(DirectX::FXMMATRIX view) {
 	res.Ambient = 0.0f;
 	res.ConstantAttenuation = m_light_props.m_attenuation[0];
 	res.LinearAttenuation = m_light_props.m_attenuation[1];
-	res.QuadraticAttenuation = m_light_props.m_attenuation[3];
+	res.QuadraticAttenuation = m_light_props.m_attenuation[2];
 
 	return res;
 }
@@ -73,7 +73,7 @@ DirectionalLight LightNode::GetDirectionalLight(DirectX::FXMMATRIX view) {
 	DirectX::XMStoreFloat4(&res.DirectionVS, DirectX::XMVector4Transform(directionWS_xm, view));
 
 	res.Color = DirectX::XMFLOAT4(m_light_props.m_strength.x, m_light_props.m_strength.y, m_light_props.m_strength.z, 1.0f);
-	res.Ambient = 0.0f;
+	res.Ambient = 0.01f;
 
 	return res;
 }

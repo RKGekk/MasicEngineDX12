@@ -77,6 +77,7 @@ public:
 	static const uint32_t HAS_OPACITY_TEXTURE = 128u;
 	static const uint32_t HAS_DISPLACEMENT_TEXTURE = 256u;
 	static const uint32_t HAS_METALNESS_TEXTURE = 512u;
+	static const uint32_t HAS_NORMAL_INV_Y_TEXTURE = 1024u;
 
 	enum class TextureType {
 		Ambient,
@@ -128,6 +129,7 @@ public:
 
 	std::shared_ptr<Texture> GetTexture(TextureType ID) const;
 	void SetTexture(TextureType type, std::shared_ptr<Texture> texture);
+	void SetInvYNormalTextureFlag(bool is_inv_y_texture);
 
 	bool IsTransparent() const;
 
