@@ -57,7 +57,11 @@ void MeshComponent::VDelegatePostInit() {
     scene_node->VAddChild(m_loaded_scene_node);
 }
 
-void MeshComponent::VDelegateUpdate(const GameTimerDelta& delta) {}
+void MeshComponent::VDelegateUpdate(const GameTimerDelta& delta) {
+    if (m_current_gen_updated) {
+        m_loaded_scene_node->AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
+    }
+}
 
 const std::string& MeshComponent::VGetName() const {
 	return MeshComponent::g_Name;

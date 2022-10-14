@@ -29,11 +29,12 @@ protected:
 
 public:
 	enum class DirtyFlags {
-		DF_None = 0,
-		DF_Light = (1 << 0),
-		DF_Mesh = (1 << 1),
+		DF_None      = 0,
+		DF_Light     = (1 << 0),
+		DF_Mesh      = (1 << 1),
 		DF_Transform = (1 << 2),
-		DF_All = DF_Light | DF_Mesh | DF_Transform
+		DF_Camera    = (1 << 3),
+		DF_All = DF_Light | DF_Mesh | DF_Transform | DF_Camera
 	};
 
 	SceneNodeProperties();

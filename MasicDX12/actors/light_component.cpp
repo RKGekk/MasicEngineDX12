@@ -57,7 +57,11 @@ void LightComponent::VDelegatePostInit() {
 	scene_node->VAddChild(m_loaded_scene_node);
 }
 
-void LightComponent::VDelegateUpdate(const GameTimerDelta& delta) {}
+void LightComponent::VDelegateUpdate(const GameTimerDelta& delta) {
+	if (m_current_gen_updated) {
+		m_loaded_scene_node->AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Light));
+	}
+}
 
 const std::string& LightComponent::VGetName() const {
 	return LightComponent::g_Name;

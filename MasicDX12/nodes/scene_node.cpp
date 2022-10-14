@@ -292,6 +292,14 @@ void SceneNode::SetDirtyFlags(uint32_t flags) {
 	m_props.m_dirty_flags = flags;
 }
 
+void SceneNode::AddDirtyFlags(uint32_t flags) {
+	m_props.m_dirty_flags |= flags;
+}
+
+void SceneNode::RemoveDirtyFlags(uint32_t flags) {
+	m_props.m_dirty_flags &= ~flags;
+}
+
 void SceneNode::SetGroupID(uint32_t id) {
 	m_props.m_group_id = id;
 }

@@ -54,6 +54,9 @@ public:
 	void SetName(std::string name);
 
 	void SetDirtyFlags(uint32_t flags);
+	void AddDirtyFlags(uint32_t flags);
+	void RemoveDirtyFlags(uint32_t flags);
+
 	void SetGroupID(uint32_t id);
 
 protected:

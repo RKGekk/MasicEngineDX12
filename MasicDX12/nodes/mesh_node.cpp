@@ -26,19 +26,7 @@ HRESULT MeshNode::VOnRestore() {
 
 HRESULT MeshNode::VOnUpdate() {
     if (Get().GetDirtyFlags() & to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh)) {
-        RecalcAABB();
-        DirectX::BoundingBox aabb_max = m_AABB_merged;
-        std::shared_ptr<SceneNode> parent = m_pParent.lock();
-        while (parent) {
-            std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(parent);
-            if (mesh_node) {
-                mesh_node->RecalcAABB();
-                DirectX::BoundingBox::CreateMerged(aabb_max, mesh_node->m_AABB_merged, aabb_max);
-                mesh_node->m_AABB_merged = aabb_max;
-                DirectX::BoundingSphere::CreateFromBoundingBox(mesh_node->m_sphere_merged, mesh_node->m_AABB_merged);
-            }
-            parent = parent->GetParent();
-        }
+        UpdateAABB();
     }
 
     return SceneNode::VOnUpdate();
@@ -49,7 +37,7 @@ bool MeshNode::AddMesh(std::shared_ptr<Mesh> mesh) {
 
     MeshList::const_iterator iter = std::find(m_meshes.begin(), m_meshes.end(), mesh);
     if (iter != m_meshes.cend()) return false;
-    SetDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
+    AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
     m_meshes.push_back(mesh);
     DirectX::BoundingBox aabb_original = mesh->GetAABB();
     DirectX::BoundingBox aabb_transformed;
@@ -98,6 +86,22 @@ const DirectX::BoundingSphere& MeshNode::GetSphere() const {
     return m_sphere_merged;
 }
 
+void MeshNode::UpdateAABB() {
+    RecalcAABB();
+    DirectX::BoundingBox aabb_max = m_AABB_merged;
+    std::shared_ptr<SceneNode> parent = m_pParent.lock();
+    while (parent) {
+        std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(parent);
+        if (mesh_node) {
+            mesh_node->RecalcAABB();
+            DirectX::BoundingBox::CreateMerged(aabb_max, mesh_node->m_AABB_merged, aabb_max);
+            mesh_node->m_AABB_merged = aabb_max;
+            DirectX::BoundingSphere::CreateFromBoundingBox(mesh_node->m_sphere_merged, mesh_node->m_AABB_merged);
+        }
+        parent = parent->GetParent();
+    }
+}
+
 bool MeshNode::GetIsInstanced() const {
     return m_instanced;
 }
@@ -119,5 +123,5 @@ void MeshNode::RecalcAABB() {
         m_AABB_merged = aabb_max;
         DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_merged, m_AABB_merged);
     }
-    SetDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
+    AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
 }

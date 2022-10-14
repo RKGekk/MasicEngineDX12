@@ -27,6 +27,7 @@ public:
 
 	const DirectX::BoundingBox& GetAABB() const;
 	const DirectX::BoundingSphere& GetSphere() const;
+	void UpdateAABB();
 
 	bool GetIsInstanced() const;
 	void SetIsInstanced(bool is_instanced);

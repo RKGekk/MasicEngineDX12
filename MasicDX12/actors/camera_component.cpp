@@ -29,7 +29,7 @@ void CameraComponent::VDelegatePostInit() {
 
 void CameraComponent::VDelegateUpdate(const GameTimerDelta& delta) {
 	if (m_current_gen_updated) {
-		m_loaded_scene_node->UpdateFrustum();
+		m_loaded_scene_node->AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Camera));
 	}
 }
 

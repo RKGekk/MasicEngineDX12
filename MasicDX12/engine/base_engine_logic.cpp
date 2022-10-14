@@ -261,12 +261,12 @@ void BaseEngineLogic::VOnUpdate(const GameTimerDelta& delta) {
 		break;
 	}
 
-	for (GameViewList::iterator it = m_game_views.begin(); it != m_game_views.end(); ++it) {
-		(*it)->VOnUpdate(delta);
-	}
-
 	for (ActorMap::const_iterator it = m_actors.begin(); it != m_actors.end(); ++it) {
 		it->second->Update(delta);
+	}
+
+	for (GameViewList::iterator it = m_game_views.begin(); it != m_game_views.end(); ++it) {
+		(*it)->VOnUpdate(delta);
 	}
 }
 

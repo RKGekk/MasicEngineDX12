@@ -37,6 +37,14 @@ HRESULT CameraNode::VOnRestore() {
 	return S_OK;
 }
 
+HRESULT CameraNode::VOnUpdate() {
+	if (Get().GetDirtyFlags() & to_underlying(SceneNodeProperties::DirtyFlags::DF_Camera)) {
+		UpdateFrustum();
+	}
+
+	return SceneNode::VOnUpdate();
+}
+
 const DirectX::BoundingFrustum& CameraNode::GetFrustum() const {
 	return m_frustum;
 }

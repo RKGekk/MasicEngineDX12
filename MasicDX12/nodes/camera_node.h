@@ -16,6 +16,7 @@ public:
 	CameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj);
 
 	virtual HRESULT VOnRestore() override;
+	virtual HRESULT VOnUpdate() override;
 
 	const DirectX::BoundingFrustum& GetFrustum() const;
 	void UpdateFrustum();
