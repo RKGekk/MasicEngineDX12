@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 
 struct DirectionalLight {
-    DirectionalLight() : DirectionWS(0.0f, 0.0f, 1.0f, 0.0f), DirectionVS(0.0f, 0.0f, 1.0f, 0.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Ambient(0.01f) {}
+    DirectionalLight() : DirectionWS(0.0f, 0.0f, 1.0f, 0.0f), DirectionVS(0.0f, 0.0f, 1.0f, 0.0f), Color(1.0f, 1.0f, 1.0f, 1.0f), Ambient(0.01f, 0.01f, 0.01f) {}
 
     // Light direction in world space.
     DirectX::XMFLOAT4 DirectionWS;
@@ -16,8 +16,8 @@ struct DirectionalLight {
     DirectX::XMFLOAT4 Color;
     //----------------------------------- (16 byte boundary)
 
-    float Ambient;
-    float Padding[3];
+    DirectX::XMFLOAT3 Ambient;
+    float Padding;
     //----------------------------------- (16 byte boundary)
     // Total:                              16 * 4 = 64 bytes
 };

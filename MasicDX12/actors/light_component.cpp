@@ -47,6 +47,9 @@ bool LightComponent::VDelegateInit(const pugi::xml_node& data) {
 	props.m_range = shape_node.attribute("range").as_float();
 	props.m_spot = shape_node.attribute("spot").as_float();
 
+	DirectX::XMFLOAT3 default_ambient = { 0.01f, 0.01f, 0.01f };
+	props.m_ambient = colorfromattr3f(light_node.child("Ambient"), default_ambient);
+
 	m_loaded_scene_node = std::make_shared<LightNode>("LightNode"s, props, DirectX::XMMatrixIdentity());
 
 	return true;

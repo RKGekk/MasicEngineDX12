@@ -38,12 +38,16 @@ struct PointLight {
     //----------------------------------- (16 byte boundary)
     float4 Color;
     //----------------------------------- (16 byte boundary)
-    float Ambient;
     float ConstantAttenuation;
     float LinearAttenuation;
     float QuadraticAttenuation;
+    float Padding1;
     //----------------------------------- (16 byte boundary)
-    // Total:                              16 * 4 = 64 bytes
+    
+    float3 Ambient;
+    float Padding2;
+    //----------------------------------- (16 byte boundary)
+    // Total:                              16 * 5 = 80 bytes
 };
 
 struct SpotLight {
@@ -57,13 +61,13 @@ struct SpotLight {
     //----------------------------------- (16 byte boundary)
     float4 Color;
     //----------------------------------- (16 byte boundary)
-    float  Ambient;
     float  SpotAngle;
     float  ConstantAttenuation;
     float  LinearAttenuation;
-    //----------------------------------- (16 byte boundary)
     float  QuadraticAttenuation;
-    float3 Padding;
+    //----------------------------------- (16 byte boundary)
+    float3 Ambient;
+    float Padding;
     //----------------------------------- (16 byte boundary)
     // Total:                              16 * 7 = 112 bytes
 };
@@ -75,8 +79,8 @@ struct DirectionalLight {
     //----------------------------------- (16 byte boundary)
     float4 Color;
     //----------------------------------- (16 byte boundary)
-    float Ambient;
-    float3 Padding;
+    float3 Ambient;
+    float Padding;
     //----------------------------------- (16 byte boundary)
     // Total:                              16 * 4 = 64 bytes
 };
@@ -144,6 +148,7 @@ float3 LinearToSRGB(float3 x) {
 
     // This is cheaper but nearly equivalent
 	return x < 0.0031308 ? 12.92 * x : 1.13005 * sqrt(abs(x - 0.00228)) - 0.13448 * x + 0.005719;
+    //return x < 0.0031308 ? 12.92 * x : 1.055 * pow(abs(x), 1.0 / 2.4) - 0.055;
 }
 
 float3 SRGBToLinear(float3 x) {
@@ -214,7 +219,7 @@ LightResult DoPointLightVS(PointLight light, float3 V, float3 P, float3 N, float
 
     result.Diffuse = DoDiffuse(N, L) * attenuation * light.Color;
     result.Specular = DoSpecular(V, N, L, specularPower) * attenuation * light.Color;
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -230,7 +235,7 @@ LightResult DoPointLightWS(PointLight light, BlinnPhongSpecMaterial pbr, float3 
 
     result.Diffuse = light.Color * DoDiffuse(normal_ws, light_direction_normal_ws) * attenuation;
     result.Specular = light.Color * float4(BlinnPhongSpec(light_direction_normal_ws, normal_ws, to_eye_ws, pbr), 0.0f) * attenuation;
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -247,7 +252,7 @@ LightResult DoSpotLightVS(SpotLight light, float3 V, float3 P, float3 N, float s
 
     result.Diffuse = DoDiffuse(N, L) * attenuation * spotIntensity * light.Color;
     result.Specular = DoSpecular(V, N, L, specularPower) * attenuation * spotIntensity * light.Color;
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -265,7 +270,7 @@ LightResult DoSpotLightWS(SpotLight light, BlinnPhongSpecMaterial pbr, float3 po
 
     result.Diffuse = light.Color * DoDiffuse(normal_ws, light_direction_normal_ws) * attenuation * spot_intensity;
     result.Specular = light.Color * float4(BlinnPhongSpec(light_direction_normal_ws, normal_ws, to_eye_ws, pbr), 0.0f) * attenuation * spot_intensity;
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -277,7 +282,7 @@ LightResult DoDirectionalLightVS(DirectionalLight light, float3 V, float3 P, flo
 
     result.Diffuse = light.Color * DoDiffuse(N, L);
     result.Specular = light.Color * DoSpecular(V, N, L, specularPower);
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -289,7 +294,7 @@ LightResult DoDirectionalLightWS(DirectionalLight light, BlinnPhongSpecMaterial 
 
     result.Diffuse = light.Color * DoDiffuse(normal_ws, light_direction_normal_ws);
     result.Specular = light.Color * float4(BlinnPhongSpec(light_direction_normal_ws, normal_ws, to_eye_ws, pbr), 0.0f);
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -392,7 +397,7 @@ float3 DoNormalMapping(float3x3 tbn, Texture2D tex, float2 uv, bool need_inv_y) 
 	float3 normal_map_sample = tex.Sample(TextureSampler, uv).xyz;
     //float3 normal_map_sample = LinearToSRGB(tex.Sample(TextureSampler, uv).xyz);
 	float3 normal_t = ExpandNormal(normal_map_sample);
-    //if(need_inv_y) normal_t *= -1.0f;
+    if(need_inv_y) normal_t *= -1.0f;
 
     // Transform normal from tangent space to view space.
 	float3 bumped_normal = mul(normal_t, tbn);

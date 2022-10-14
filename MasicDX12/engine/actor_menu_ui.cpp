@@ -110,6 +110,7 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						m_attenuation[2] = lp.m_strength.z; // Quadratic
 						m_range = lp.m_range;
 						m_spot = lp.m_spot;
+						m_ambient = lp.m_ambient;
 					}
 					else {
 						m_light_exists = false;
@@ -120,6 +121,7 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						m_attenuation[2] = 1.0f; // Quadratic
 						m_range = 1.0f;
 						m_spot = 1.0f;
+						m_ambient = DirectX::XMFLOAT3(0.01f, 0.01f, 0.01f);
 					}
 
 					std::shared_ptr<MeshComponent> mc = act->GetComponent<MeshComponent>().lock();
@@ -285,6 +287,14 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						if (lc) {
 							m_light_exists = true;
 							lc->VGetLightNode()->SetSpot(m_spot);
+						}
+					}
+					if (m_light_exists && ImGui::ColorEdit4("Ambient", ((float*)&m_ambient))) {
+						m_light_exists = true;
+						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
+						if (lc) {
+							m_light_exists = true;
+							lc->VGetLightNode()->SetAmbient(m_ambient);
 						}
 					}
 

@@ -24,6 +24,7 @@ public:
 	void SetAttenuation(float constant_attenuation, float linear_attenuation, float quadratic_attenuation);
 	void SetRange(float range);
 	void SetSpot(float spot);
+	void SetAmbient(DirectX::XMFLOAT3 ambient);
 
 	SpotLight GetSpotLight(DirectX::FXMMATRIX view);
 	PointLight GetPointLight(DirectX::FXMMATRIX view);

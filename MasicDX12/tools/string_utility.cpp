@@ -179,9 +179,9 @@ DirectX::XMFLOAT3 colorfromattr3f(const pugi::xml_node& node_with_color, DirectX
 	std::string sg = node_with_color.attribute("g").value();
 	std::string sb = node_with_color.attribute("b").value();
 
-	color.x = std::stof(sr);
-	color.y = std::stof(sg);
-	color.z = std::stof(sb);
+	color.x = sr.empty() ? def.x : std::stof(sr);
+	color.y = sg.empty() ? def.y : std::stof(sg);
+	color.z = sb.empty() ? def.z : std::stof(sb);
 
 	return color;
 }
@@ -212,10 +212,10 @@ DirectX::XMFLOAT4 colorfromattr4f(const pugi::xml_node& node_with_color, DirectX
 	std::string sb = node_with_color.attribute("b").value();
 	std::string sa = node_with_color.attribute("a").value();
 
-	color.x = std::stof(sr);
-	color.y = std::stof(sg);
-	color.z = std::stof(sb);
-	color.w = std::stof(sa);
+	color.x = sr.empty() ? def.x : std::stof(sr);
+	color.y = sg.empty() ? def.y : std::stof(sg);
+	color.z = sb.empty() ? def.z : std::stof(sb);
+	color.w = sa.empty() ? def.w : std::stof(sa);
 
 	return color;
 }

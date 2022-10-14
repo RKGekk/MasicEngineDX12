@@ -39,12 +39,15 @@ struct PointLight {
     //----------------------------------- (16 byte boundary)
     float4 Color;
     //----------------------------------- (16 byte boundary)
-    float Ambient;
     float ConstantAttenuation;
     float LinearAttenuation;
     float QuadraticAttenuation;
+    float Padding1;
     //----------------------------------- (16 byte boundary)
-    // Total:                              16 * 4 = 64 bytes
+    float3 Ambient;
+    float Padding2;
+    //----------------------------------- (16 byte boundary)
+    // Total:                              16 * 5 = 80 bytes
 };
 
 struct SpotLight {
@@ -58,13 +61,13 @@ struct SpotLight {
     //----------------------------------- (16 byte boundary)
     float4 Color;
     //----------------------------------- (16 byte boundary)
-    float  Ambient;
     float  SpotAngle;
     float  ConstantAttenuation;
     float  LinearAttenuation;
-    //----------------------------------- (16 byte boundary)
     float  QuadraticAttenuation;
-    float3 Padding;
+    //----------------------------------- (16 byte boundary)
+    float3 Ambient;
+    float Padding;
     //----------------------------------- (16 byte boundary)
     // Total:                              16 * 7 = 112 bytes
 };
@@ -76,8 +79,8 @@ struct DirectionalLight {
     //----------------------------------- (16 byte boundary)
     float4 Color;
     //----------------------------------- (16 byte boundary)
-    float Ambient;
-    float3 Padding;
+    float3 Ambient;
+    float Padding;
     //----------------------------------- (16 byte boundary)
     // Total:                              16 * 4 = 64 bytes
 };
@@ -158,7 +161,7 @@ LightResult DoPointLight(PointLight light, float3 V, float3 P, float3 N, float s
 
     result.Diffuse = DoDiffuse(N, L) * attenuation * light.Color;
     result.Specular = DoSpecular(V, N, L, specularPower) * attenuation * light.Color;
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -175,7 +178,7 @@ LightResult DoSpotLight(SpotLight light, float3 V, float3 P, float3 N, float spe
 
     result.Diffuse = DoDiffuse(N, L) * attenuation * spotIntensity * light.Color;
     result.Specular = DoSpecular(V, N, L, specularPower) * attenuation * spotIntensity * light.Color;
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
@@ -187,7 +190,7 @@ LightResult DoDirectionalLight(DirectionalLight light, float3 V, float3 P, float
 
     result.Diffuse = light.Color * DoDiffuse(N, L);
     result.Specular = light.Color * DoSpecular(V, N, L, specularPower);
-    result.Ambient = light.Color * light.Ambient;
+    result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }

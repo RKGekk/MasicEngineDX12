@@ -66,6 +66,7 @@ private:
 	float m_attenuation[3]; // Constant, LinearAttenuation, Quadratic
 	float m_range;
 	float m_spot;
+	DirectX::XMFLOAT3 m_ambient;
 
 	bool m_mesh_exists;
 	std::string m_mesh_name;
