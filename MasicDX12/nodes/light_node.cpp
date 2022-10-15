@@ -6,6 +6,17 @@ LightNode::LightNode(const std::string& name, const LightProperties& props, Dire
 	m_light_props = props;
 }
 
+HRESULT LightNode::VOnUpdate() {
+	//uint32_t dirty_flags = Get().GetDirtyFlags();
+	//uint32_t light_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Light);
+	//uint32_t transform_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Transform);
+	//if ((dirty_flags & light_flag) || (dirty_flags & transform_flag)) {
+	//	
+	//}
+
+	return SceneNode::VOnUpdate();
+}
+
 const LightProperties& LightNode::VGetLight() const {
 	return m_light_props;
 }

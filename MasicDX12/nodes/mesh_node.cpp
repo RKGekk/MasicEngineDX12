@@ -25,7 +25,11 @@ HRESULT MeshNode::VOnRestore() {
 }
 
 HRESULT MeshNode::VOnUpdate() {
-    if (Get().GetDirtyFlags() & to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh)) {
+    uint32_t dirty_flags = Get().GetDirtyFlags();
+    uint32_t mesh_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh);
+    uint32_t transform_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Transform);
+
+    if ((dirty_flags & mesh_flag) || (dirty_flags & transform_flag)) {
         UpdateAABB();
     }
 

@@ -38,7 +38,12 @@ HRESULT CameraNode::VOnRestore() {
 }
 
 HRESULT CameraNode::VOnUpdate() {
-	if (Get().GetDirtyFlags() & to_underlying(SceneNodeProperties::DirtyFlags::DF_Camera)) {
+
+	uint32_t dirty_flags = Get().GetDirtyFlags();
+	uint32_t camera_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Camera);
+	uint32_t transform_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Transform);
+
+	if ((dirty_flags & camera_flag) || (dirty_flags & transform_flag)) {
 		UpdateFrustum();
 	}
 

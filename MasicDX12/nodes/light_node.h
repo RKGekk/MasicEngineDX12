@@ -18,6 +18,8 @@ public:
 	LightNode(const std::string& name, const LightProperties& props, const DirectX::XMFLOAT4X4* t);
 	LightNode(const std::string& name, const LightProperties& props, DirectX::FXMMATRIX to);
 
+	virtual HRESULT VOnUpdate() override;
+
 	const LightProperties& VGetLight() const;
 
 	void SetStrength(DirectX::XMFLOAT3 strength);
