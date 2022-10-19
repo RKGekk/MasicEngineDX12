@@ -3,6 +3,7 @@
 #include <string>
 
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 
 #include "../actors/actor.h"
 #include "../graphics/material.h"
@@ -24,6 +25,13 @@ protected:
 	uint32_t m_dirty_flags;
 	uint32_t m_generation;
 	uint32_t m_group_id;
+
+	DirectX::BoundingBox m_AABB;
+	DirectX::BoundingSphere m_sphere;
+	DirectX::BoundingBox m_AABB_cumulative;
+	DirectX::BoundingSphere m_sphere_cumulative;
+	DirectX::BoundingBox m_AABB_merged;
+	DirectX::BoundingSphere m_sphere_merged;
 	
 	bool m_active;
 
@@ -99,4 +107,13 @@ public:
 	uint32_t GetDirtyFlags() const;
 	uint32_t GetGroupID() const;
 	uint32_t GetGeneration() const;
+
+	const DirectX::BoundingBox& AABB() const;
+	const DirectX::BoundingSphere& Sphere() const;
+
+	const DirectX::BoundingBox& CumulativeAABB() const;
+	const DirectX::BoundingSphere& CumulativeSphere() const;
+
+	const DirectX::BoundingBox& MergedAABB() const;
+	const DirectX::BoundingSphere& MergedSphere() const;
 };

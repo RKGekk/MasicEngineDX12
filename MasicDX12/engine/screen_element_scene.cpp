@@ -13,6 +13,7 @@
 #include "../nodes/mesh_manager.h"
 #include "../nodes/mesh_node.h"
 #include "../nodes/camera_node.h"
+#include "../nodes/basic_camera_node.h"
 #include "../events/evt_data_modified_scene_component.h"
 
 ScreenElementScene::ScreenElementScene() : Scene() {
@@ -79,7 +80,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	std::shared_ptr<Device> device = renderer->GetDevice();
 
 	std::shared_ptr<HumanView> human_view = engine->GetGameLogic()->GetHumanView();
-	std::shared_ptr<CameraNode> camera = human_view->VGetCamera();
+	std::shared_ptr<BasicCameraNode> camera = human_view->VGetCamera();
 
 	m_light_manager->CalcLighting(camera->GetView());
 	m_mesh_manager->CalcInstances(*camera);

@@ -11,23 +11,15 @@
 
 class CommandList;
 class Device;
-class Material;
 class RootSignature;
 class PipelineStateObject;
 class ShaderResourceView;
-class Texture;
-class LightManager;
 class MeshManager;
 class StructuredBuffer;
 class BasicCameraNode;
 
-class EffectInstancedPSO {
+class EffectShadowInstancedPSO {
 public:
-	struct LightProperties {
-		uint32_t NumPointLights;
-		uint32_t NumSpotLights;
-		uint32_t NumDirectionalLights;
-	};
 
 	struct alignas(16) PerPassData {
 		DirectX::XMMATRIX ViewMatrix;
@@ -54,19 +46,12 @@ public:
 		PerPassData,
 		InstanceData,
 		InstanceIndexData,
-		MaterialCB,
-		LightPropertiesCB,
-		PointLights,
-		SpotLights,
-		DirectionalLights,
-		Textures,
 		NumRootParameters
 	};
 
-	EffectInstancedPSO(std::shared_ptr<Device> device);
-	virtual ~EffectInstancedPSO();
+	EffectShadowInstancedPSO(std::shared_ptr<Device> device);
+	virtual ~EffectShadowInstancedPSO();
 
-	void SetLightManager(std::shared_ptr<LightManager> light_manager);
 	void SetMeshManager(std::shared_ptr<MeshManager> mesh_manager);
 
 	void SetViewMatrix(const BasicCameraNode& camera);
@@ -81,16 +66,12 @@ public:
 private:
 	enum DirtyFlags {
 		DF_None              = 0,
-		DF_PointLights       = (1 << 0),
-		DF_SpotLights        = (1 << 1),
-		DF_DirectionalLights = (1 << 2),
-		DF_Material          = (1 << 3),
-		DF_PerPassData       = (1 << 4),
-		DF_InstanceData      = (1 << 5),
-		DF_InstanceIndexData = (1 << 6),
-		DF_RT_Size           = (1 << 7),
-		DF_Near_Far          = (1 << 8),
-		DF_All = DF_PointLights | DF_SpotLights | DF_DirectionalLights | DF_Material | DF_PerPassData | DF_InstanceData | DF_RT_Size | DF_Near_Far
+		DF_PerPassData       = (1 << 0),
+		DF_InstanceData      = (1 << 1),
+		DF_InstanceIndexData = (1 << 2),
+		DF_RT_Size           = (1 << 3),
+		DF_Near_Far          = (1 << 4),
+		DF_All = DF_PerPassData | DF_InstanceData | DF_RT_Size | DF_Near_Far
 	};
 
 	struct alignas(16) VP {
@@ -98,20 +79,14 @@ private:
 		DirectX::XMMATRIX Projection;
 	};
 
-	inline void BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture);
-
 	std::shared_ptr<Device> m_device;
 	std::shared_ptr<RootSignature> m_root_signature;
 	std::shared_ptr<PipelineStateObject> m_pipeline_state_object;
 
 	std::shared_ptr<VertexShader> m_vertex_shader;
-	std::shared_ptr<PixelShader> m_pixel_shader;
 
-	DXGI_FORMAT m_back_buffer_format;
 	DXGI_FORMAT m_depth_buffer_format;
-	DXGI_SAMPLE_DESC m_sample_desc;
 
-	std::shared_ptr<LightManager> m_light_manager;
 	std::shared_ptr<MeshManager> m_mesh_manager;
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;

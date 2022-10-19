@@ -14,6 +14,7 @@
 #include "../tools/memory_utility.h"
 #include "../tools/string_utility.h"
 #include "../nodes/camera_node.h"
+#include "../nodes/basic_camera_node.h"
 #include "../nodes/light_manager.h"
 #include "../nodes/mesh_manager.h"
 #include "../nodes/mesh_node.h"
@@ -258,7 +259,7 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
     m_dirty_flags = DF_None;
 }
 
-void EffectInstancedPSO::SetViewMatrix(const CameraNode& camera) {
+void EffectInstancedPSO::SetViewMatrix(const BasicCameraNode& camera) {
     m_pAligned_mvp->View = camera.GetView();
     m_pAligned_mvp->Projection = camera.GetProjection();
     m_near_z = camera.GetFrustum().Near;

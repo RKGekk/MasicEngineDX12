@@ -289,7 +289,7 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 							lc->VGetLightNode()->SetSpot(m_spot);
 						}
 					}
-					if (m_light_exists && ImGui::ColorEdit4("Ambient", ((float*)&m_ambient))) {
+					if (m_light_exists && ImGui::ColorEdit3("Ambient", ((float*)&m_ambient))) {
 						m_light_exists = true;
 						std::shared_ptr<LightComponent> lc = act->GetComponent<LightComponent>().lock();
 						if (lc) {

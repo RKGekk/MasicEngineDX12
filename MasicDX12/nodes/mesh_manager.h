@@ -14,7 +14,7 @@
 
 class MeshNode;
 class SceneNode;
-class CameraNode;
+class BasicCameraNode;
 
 class MeshManager {
 	friend class Scene;
@@ -51,7 +51,7 @@ public:
 	const MeshList& GetMeshList(MeshName mesh_name) const;
 	const MeshMap& GetMeshMap() const;
 
-	void CalcInstances(const CameraNode& camera);
+	void CalcInstances(const BasicCameraNode& camera);
 	void UpdateInstancesBuffer();
 
 	InstanceMap& GetInstanceMap();

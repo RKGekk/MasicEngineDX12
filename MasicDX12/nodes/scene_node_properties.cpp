@@ -2,12 +2,19 @@
 
 SceneNodeProperties::SceneNodeProperties() {
 	DirectX::XMStoreFloat4x4(&m_to_world, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_to_world_cumulative, DirectX::XMMatrixIdentity());
 	DirectX::XMStoreFloat4x4(&m_from_world, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_from_world_cumulative, DirectX::XMMatrixIdentity());
 	m_scale = { 1.0f, 1.0f, 1.0f };
+	m_scale_cumulative = { 1.0f, 1.0f, 1.0f };
 	m_active = true;
 	m_dirty_flags = to_underlying(SceneNodeProperties::DirtyFlags::DF_All);
 	m_generation = 0u;
 	m_group_id = 0u;
+	m_AABB = DirectX::BoundingBox(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f));
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere, m_AABB);
+	m_AABB_cumulative = DirectX::BoundingBox(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f));
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_cumulative, m_AABB_cumulative);
 }
 
 DirectX::XMMATRIX SceneNodeProperties::ToWorld() const {
@@ -266,4 +273,28 @@ uint32_t SceneNodeProperties::GetGroupID() const {
 
 uint32_t SceneNodeProperties::GetGeneration() const {
 	return m_generation;
+}
+
+const DirectX::BoundingBox& SceneNodeProperties::AABB() const {
+	return m_AABB;
+}
+
+const DirectX::BoundingSphere& SceneNodeProperties::Sphere() const {
+	return m_sphere;
+}
+
+const DirectX::BoundingBox& SceneNodeProperties::CumulativeAABB() const {
+	return m_AABB_cumulative;
+}
+
+const DirectX::BoundingSphere& SceneNodeProperties::CumulativeSphere() const {
+	return m_sphere_cumulative;
+}
+
+const DirectX::BoundingBox& SceneNodeProperties::MergedAABB() const {
+	return m_AABB_merged;
+}
+
+const DirectX::BoundingSphere& SceneNodeProperties::MergedSphere() const {
+	return m_sphere_merged;
 }

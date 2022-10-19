@@ -14,6 +14,7 @@
 #include "i_pointer_handler.h"
 #include "i_keyboard_handler.h"
 #include "../nodes/camera_node.h"
+#include "../nodes/basic_camera_node.h"
 #include "screen_element_scene.h"
 #include "actor_menu_ui.h"
 #include "movement_controller.h"
@@ -52,7 +53,8 @@ public:
 	void HandleGameState(BaseEngineState newState);
 
 	virtual void VSetControlledActor(std::shared_ptr<Actor> actor);
-	virtual std::shared_ptr<CameraNode> VGetCamera();
+	virtual std::shared_ptr<BasicCameraNode> VGetCamera();
+	virtual std::shared_ptr<Scene> VGetScene();
 	virtual void VSetCameraByName(std::string camera_name);
 
 	virtual const std::string& VGetName() override;
@@ -77,7 +79,7 @@ protected:
 	std::shared_ptr<ProcessManager> m_process_manager;
 	ScreenElementList m_screen_elements;
 	std::shared_ptr<ScreenElementScene> m_scene;
-	std::weak_ptr<CameraNode> m_camera;
+	std::weak_ptr<BasicCameraNode> m_camera;
 
 	float m_pointer_radius;
 	std::vector<std::shared_ptr<IPointerHandler>> m_pointer_handlers;

@@ -158,6 +158,13 @@
           <Ambient r="0.01" g="0.01" b="0.01" />
         </Light>
       </LightComponent>
+      <ShadowCameraComponent>
+        <ShadowMapWidth>2048</ShadowMapWidth>
+        <ShadowMapHeight>2048</ShadowMapHeight>
+        <DepthBias>100000</DepthBias>
+        <DepthBiasClamp>0.1</DepthBiasClamp>
+        <SlopeScaledDepthBias>1.0</SlopeScaledDepthBias>
+      </ShadowCameraComponent>
     </Actor>
 
   </Actors>

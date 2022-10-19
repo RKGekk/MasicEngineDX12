@@ -2,6 +2,7 @@
 
 #include "../tools/string_utility.h"
 #include "../nodes/camera_node.h"
+#include "../nodes/basic_camera_node.h"
 #include "../application.h"
 #include "../events/evt_data_destroy_scene_component.h"
 #include "../events/i_event_manager.h"
@@ -41,7 +42,7 @@ pugi::xml_node CameraComponent::VGenerateXml() {
 	return pugi::xml_node();
 }
 
-std::shared_ptr<CameraNode> CameraComponent::VGetCameraNode() {
+std::shared_ptr<BasicCameraNode> CameraComponent::VGetCameraNode() {
 	return m_loaded_scene_node;
 }
 
@@ -69,7 +70,7 @@ float CameraComponent::GetFar() {
 
 void CameraComponent::SetFar(float far_cut) {
 	m_far = far_cut;
-	m_loaded_scene_node->SetNear(far_cut);
+	m_loaded_scene_node->SetFar(far_cut);
 }
 
 bool CameraComponent::VDelegateInit(const pugi::xml_node& data) {
@@ -80,7 +81,7 @@ bool CameraComponent::VDelegateInit(const pugi::xml_node& data) {
 	m_far = data.child("Far").text().as_float(m_far);
 	m_aspect_ratio = Application::Get().GetApplicationOptions().GetAspect();
 
-	m_loaded_scene_node = std::make_shared<CameraNode>("CameraComponent"s, DirectX::XMMatrixIdentity(), m_fov, m_aspect_ratio, m_near, m_far);
+	m_loaded_scene_node = std::make_shared<BasicCameraNode>("CameraComponent"s, DirectX::XMMatrixIdentity(), m_fov, m_aspect_ratio, m_near, m_far);
 
 	return true;
 }

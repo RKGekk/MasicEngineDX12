@@ -1,6 +1,7 @@
 #include "mesh_manager.h"
 
 #include "camera_node.h"
+#include "basic_camera_node.h"
 #include "mesh_node.h"
 #include "qualifier_node.h"
 #include "scene_node.h"
@@ -88,7 +89,7 @@ const MeshManager::MeshMap& MeshManager::GetMeshMap() const {
 	return m_mesh_map;
 }
 
-void MeshManager::CalcInstances(const CameraNode& camera) {
+void MeshManager::CalcInstances(const BasicCameraNode& camera) {
 	using namespace DirectX;
 	BoundingFrustum world_space_frustum = camera.GetFrustum();
 	for (const auto& [key, value] : m_mesh_map) {
@@ -100,7 +101,7 @@ void MeshManager::CalcInstances(const CameraNode& camera) {
 		for (int i = 0; i < sz; ++i) {
 			const auto& mesh = mesh_list[i];
 			
-			const BoundingBox& aabb = mesh->GetAABB();
+			const BoundingBox& aabb = mesh->Get().MergedAABB();
 			
 			bool frust_conatains_mesh = world_space_frustum.Contains(aabb) != DirectX::DISJOINT;
 			if (frust_conatains_mesh) {

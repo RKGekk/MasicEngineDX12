@@ -615,6 +615,21 @@
     <ClCompile Include="events\evt_data_modified_scene_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\effect_shadow_pso.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\effect_shadow_instanced_pso.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actors\shadow_camera_component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\shadow_camera_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\basic_camera_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1277,6 +1292,21 @@
     <ClInclude Include="events\evt_data_modified_scene_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\effect_shadow_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\effect_shadow_instanced_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actors\shadow_camera_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\shadow_camera_node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\basic_camera_node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_options.xml">
@@ -1427,6 +1457,19 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="data\objects\road_traffic_sign.mtl" />
+    <None Include="data\objects\road_traffic_sign.obj" />
+    <None Include="data\textures\road_bump.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\road_diffuse.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\road_normal.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\road_roughness.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">
@@ -1530,22 +1573,7 @@
     </FxCompile>
     <FxCompile Include="data\shaders\BaseInstanced_PS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstanced_VS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="data\objects\road_traffic_sign.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="data\textures\road_bump.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\road_diffuse.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\road_normal.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\road_roughness.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <FxCompile Include="data\shaders\BasicShadow_VS.hlsl" />
+    <FxCompile Include="data\shaders\BaseInstancedShadow_VS.hlsl" />
   </ItemGroup>
 </Project>

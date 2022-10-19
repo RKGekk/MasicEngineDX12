@@ -72,6 +72,13 @@ HRESULT SceneNode::VOnRestore() {
 }
 
 HRESULT SceneNode::VOnUpdate() {
+	uint32_t dirty_flags = Get().GetDirtyFlags();
+	constexpr uint32_t transform_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Transform);
+	if (dirty_flags & transform_flag) {
+		UpdateCumulativeTransform();
+		UpdateMergedAABB();
+	}
+
 	auto i = m_children.begin();
 	auto end = m_children.end();
 	while (i != end) {
@@ -102,6 +109,8 @@ bool SceneNode::VAddChild(std::shared_ptr<SceneNode> ikid) {
 	ikid->UpdateCumulativeTransform();
 	m_children.push_back(ikid);
 
+	UpdateMergedAABB();
+
 	return true;
 }
 
@@ -115,6 +124,8 @@ bool SceneNode::VRemoveChild(std::shared_ptr<SceneNode> cid) {
 	cid->UpdateCumulativeTransform();
 	m_children.erase(iter);
 
+	UpdateMergedAABB();
+
 	return true;
 }
 
@@ -124,6 +135,28 @@ const SceneNodeList& SceneNode::VGetChildren() const {
 
 const SceneNodeProperties& SceneNode::Get() const {
 	return m_props;
+}
+
+void SceneNode::UpdateMergedAABB() {
+	DirectX::BoundingBox aabb_max = m_props.m_AABB_cumulative;
+	SceneNodeList::iterator i = m_children.begin();
+	SceneNodeList::iterator end = m_children.end();
+	while (i != end) {
+		DirectX::BoundingBox::CreateMerged(aabb_max, aabb_max, (*i)->m_props.m_AABB_cumulative);
+		++i;
+	}
+	++m_props.m_generation;
+	m_props.m_AABB_merged = aabb_max;
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_props.m_sphere_merged, m_props.m_AABB_merged);
+
+	std::shared_ptr<SceneNode> parent = m_pParent.lock();
+	while (parent) {
+		DirectX::BoundingBox::CreateMerged(aabb_max, parent->m_props.m_AABB_merged, aabb_max);
+		parent->m_props.m_AABB_merged = aabb_max;
+		DirectX::BoundingSphere::CreateFromBoundingBox(parent->m_props.m_sphere_merged, parent->m_props.m_AABB_merged);
+
+		parent = parent->GetParent();
+	}
 }
 
 void SceneNode::UpdateCumulativeTransform() {
@@ -149,13 +182,19 @@ void SceneNode::UpdateCumulativeTransform() {
 		m_props.m_from_world_cumulative = m_props.m_from_world;
 		m_props.m_scale_cumulative = m_props.m_scale;
 	}
+	m_props.m_AABB.Transform(m_props.m_AABB_cumulative, m_props.FullCumulativeToWorld());
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_props.m_sphere_cumulative, m_props.m_AABB_cumulative);
 	++m_props.m_generation;
+	DirectX::BoundingBox aabb_max = m_props.m_AABB_cumulative;
 	SceneNodeList::iterator i = m_children.begin();
 	SceneNodeList::iterator end = m_children.end();
 	while (i != end) {
 		(*i)->UpdateCumulativeTransform();
+		DirectX::BoundingBox::CreateMerged(aabb_max, aabb_max, (*i)->m_props.m_AABB_cumulative);
 		++i;
 	}
+	m_props.m_AABB_merged = aabb_max;
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_props.m_sphere_merged, m_props.m_AABB_merged);
 }
 
 void SceneNode::UpdateCumulativeScale() {
@@ -171,13 +210,19 @@ void SceneNode::UpdateCumulativeScale() {
 	else {
 		m_props.m_scale_cumulative = m_props.m_scale;
 	}
+	m_props.m_AABB.Transform(m_props.m_AABB_cumulative, m_props.FullCumulativeToWorld());
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_props.m_sphere_cumulative, m_props.m_AABB_cumulative);
 	++m_props.m_generation;
+	DirectX::BoundingBox aabb_max = m_props.m_AABB_cumulative;
 	SceneNodeList::iterator i = m_children.begin();
 	SceneNodeList::iterator end = m_children.end();
 	while (i != end) {
 		(*i)->UpdateCumulativeScale();
+		DirectX::BoundingBox::CreateMerged(aabb_max, aabb_max, (*i)->m_props.m_AABB_cumulative);
 		++i;
 	}
+	m_props.m_AABB_merged = aabb_max;
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_props.m_sphere_merged, m_props.m_AABB_merged);
 }
 
 void SceneNode::SetTransform4x4(const DirectX::XMFLOAT4X4* to_world, const DirectX::XMFLOAT4X4* from_world) {
@@ -198,6 +243,7 @@ void SceneNode::SetTransform4x4(const DirectX::XMFLOAT4X4* to_world, const Direc
 	}
 
 	UpdateCumulativeTransform();
+	UpdateMergedAABB();
 }
 
 void SceneNode::SetTransform(DirectX::FXMMATRIX to_world, DirectX::CXMMATRIX from_world, bool calulate_from) {
@@ -209,6 +255,7 @@ void SceneNode::SetTransform(DirectX::FXMMATRIX to_world, DirectX::CXMMATRIX fro
 		DirectX::XMStoreFloat4x4(&m_props.m_from_world, from_world);
 	}
 	UpdateCumulativeTransform();
+	UpdateMergedAABB();
 }
 
 void SceneNode::SetParent(std::shared_ptr<SceneNode> parent_node) {
@@ -224,6 +271,7 @@ void SceneNode::SetParent(std::shared_ptr<SceneNode> parent_node) {
 		m_pParent.reset();
 	}
 	UpdateCumulativeTransform();
+	UpdateMergedAABB();
 }
 
 std::shared_ptr<SceneNode> SceneNode::GetParent() {
@@ -248,6 +296,7 @@ void SceneNode::SetPosition(DirectX::XMVECTOR pos) {
 	m_props.m_from_world.m[3][3] = -1.0f * out.w;
 
 	UpdateCumulativeTransform();
+	UpdateMergedAABB();
 }
 
 void SceneNode::SetPosition3(const DirectX::XMFLOAT3& pos) {
@@ -262,6 +311,7 @@ void SceneNode::SetPosition3(const DirectX::XMFLOAT3& pos) {
 	m_props.m_from_world.m[3][3] = 1.0f;
 
 	UpdateCumulativeTransform();
+	UpdateMergedAABB();
 }
 
 void SceneNode::SetPosition4(const DirectX::XMFLOAT4& pos) {
@@ -276,6 +326,7 @@ void SceneNode::SetPosition4(const DirectX::XMFLOAT4& pos) {
 	m_props.m_from_world.m[3][3] = -1.0f * pos.w;
 
 	UpdateCumulativeTransform();
+	UpdateMergedAABB();
 }
 
 void SceneNode::SetScale(const DirectX::XMFLOAT3& scale) {
@@ -302,4 +353,12 @@ void SceneNode::RemoveDirtyFlags(uint32_t flags) {
 
 void SceneNode::SetGroupID(uint32_t id) {
 	m_props.m_group_id = id;
+}
+
+void SceneNode::SetAABB(const DirectX::BoundingBox& aabb) {
+	m_props.m_AABB = aabb;
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_props.m_sphere, m_props.m_AABB);
+	m_props.m_AABB.Transform(m_props.m_AABB_cumulative, m_props.FullCumulativeToWorld());
+	DirectX::BoundingSphere::CreateFromBoundingBox(m_props.m_sphere_cumulative, m_props.m_AABB_cumulative);
+	UpdateMergedAABB();
 }

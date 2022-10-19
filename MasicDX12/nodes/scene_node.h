@@ -35,6 +35,8 @@ public:
 
 	const SceneNodeProperties& Get() const;
 
+	void UpdateMergedAABB();
+
 	void UpdateCumulativeTransform();
 	void UpdateCumulativeScale();
 
@@ -58,6 +60,8 @@ public:
 	void RemoveDirtyFlags(uint32_t flags);
 
 	void SetGroupID(uint32_t id);
+
+	void SetAABB(const DirectX::BoundingBox& aabb);
 
 protected:
 	SceneNodeList m_children;

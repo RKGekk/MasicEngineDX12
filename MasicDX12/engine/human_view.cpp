@@ -254,11 +254,15 @@ void HumanView::VSetControlledActor(std::shared_ptr<Actor> actor) {
 	m_actor = actor;
 }
 
-std::shared_ptr<CameraNode> HumanView::VGetCamera() {
+std::shared_ptr<BasicCameraNode> HumanView::VGetCamera() {
 	if (!m_camera.expired()) {
 		return m_camera.lock();
 	}
-	return std::shared_ptr<CameraNode>();
+	return std::shared_ptr<BasicCameraNode>();
+}
+
+std::shared_ptr<Scene> HumanView::VGetScene() {
+	return std::static_pointer_cast<Scene>(m_scene);
 }
 
 void HumanView::VSetCameraByName(std::string camera_name) {
@@ -266,7 +270,7 @@ void HumanView::VSetCameraByName(std::string camera_name) {
 	if (auto camera_actor = weak_camera_actor.lock()) {
 		auto weak_camera_component = camera_actor->GetComponent<CameraComponent>();
 		if (auto camera_component = weak_camera_component.lock()) {
-			m_camera = std::dynamic_pointer_cast<CameraNode>(camera_component->VGetCameraNode());
+			m_camera = camera_component->VGetCameraNode();
 		}
 	}
 }

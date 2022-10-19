@@ -156,6 +156,9 @@
     <ClCompile Include="actors\camera_component.cpp" />
     <ClCompile Include="actors\enemy_component.cpp" />
     <ClCompile Include="actors\base_scene_node_component.cpp" />
+    <ClCompile Include="nodes\basic_camera_node.cpp" />
+    <ClCompile Include="graphics\effect_shadow_instanced_pso.cpp" />
+    <ClCompile Include="graphics\effect_shadow_pso.cpp" />
     <ClCompile Include="events\evt_data_modified_scene_component.cpp" />
     <ClCompile Include="graphics\effect_instanced_pso.cpp" />
     <ClCompile Include="engine\actor_menu_ui.cpp" />
@@ -266,6 +269,8 @@
     <ClCompile Include="graphics\directx12_wrappers\vertex_buffer.cpp" />
     <ClCompile Include="graphics\vertex_types.cpp" />
     <ClCompile Include="graphics\directx12_wrappers\sampler.cpp" />
+    <ClCompile Include="actors\shadow_camera_component.cpp" />
+    <ClCompile Include="nodes\shadow_camera_node.cpp" />
     <ClCompile Include="window_keycodes.cpp" />
     <ClCompile Include="window_surface.cpp" />
     <ClCompile Include="main.cpp" />
@@ -336,6 +341,9 @@
     <ClInclude Include="actors\enemy_component.h" />
     <ClInclude Include="actors\light_component.h" />
     <ClInclude Include="actors\base_scene_node_component.h" />
+    <ClInclude Include="nodes\basic_camera_node.h" />
+    <ClInclude Include="graphics\effect_shadow_instanced_pso.h" />
+    <ClInclude Include="graphics\effect_shadow_pso.h" />
     <ClInclude Include="events\evt_data_modified_scene_component.h" />
     <ClInclude Include="graphics\effect_instanced_pso.h" />
     <ClInclude Include="engine\actor_menu_ui.h" />
@@ -443,6 +451,8 @@
     <ClInclude Include="graphics\directx12_wrappers\sampler.h" />
     <ClInclude Include="graphics\directx12_wrappers\primitive_topology.h" />
     <ClInclude Include="nodes\scene_visitor.h" />
+    <ClInclude Include="actors\shadow_camera_component.h" />
+    <ClInclude Include="nodes\shadow_camera_node.h" />
     <ClInclude Include="window_keycodes.h" />
     <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />
@@ -652,6 +662,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="data\shaders\BaseInstancedShadow_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="data\shaders\BasicShadow_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="data\shaders\BaseInstanced_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
