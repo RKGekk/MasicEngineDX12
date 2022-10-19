@@ -7,6 +7,7 @@
 
 class LightManager;
 class MeshManager;
+class ShadowManager;
 class QualifierNode;
 
 class Scene {
@@ -24,6 +25,7 @@ public:
 	void ActivateScene(bool is_active);
 
 	std::shared_ptr<LightManager> GetLightManager();
+	std::shared_ptr<ShadowManager> GetShadowManager();
 	std::shared_ptr<MeshManager> GetMeshManager();
 	std::shared_ptr<QualifierNode> GetRootNode();
 
@@ -35,5 +37,6 @@ protected:
 
 	std::shared_ptr<QualifierNode> m_root_node;
 	std::shared_ptr<LightManager> m_light_manager;
+	std::shared_ptr<ShadowManager> m_shadow_manager;
 	std::shared_ptr<MeshManager> m_mesh_manager;
 };

@@ -10,6 +10,8 @@
 #include "../graphics/directx12_wrappers/render_target.h"
 #include "../graphics/effect_pso.h"
 #include "../graphics/effect_instanced_pso.h"
+#include "../graphics/effect_shadow_pso.h"
+#include "../graphics/effect_shadow_instanced_pso.h"
 #include "../events/i_event_data.h"
 
 class ScreenElementScene : public IScreenElement, public Scene {
@@ -44,6 +46,8 @@ private:
 	uint32_t m_height;
 	std::shared_ptr<EffectPSO> m_lighting_pso;
 	std::shared_ptr<EffectInstancedPSO> m_lighting_instanced_pso;
+	std::shared_ptr<EffectShadowPSO> m_shadow_pso;
+	std::shared_ptr<EffectShadowInstancedPSO> m_shadow_instanced_pso;
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissor_rect;
 

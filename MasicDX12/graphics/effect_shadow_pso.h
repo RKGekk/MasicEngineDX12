@@ -12,6 +12,7 @@ class Device;
 class RootSignature;
 class PipelineStateObject;
 class ShaderResourceView;
+class ShadowManager;
 
 class EffectShadowPSO {
 public:
@@ -27,7 +28,7 @@ public:
 		NumRootParameters
 	};
 
-	EffectShadowPSO(std::shared_ptr<Device> device);
+	EffectShadowPSO(std::shared_ptr<Device> device, std::shared_ptr<ShadowManager> shadow_manager);
 	virtual ~EffectShadowPSO();
 
 	void XM_CALLCONV SetWorldMatrix(DirectX::FXMMATRIX world_matrix);
@@ -55,7 +56,10 @@ private:
 	std::shared_ptr<RootSignature> m_root_signature;
 	std::shared_ptr<PipelineStateObject> m_pipeline_state_object;
 
+	std::shared_ptr<ShadowManager> m_shadow_manager;
+
 	std::shared_ptr<VertexShader> m_vertex_shader;
+	std::shared_ptr<PixelShader> m_pixel_shader;
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 

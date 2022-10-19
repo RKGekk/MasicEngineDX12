@@ -31,8 +31,8 @@ unsigned ParticleSphereContactEventGen::addContact(ParticleContact* contact, uns
             if (distance < (r1 + r2)) {
                 ActorId act1 = engine_phys->VGetParticleActor(p1);
                 ActorId act2 = engine_phys->VGetParticleActor(p2);
-                std::shared_ptr<EvtData_Sphere_Particle_Contact> pNewActorEvent(new EvtData_Sphere_Particle_Contact(act1, act2));
-                IEventManager::Get()->VQueueEvent(pNewActorEvent);
+                std::shared_ptr<EvtData_Sphere_Particle_Contact> pParticleContactEvent(new EvtData_Sphere_Particle_Contact(act1, act2));
+                IEventManager::Get()->VQueueEvent(pParticleContactEvent);
 
                 //XMStoreFloat3(&contact->contactNormal, XMVector3Normalize(contactTrace));
                 //contact->particle[0] = p1;

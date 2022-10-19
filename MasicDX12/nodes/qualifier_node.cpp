@@ -1,6 +1,11 @@
 #include "qualifier_node.h"
 
-QualifierNode::QualifierNode(const std::string& name) : SceneNode(name) {}
+QualifierNode::QualifierNode(const std::string& name) : SceneNode(name) {
+	using namespace std::literals;
+	m_children_map[0u] = m_children.size();
+	std::shared_ptr<SceneNode> GroupNode = std::make_shared<SceneNode>("GroupID0"s, 0u);
+	m_children.push_back(GroupNode);
+}
 
 bool QualifierNode::VAddChild(std::shared_ptr<SceneNode> kid) {
 	using namespace std::literals;

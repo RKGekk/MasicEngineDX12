@@ -18,8 +18,8 @@ LightComponent::LightComponent(const pugi::xml_node& data) {
 LightComponent::~LightComponent() {
 	std::shared_ptr<Actor> act = GetOwner();
 	std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
-	std::shared_ptr<EvtData_Destroy_Scene_Component> pNewActorEvent = std::make_shared<EvtData_Destroy_Scene_Component>(act->GetId(), VGetId(), scene_node);
-	IEventManager::Get()->VQueueEvent(pNewActorEvent);
+	std::shared_ptr<EvtData_Destroy_Scene_Component> pDestroyActorComponentEvent = std::make_shared<EvtData_Destroy_Scene_Component>(act->GetId(), VGetId(), scene_node);
+	IEventManager::Get()->VQueueEvent(pDestroyActorComponentEvent);
 }
 
 bool LightComponent::VDelegateInit(const pugi::xml_node& data) {

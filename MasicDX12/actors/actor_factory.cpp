@@ -7,6 +7,7 @@
 #include "enemy_component.h"
 #include "camera_component.h"
 #include "light_component.h"
+#include "shadow_camera_component.h"
 
 unsigned int ActorFactory::GetNextActorId() {
     return ++m_last_actorId;
@@ -21,6 +22,7 @@ ActorFactory::ActorFactory() {
     m_component_factory.Register<OrientationRelationComponent>(ActorComponent::GetIdFromName(OrientationRelationComponent::g_Name), OrientationRelationComponent::g_Name);
     m_component_factory.Register<EnemyComponent>(ActorComponent::GetIdFromName(EnemyComponent::g_Name), EnemyComponent::g_Name);
     m_component_factory.Register<CameraComponent>(ActorComponent::GetIdFromName(CameraComponent::g_Name), CameraComponent::g_Name);
+    m_component_factory.Register<ShadowCameraComponent>(ActorComponent::GetIdFromName(ShadowCameraComponent::g_Name), ShadowCameraComponent::g_Name);
     m_component_factory.Register<LightComponent>(ActorComponent::GetIdFromName(LightComponent::g_Name), LightComponent::g_Name);
 }
 

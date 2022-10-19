@@ -123,7 +123,9 @@ void GraphicsPipelineState::Compile() {
         desc.PrimitiveTopologyType = m_vertex_shader->GetPrimitiveTopologyType();
     }
     if (m_pixel_shader) {
-        desc.PS = m_pixel_shader->GetBytecode();
+        if (!m_pixel_shader->GetBypass()) {
+            desc.PS = m_pixel_shader->GetBytecode();
+        }
         desc.BlendState = m_pixel_shader->GetBlendState().GetState();
         desc.RasterizerState = m_pixel_shader->GetRasterizerState().GetState();
         desc.DepthStencilState = m_pixel_shader->GetDepthStencilState().GetState();

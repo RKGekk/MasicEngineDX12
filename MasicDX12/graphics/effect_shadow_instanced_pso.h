@@ -15,8 +15,9 @@ class RootSignature;
 class PipelineStateObject;
 class ShaderResourceView;
 class MeshManager;
+class ShadowManager;
 class StructuredBuffer;
-class BasicCameraNode;
+class ShadowCameraNode;
 
 class EffectShadowInstancedPSO {
 public:
@@ -49,12 +50,12 @@ public:
 		NumRootParameters
 	};
 
-	EffectShadowInstancedPSO(std::shared_ptr<Device> device);
+	EffectShadowInstancedPSO(std::shared_ptr<Device> device, std::shared_ptr<ShadowManager> shadow_manager);
 	virtual ~EffectShadowInstancedPSO();
 
 	void SetMeshManager(std::shared_ptr<MeshManager> mesh_manager);
 
-	void SetViewMatrix(const BasicCameraNode& camera);
+	void SetViewMatrix(const ShadowCameraNode& camera);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
 	void XM_CALLCONV SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix);
 	void SetNearZ(float near_z);
@@ -84,10 +85,10 @@ private:
 	std::shared_ptr<PipelineStateObject> m_pipeline_state_object;
 
 	std::shared_ptr<VertexShader> m_vertex_shader;
-
-	DXGI_FORMAT m_depth_buffer_format;
+	std::shared_ptr<PixelShader> m_pixel_shader;
 
 	std::shared_ptr<MeshManager> m_mesh_manager;
+	std::shared_ptr<ShadowManager> m_shadow_manager;
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 

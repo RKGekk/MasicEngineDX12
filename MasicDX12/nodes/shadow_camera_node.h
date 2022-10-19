@@ -34,6 +34,8 @@ public:
 	const DirectX::XMFLOAT4X4& GetShadowTranform4x4() const;
 	DirectX::XMFLOAT4X4 GetShadowTranform4x4T() const;
 
+	const ShadowCameraProps& GetShadowProps() const;
+
 protected:
 	DirectX::BoundingOrientedBox m_frustum;
 	DirectX::XMFLOAT4X4 m_shadow_transform;

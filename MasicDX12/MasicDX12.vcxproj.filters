@@ -630,6 +630,12 @@
     <ClCompile Include="nodes\basic_camera_node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\shadow_scene_visitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\shadow_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1305,6 +1311,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nodes\basic_camera_node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\shadow_scene_visitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\shadow_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

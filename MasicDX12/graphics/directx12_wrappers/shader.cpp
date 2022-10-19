@@ -103,9 +103,9 @@ const PrimitiveTopology& VertexShader::GetPrimitiveTopologyClass() const {
 	return m_primitive_topology;
 }
 
-PixelShader::PixelShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name) : Shader(blob, entry_point, Shader::Stage::Pixel, name) {};
+PixelShader::PixelShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name, bool bypass) : Shader(blob, entry_point, Shader::Stage::Pixel, name), m_bypass(bypass) {};
 
-PixelShader::PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name) : Shader(executable_folder, entry_point, Shader::Stage::Pixel, name) {}
+PixelShader::PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name, bool bypass) : Shader(executable_folder, entry_point, Shader::Stage::Pixel, name), m_bypass(bypass) {}
 
 const PixelShader::RenderTargetFormatMap& PixelShader::GetRenderTargetFormats() const {
 	return m_render_target_formats_map;
@@ -189,4 +189,8 @@ void PixelShader::SetSample(const DXGI_SAMPLE_DESC& desc) {
 
 const DXGI_SAMPLE_DESC& PixelShader::GetSample() const {
 	return m_sample;
+}
+
+bool PixelShader::GetBypass() const {
+	return m_bypass;
 }

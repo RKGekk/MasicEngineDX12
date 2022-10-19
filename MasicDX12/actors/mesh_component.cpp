@@ -42,8 +42,8 @@ MeshComponent::MeshComponent(const pugi::xml_node& data) {
 MeshComponent::~MeshComponent() {
     std::shared_ptr<Actor> act = GetOwner();
     std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
-    std::shared_ptr<EvtData_Destroy_Scene_Component> pNewActorEvent = std::make_shared<EvtData_Destroy_Scene_Component>(act->GetId(), VGetId(), scene_node);
-    IEventManager::Get()->VQueueEvent(pNewActorEvent);
+    std::shared_ptr<EvtData_Destroy_Scene_Component> pDestroyActorComponentEvent = std::make_shared<EvtData_Destroy_Scene_Component>(act->GetId(), VGetId(), scene_node);
+    IEventManager::Get()->VQueueEvent(pDestroyActorComponentEvent);
 
     gs_copy_counter_map[m_resource_name]--;
     assert(!(gs_copy_counter_map[m_resource_name] < 0));

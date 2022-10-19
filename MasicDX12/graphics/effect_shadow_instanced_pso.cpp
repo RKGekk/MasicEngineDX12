@@ -13,15 +13,16 @@
 #include "../tools/memory_utility.h"
 #include "../tools/string_utility.h"
 #include "../nodes/camera_node.h"
-#include "../nodes/basic_camera_node.h"
+#include "../nodes/shadow_camera_node.h"
 #include "../nodes/mesh_manager.h"
+#include "../nodes/shadow_manager.h"
 #include "../nodes/mesh_node.h"
 
 #include <d3dcompiler.h>
 #include <directx/d3dx12.h>
 #include <wrl/client.h>
 
-EffectShadowInstancedPSO::EffectShadowInstancedPSO(std::shared_ptr<Device> device) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_need_transpose(false) {
+EffectShadowInstancedPSO::EffectShadowInstancedPSO(std::shared_ptr<Device> device, std::shared_ptr<ShadowManager> shadow_manager) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_need_transpose(false), m_shadow_manager(shadow_manager) {
     using namespace std::literals;
     m_pAligned_mvp = (VP*)_aligned_malloc(sizeof(VP), 16);
 
@@ -30,6 +31,9 @@ EffectShadowInstancedPSO::EffectShadowInstancedPSO(std::shared_ptr<Device> devic
     HRESULT hr = D3DReadFileToBlob(to_wstring(vertex_shader_name).c_str(), vertex_shader_blob.GetAddressOf());
     ThrowIfFailed(hr);
     m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, vertex_shader_name);
+
+    Microsoft::WRL::ComPtr<ID3DBlob> pixel_shader_blob;
+    m_pixel_shader = std::make_shared<PixelShader>(pixel_shader_blob, "main"s, "Empty", true);
 
     D3D12_ROOT_SIGNATURE_FLAGS root_signature_flags =
         D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -53,17 +57,22 @@ EffectShadowInstancedPSO::EffectShadowInstancedPSO(std::shared_ptr<Device> devic
     std::shared_ptr<Engine> engine = Engine::GetEngine();
     std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
 
-    m_depth_buffer_format = renderer->GetDepthBufferFormat();
-
-    CD3DX12_RASTERIZER_DESC rasterizer_state(D3D12_DEFAULT);
-
     m_vertex_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "gPerPassData"s);
     m_vertex_shader->AddRegister({ 0, 1, ShaderRegister::ShaderResource }, "gInstanceData"s);
     m_vertex_shader->AddRegister({ 1, 1, ShaderRegister::ShaderResource }, "gInstanceIndexData"s);
     m_vertex_shader->SetInputAssemblerLayout(VertexPositionNormalTangentBitangentTexture::InputLayout);
     m_vertex_shader->SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
-    m_pipeline_state_object = m_device->CreateGraphicsPipelineState("PSOFor"s + vertex_shader_name, m_root_signature, m_vertex_shader);
+    std::shared_ptr<ShadowCameraNode> shadow_node = m_shadow_manager->GetShadow();
+    ShadowCameraNode::ShadowCameraProps shadow_props = shadow_node->GetShadowProps();
+    CD3DX12_RASTERIZER_DESC rasterizer_state(D3D12_DEFAULT);
+    rasterizer_state.DepthBias = shadow_props.DepthBias;
+    rasterizer_state.DepthBiasClamp = shadow_props.DepthBiasClamp;
+    rasterizer_state.SlopeScaledDepthBias = shadow_props.SlopeScaledDepthBias;
+    m_pixel_shader->SetRenderTargetFormat(AttachmentPoint::DepthStencil, m_shadow_manager->GetShadowBufferFormat());
+    m_pixel_shader->SetRasterizerState(rasterizer_state);
+
+    m_pipeline_state_object = m_device->CreateGraphicsPipelineState("PSOFor"s + vertex_shader_name, m_root_signature, m_vertex_shader, m_pixel_shader);
 
     D3D12_SHADER_RESOURCE_VIEW_DESC default_srv;
     default_srv.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -150,11 +159,11 @@ void EffectShadowInstancedPSO::Apply(CommandList& command_list, const GameTimerD
     m_dirty_flags = DF_None;
 }
 
-void EffectShadowInstancedPSO::SetViewMatrix(const BasicCameraNode& camera) {
+void EffectShadowInstancedPSO::SetViewMatrix(const ShadowCameraNode& camera) {
     m_pAligned_mvp->View = camera.GetView();
     m_pAligned_mvp->Projection = camera.GetProjection();
-    m_near_z = camera.GetFrustum().Near;
-    m_far_z = camera.GetFrustum().Far;
+    m_near_z = 0.0f;
+    m_far_z = camera.GetFrustum().Extents.z;
     m_dirty_flags |= DF_PerPassData | DF_Near_Far | DF_Near_Far;
 }
 

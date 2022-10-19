@@ -22,6 +22,14 @@ HRESULT ShadowCameraNode::VOnRestore() {
 
 HRESULT ShadowCameraNode::VOnUpdate() {
 
+    uint32_t dirty_flags = Get().GetDirtyFlags();
+    constexpr uint32_t camera_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Camera);
+    constexpr uint32_t transform_flag = to_underlying(SceneNodeProperties::DirtyFlags::DF_Transform);
+
+    if ((dirty_flags & camera_flag) || (dirty_flags & transform_flag)) {
+        UpdateShadowTransform();
+    }
+
 	return CameraNode::VOnUpdate();
 }
 
@@ -67,6 +75,12 @@ void ShadowCameraNode::UpdateShadowTransform() {
 
     XMStoreFloat4x4(&m_projection, projection);
     XMStoreFloat4x4(&m_shadow_transform, S);
+
+    BoundingBox scene_aabb = root_node->Get().MergedAABB();
+    //m_frustum.Extents = XMFLOAT3(scene_bounds_radius, scene_bounds_radius, scene_bounds_radius);
+    m_frustum.Extents = scene_aabb.Extents;
+    m_frustum.Center = scene_bounds_center;
+    XMStoreFloat4(&m_frustum.Orientation, XMQuaternionRotationMatrix(Get().CumulativeToWorld()));
 }
 
 void ShadowCameraNode::SetProjection(const DirectX::BoundingOrientedBox& frustum) {
@@ -95,4 +109,8 @@ DirectX::XMFLOAT4X4 ShadowCameraNode::GetShadowTranform4x4T() const {
     DirectX::XMFLOAT4X4 res;
     DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(GetShadowTranform()));
     return res;
+}
+
+const ShadowCameraNode::ShadowCameraProps& ShadowCameraNode::GetShadowProps() const {
+    return m_shadow_camera_props;
 }

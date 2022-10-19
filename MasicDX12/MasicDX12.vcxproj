@@ -271,6 +271,8 @@
     <ClCompile Include="graphics\directx12_wrappers\sampler.cpp" />
     <ClCompile Include="actors\shadow_camera_component.cpp" />
     <ClCompile Include="nodes\shadow_camera_node.cpp" />
+    <ClCompile Include="nodes\shadow_scene_visitor.cpp" />
+    <ClCompile Include="nodes\shadow_manager.cpp" />
     <ClCompile Include="window_keycodes.cpp" />
     <ClCompile Include="window_surface.cpp" />
     <ClCompile Include="main.cpp" />
@@ -453,6 +455,8 @@
     <ClInclude Include="nodes\scene_visitor.h" />
     <ClInclude Include="actors\shadow_camera_component.h" />
     <ClInclude Include="nodes\shadow_camera_node.h" />
+    <ClInclude Include="nodes\shadow_scene_visitor.h" />
+    <ClInclude Include="nodes\shadow_manager.h" />
     <ClInclude Include="window_keycodes.h" />
     <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />

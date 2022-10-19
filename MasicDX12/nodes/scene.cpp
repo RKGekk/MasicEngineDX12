@@ -6,12 +6,14 @@
 #include "camera_node.h"
 #include "light_node.h"
 #include "mesh_node.h"
+#include "shadow_camera_node.h"
 #include "../events/evt_data_new_render_component.h"
 #include "../events/evt_data_destroy_actor.h"
 #include "../events/evt_data_move_actor.h"
 #include "../events/evt_data_modified_render_component.h"
 #include "light_manager.h"
 #include "mesh_manager.h"
+#include "shadow_manager.h"
 #include "light_node.h"
 #include "../engine/engine.h"
 
@@ -21,6 +23,10 @@ void Scene::ActivateScene(bool is_active) {
 
 std::shared_ptr<LightManager> Scene::GetLightManager() {
 	return m_light_manager;
+}
+
+std::shared_ptr<ShadowManager> Scene::GetShadowManager() {
+	return m_shadow_manager;
 }
 
 std::shared_ptr<MeshManager> Scene::GetMeshManager() {
@@ -35,6 +41,9 @@ void Scene::ManageAddNodes(std::shared_ptr<SceneNode> node) {
 	if (!node) return;
 	if (std::shared_ptr<LightNode> pLight = std::dynamic_pointer_cast<LightNode>(node)) {
 		m_light_manager->AddLight(node);
+	};
+	if (std::shared_ptr<ShadowCameraNode> pShadow = std::dynamic_pointer_cast<ShadowCameraNode>(node)) {
+		m_shadow_manager->AddShadow(node);
 	};
 	if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(node)) {
 		if (pMesh->GetIsInstanced()) {
@@ -63,6 +72,7 @@ Scene::Scene() {
 	using namespace std::literals;
 	m_root_node = std::make_shared<QualifierNode>("Root Node"s);
 	m_light_manager = std::make_shared<LightManager>();
+	m_shadow_manager = std::make_shared<ShadowManager>();
 	m_mesh_manager = std::make_shared<MeshManager>();
 }
 

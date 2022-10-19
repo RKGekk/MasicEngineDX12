@@ -86,8 +86,8 @@ class PixelShader : public Shader {
 public:
 	using RenderTargetFormatMap = std::unordered_map<AttachmentPoint, DXGI_FORMAT>;
 
-	PixelShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name);
-	PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name);
+	PixelShader(Microsoft::WRL::ComPtr<ID3DBlob> blob, const std::string& entry_point, const std::string& name, bool bypass = false);
+	PixelShader(const std::filesystem::path& executable_folder, const std::string& entry_point, const std::string& name, bool bypass = false);
 
 	DXGI_FORMAT GetRenderTargetFormat(AttachmentPoint render_target) const;
 	UINT GetRenderTargetCount() const;
@@ -112,10 +112,13 @@ public:
 	void SetSample(const DXGI_SAMPLE_DESC& desc);
 	const DXGI_SAMPLE_DESC& GetSample() const;
 
+	bool GetBypass() const;
+
 private:
 	RenderTargetFormatMap m_render_target_formats_map;
 	BlendState m_blend_state;
 	RasterizerState m_rasterizer_state;
 	DepthStencilState m_depth_stencil_state;
 	DXGI_SAMPLE_DESC m_sample;
+	bool m_bypass;
 };

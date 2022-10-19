@@ -8,12 +8,15 @@
 #include "../graphics/directx12_wrappers/swap_chain.h"
 #include "../graphics/directx12_wrappers/texture.h"
 #include "../nodes/scene_visitor.h"
+#include "../nodes/shadow_scene_visitor.h"
 #include "../nodes/qualifier_node.h"
 #include "../nodes/light_manager.h"
 #include "../nodes/mesh_manager.h"
+#include "../nodes/shadow_manager.h"
 #include "../nodes/mesh_node.h"
 #include "../nodes/camera_node.h"
 #include "../nodes/basic_camera_node.h"
+#include "../nodes/shadow_camera_node.h"
 #include "../events/evt_data_modified_scene_component.h"
 
 ScreenElementScene::ScreenElementScene() : Scene() {
@@ -82,8 +85,33 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	std::shared_ptr<HumanView> human_view = engine->GetGameLogic()->GetHumanView();
 	std::shared_ptr<BasicCameraNode> camera = human_view->VGetCamera();
 
-	m_light_manager->CalcLighting(camera->GetView());
 	m_mesh_manager->CalcInstances(*camera);
+	m_light_manager->CalcLighting(camera->GetView());
+
+	std::shared_ptr<ShadowCameraNode> shadow_camera = m_shadow_manager->GetShadow();
+	if (shadow_camera) {
+		const ShadowCameraNode::ShadowCameraProps& shadow_camera_props = shadow_camera->GetShadowProps();
+
+		if(!m_shadow_pso) m_shadow_pso = std::make_shared<EffectShadowPSO>(device, m_shadow_manager);
+		if(!m_shadow_instanced_pso) m_shadow_instanced_pso = std::make_shared<EffectShadowInstancedPSO>(device, m_shadow_manager);
+
+		m_shadow_instanced_pso->SetMeshManager(m_mesh_manager);
+		m_shadow_instanced_pso->SetViewMatrix(*shadow_camera);
+		m_shadow_instanced_pso->SetRenderTargetSize({ (float)shadow_camera_props.ShadowMapWidth, (float)shadow_camera_props.ShadowMapHeight });
+
+		ShadowSceneVisitor shadow_pass(*command_list, shadow_camera, *m_shadow_pso, false);
+
+		std::shared_ptr<Texture> shadow_target_depth = m_shadow_manager->GetShadowMapTexture();
+		command_list->ClearDepthStencilTexture(shadow_target_depth, D3D12_CLEAR_FLAG_DEPTH);
+
+		command_list->SetViewport(m_shadow_manager->GetShadowViewport());
+		command_list->SetScissorRect(m_shadow_manager->GetShadowRect());
+		command_list->SetRenderTarget(*m_shadow_manager->GetRT());
+
+		root_scene_node->Accept(shadow_pass);
+		m_shadow_instanced_pso->Apply(*command_list, delta);
+	}
+	
 	m_lighting_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetMeshManager(m_mesh_manager);
@@ -96,6 +124,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 	std::shared_ptr<Texture> render_target_color = m_render_target.GetTexture(AttachmentPoint::Color0);
 	std::shared_ptr<Texture> render_target_depth = m_render_target.GetTexture(AttachmentPoint::DepthStencil);
+	
 	command_list->ClearTexture(render_target_color, clear_color);
 	command_list->ClearDepthStencilTexture(render_target_depth, D3D12_CLEAR_FLAG_DEPTH);
 

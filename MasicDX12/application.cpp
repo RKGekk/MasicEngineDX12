@@ -134,6 +134,7 @@ bool Application::Run(std::shared_ptr<Engine> pGame) {
     pGame->ShowWindow();
 
     while (pGame->ProcessMessages()) {
+        //m_event_manager->VUpdate(); // Engine::Update->IEventManager::Get()->VUpdate();
         if (m_request_quit) {
             PostQuitMessage(0);
             m_request_quit = false;
