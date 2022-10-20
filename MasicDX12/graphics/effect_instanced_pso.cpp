@@ -16,6 +16,8 @@
 #include "../nodes/camera_node.h"
 #include "../nodes/basic_camera_node.h"
 #include "../nodes/light_manager.h"
+#include "../nodes/shadow_manager.h"
+#include "../nodes/shadow_camera_node.h"
 #include "../nodes/mesh_manager.h"
 #include "../nodes/mesh_node.h"
 
@@ -61,9 +63,11 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     root_parameters[to_underlying(RootParameters::Textures)].InitAsDescriptorTable(1, &descriptor_rage_texture, D3D12_SHADER_VISIBILITY_PIXEL);
 
     CD3DX12_STATIC_SAMPLER_DESC anisotropic_sampler(0, D3D12_FILTER_ANISOTROPIC);
+    const CD3DX12_STATIC_SAMPLER_DESC shadow_sampler(1, D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, D3D12_TEXTURE_ADDRESS_MODE_BORDER, D3D12_TEXTURE_ADDRESS_MODE_BORDER, D3D12_TEXTURE_ADDRESS_MODE_BORDER, 0.0f, 16, D3D12_COMPARISON_FUNC_LESS_EQUAL, D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK);
+    std::array<const CD3DX12_STATIC_SAMPLER_DESC, 2> samplers = { anisotropic_sampler, shadow_sampler };
 
     CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC root_signature_description;
-    root_signature_description.Init_1_1(to_underlying(RootParameters::NumRootParameters), root_parameters, 1, &anisotropic_sampler, root_signature_flags);
+    root_signature_description.Init_1_1(to_underlying(RootParameters::NumRootParameters), root_parameters, samplers.size(), samplers.data(), root_signature_flags);
 
     m_root_signature = m_device->CreateRootSignature("RootSignFor"s + pixel_shader_name, root_signature_description);
 
@@ -105,7 +109,9 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     m_pixel_shader->AddRegister({ 10, 0, ShaderRegister::ShaderResource }, "OpacityTexture"s);
     m_pixel_shader->AddRegister({ 11, 0, ShaderRegister::ShaderResource }, "DisplacementTexture"s);
     m_pixel_shader->AddRegister({ 12, 0, ShaderRegister::ShaderResource }, "MetalnessTexture"s);
+    m_pixel_shader->AddRegister({ 13, 0, ShaderRegister::ShaderResource }, "ShadowTexture"s);
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::Sampler }, "TextureSampler"s);
+    m_pixel_shader->AddRegister({ 1, 0, ShaderRegister::Sampler }, "ShadowSampler"s);
     m_pixel_shader->SetRenderTargetFormat(rtv_formats);
     m_pixel_shader->SetRenderTargetFormat(AttachmentPoint::DepthStencil, m_depth_buffer_format);
     //m_pixel_shader->SetBlendState();
@@ -136,23 +142,29 @@ void EffectInstancedPSO::SetLightManager(std::shared_ptr<LightManager> light_man
     m_dirty_flags |= DF_PointLights | DF_SpotLights | DF_DirectionalLights;
 }
 
+void EffectInstancedPSO::SetShadowManager(std::shared_ptr<ShadowManager> shadow_manager) {
+    m_shadow_manager = shadow_manager;
+    m_dirty_flags |= DF_InstanceData | DF_PerPassData;
+}
+
 void EffectInstancedPSO::SetMeshManager(std::shared_ptr<MeshManager> mesh_manager) {
     m_mesh_manager = mesh_manager;
     m_dirty_flags |= DF_InstanceData | DF_PerPassData;
 }
 
 inline void EffectInstancedPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
-    if (texture) {
-        command_list.SetShaderResourceView(to_underlying(RootParameters::Textures), offset, texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    }
-    else {
-        command_list.SetShaderResourceView(to_underlying(RootParameters::Textures), offset, m_default_srv, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    }
+    if (texture) command_list.SetShaderResourceView(to_underlying(RootParameters::Textures), offset, texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    else command_list.SetShaderResourceView(to_underlying(RootParameters::Textures), offset, m_default_srv, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& delta) {
     command_list.SetPipelineState(m_pipeline_state_object);
     command_list.SetGraphicsRootSignature(m_root_signature);
+
+    std::shared_ptr<ShadowCameraNode> shadow_camera = nullptr;
+    if (m_shadow_manager) {
+        shadow_camera = m_shadow_manager->GetShadow();
+    }
 
     if (m_dirty_flags & DF_PerPassData) {
         PerPassData per_pass_data;
@@ -175,6 +187,9 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
 
         per_pass_data.TotalTime = delta.GetTotalSeconds();
         per_pass_data.DeltaTime = delta.GetDeltaSeconds();
+
+        if (shadow_camera) per_pass_data.ShadowTransform = DirectX::XMMatrixTranspose(shadow_camera->GetShadowTranform());
+        else per_pass_data.ShadowTransform = DirectX::XMMatrixIdentity();
 
         command_list.SetGraphicsDynamicConstantBuffer(to_underlying(RootParameters::PerPassData), per_pass_data);
     }
@@ -217,8 +232,10 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
             if (material->IsTransparent()) continue;
 
             if (material) {
-                const auto& material_props = material->GetMaterialProperties();
-
+                auto& material_props = material->GetMaterialProperties();
+                if (shadow_camera) {
+                    material->SetTexture(Material::TextureType::Shadow, m_shadow_map_texture);
+                }
                 command_list.SetGraphicsDynamicConstantBuffer(to_underlying(RootParameters::MaterialCB), material_props);
 
                 using TextureType = Material::TextureType;
@@ -233,6 +250,7 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
                 BindTexture(command_list, 7, material->GetTexture(TextureType::Opacity));
                 BindTexture(command_list, 8, material->GetTexture(TextureType::Displacement));
                 BindTexture(command_list, 9, material->GetTexture(TextureType::Metalness));
+                BindTexture(command_list, 10, material->GetTexture(TextureType::Shadow));
             }
 
             command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
@@ -293,4 +311,8 @@ void EffectInstancedPSO::SetRenderTargetSize(DirectX::XMFLOAT2 render_target_siz
     m_render_target_size.z = 1.0f / render_target_size.x;
     m_render_target_size.w = 1.0f / render_target_size.y;
     m_dirty_flags |= DF_RT_Size;
+}
+
+void EffectInstancedPSO::SetShadowMapTexture(std::shared_ptr<Texture> shadow_map_texture) {
+    m_shadow_map_texture = shadow_map_texture;
 }

@@ -6,17 +6,17 @@
 #include "../graphics/directx12_wrappers/command_list.h"
 #include "../graphics/effect_pso.h"
 #include "../graphics/directx12_wrappers/index_buffer.h"
+#include "../graphics/directx12_wrappers/texture.h"
 #include "../graphics/material.h"
 #include "../graphics/mesh.h"
 
-SceneVisitor::SceneVisitor(CommandList& command_list, std::shared_ptr<CameraNode> camera, EffectPSO& pso, bool transparent) : m_command_list(command_list), m_camera(camera), m_lighting_pso(pso), m_transparent_pass(transparent) {
+SceneVisitor::SceneVisitor(CommandList& command_list, std::shared_ptr<CameraNode> camera, EffectPSO& pso, bool transparent, std::shared_ptr<Texture> shadow_map_texture) : m_command_list(command_list), m_camera(camera), m_lighting_pso(pso), m_transparent_pass(transparent), m_shadow_map_texture(shadow_map_texture) {
 	ResetCamera();
 }
 
 void SceneVisitor::ResetCamera() {
 	m_lighting_pso.SetViewMatrix(m_camera->GetView());
 	m_lighting_pso.SetProjectionMatrix(m_camera->GetProjection());
-	
 }
 
 void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
@@ -34,6 +34,10 @@ void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 		if (material->IsTransparent() != m_transparent_pass) continue;
 		
 		m_lighting_pso.SetMaterial(material);
+		if (m_shadow_map_texture) {
+			m_lighting_pso.AddShadowTexture(m_shadow_map_texture);
+		}
+
 		m_lighting_pso.Apply(m_command_list);
 		
 		m_command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());

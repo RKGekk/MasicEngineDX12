@@ -78,6 +78,7 @@ public:
 	static const uint32_t HAS_DISPLACEMENT_TEXTURE = 256u;
 	static const uint32_t HAS_METALNESS_TEXTURE = 512u;
 	static const uint32_t HAS_NORMAL_INV_Y_TEXTURE = 1024u;
+	static const uint32_t HAS_SHADOW_TEXTURE = 2048u;
 
 	enum class TextureType {
 		Ambient,
@@ -90,6 +91,7 @@ public:
 		Opacity,
 		Displacement,
 		Metalness,
+		Shadow,
 		NumTypes,
 	};
 

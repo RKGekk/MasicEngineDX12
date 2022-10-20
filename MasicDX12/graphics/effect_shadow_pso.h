@@ -50,8 +50,6 @@ private:
 		DirectX::XMMATRIX Projection;
 	};
 
-	inline void BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture);
-
 	std::shared_ptr<Device> m_device;
 	std::shared_ptr<RootSignature> m_root_signature;
 	std::shared_ptr<PipelineStateObject> m_pipeline_state_object;

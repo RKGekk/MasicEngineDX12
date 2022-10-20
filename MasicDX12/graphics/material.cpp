@@ -165,6 +165,11 @@ void Material::SetTexture(TextureType type, std::shared_ptr<Texture> texture) {
             else m_material_properties->HasTexture &= !HAS_METALNESS_TEXTURE;
         }
         break;
+        case TextureType::Shadow: {
+            if (has_texture) m_material_properties->HasTexture |= HAS_SHADOW_TEXTURE;
+            else m_material_properties->HasTexture &= !HAS_SHADOW_TEXTURE;
+        }
+        break;
     }
 }
 

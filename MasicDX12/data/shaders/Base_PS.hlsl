@@ -1,9 +1,11 @@
 struct PixelShaderInput {
-	float4 PositionVS : POSITION;
-	float3 NormalVS : NORMAL;
-	float3 TangentVS : TANGENT;
+	float4 PositionVS  : POSITION;
+	float3 NormalVS    : NORMAL;
+	float3 TangentVS   : TANGENT;
 	float3 BitangentVS : BITANGENT;
-	float2 TexCoord : TEXCOORD;
+	float2 TexCoord    : TEXCOORD;
+    float4 Position    : SV_Position;
+    float4 ShadowPosHS : SHADOW;
 };
 
 struct Material {
@@ -107,18 +109,20 @@ StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
 ConstantBuffer<Material> MaterialCB : register(b0, space1);
 
 // Textures
-Texture2D AmbientTexture : register(t3);
-Texture2D EmissiveTexture : register(t4);
-Texture2D DiffuseTexture : register(t5);
-Texture2D SpecularTexture : register(t6);
+Texture2D AmbientTexture       : register(t3);
+Texture2D EmissiveTexture      : register(t4);
+Texture2D DiffuseTexture       : register(t5);
+Texture2D SpecularTexture      : register(t6);
 Texture2D SpecularPowerTexture : register(t7); // aiTextureType_SHININESS->roughness
-Texture2D NormalTexture : register(t8);
-Texture2D BumpTexture : register(t9);
-Texture2D OpacityTexture : register(t10);
-Texture2D DisplacementTexture : register(t11);
-Texture2D MetalnessTexture : register(t12);
+Texture2D NormalTexture        : register(t8);
+Texture2D BumpTexture          : register(t9);
+Texture2D OpacityTexture       : register(t10);
+Texture2D DisplacementTexture  : register(t11);
+Texture2D MetalnessTexture     : register(t12);
+Texture2D ShadowTexture        : register(t13);
 
-SamplerState TextureSampler : register(s0);
+SamplerState TextureSampler          : register(s0);
+SamplerComparisonState ShadowSampler : register(s1);
 
 float3 LinearToSRGB(float3 x) {
     // This is exactly the sRGB curve
@@ -289,17 +293,50 @@ float4 SampleTexture(Texture2D t, float2 uv, float4 c) {
 	return c;
 }
 
+float CalcShadowFactor(float4 shadow_pos_hs) {
+    // Complete projection by doing division by w.
+    shadow_pos_hs.xyz /= shadow_pos_hs.w;
+
+    // Depth in NDC space.
+    float depth = shadow_pos_hs.z;
+
+    uint width;
+    uint height;
+    uint numMips;
+    ShadowTexture.GetDimensions(0u, width, height, numMips);
+
+    // Texel size.
+    float dx = 1.0f / (float)width;
+
+    float percent_lit = 0.0f;
+    const float2 offsets[9] = {
+        float2(-dx,  -dx), float2(0.0f,  -dx), float2(dx,  -dx),
+        float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
+        float2(-dx,  +dx), float2(0.0f,  +dx), float2(dx,  +dx)
+    };
+
+    [unroll]
+    for(int i = 0; i < 9; ++i) {
+        percent_lit += ShadowTexture.SampleCmpLevelZero(ShadowSampler, shadow_pos_hs.xy + offsets[i], depth).r;
+    }
+    
+    return percent_lit / 9.0f;
+}
+
+
 float4 main(PixelShaderInput IN) : SV_Target {
-    const uint HAS_AMBIENT_TEXTURE = 1u;
-	const uint HAS_EMISSIVE_TEXTURE = 2u;
-	const uint HAS_DIFFUSE_TEXTURE = 4u;
-	const uint HAS_SPECULAR_TEXTURE = 8u;
+    const uint HAS_AMBIENT_TEXTURE        = 1u;
+	const uint HAS_EMISSIVE_TEXTURE       = 2u;
+	const uint HAS_DIFFUSE_TEXTURE        = 4u;
+	const uint HAS_SPECULAR_TEXTURE       = 8u;
 	const uint HAS_SPECULAR_POWER_TEXTURE = 16u; // aiTextureType_SHININESS->roughness
-	const uint HAS_NORMAL_TEXTURE = 32u;
-	const uint HAS_BUMP_TEXTURE = 64u;
-	const uint HAS_OPACITY_TEXTURE = 128u;
-	const uint HAS_DISPLACEMENT_TEXTURE = 256u;
-    const uint HAS_METALNESS_TEXTURE = 512u;
+	const uint HAS_NORMAL_TEXTURE         = 32u;
+	const uint HAS_BUMP_TEXTURE           = 64u;
+	const uint HAS_OPACITY_TEXTURE        = 128u;
+	const uint HAS_DISPLACEMENT_TEXTURE   = 256u;
+    const uint HAS_METALNESS_TEXTURE      = 512u;
+    const uint HAS_NORMAL_INV_Y_TEXTURE   = 1024u;
+    const uint HAS_SHADOW_TEXTURE         = 2048u;
     
 	Material material = MaterialCB;
 
@@ -361,7 +398,11 @@ float4 main(PixelShaderInput IN) : SV_Target {
 		N = normalize(IN.NormalVS);
 	}
 
-	float shadow = 1;
+	float shadow = 1.0f;
+    if (material.HasTexture & HAS_SHADOW_TEXTURE) {
+        shadow = CalcShadowFactor(IN.ShadowPosHS);
+	}
+    
 	float4 specular = 0;
 #if ENABLE_LIGHTING
     LightResult lit = DoLighting( IN.PositionVS.xyz, N, specularPower );

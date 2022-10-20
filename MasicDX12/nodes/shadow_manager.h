@@ -43,6 +43,7 @@ protected:
 	ShadowMap m_shadow_map;
 	DXGI_FORMAT m_shadow_buffer_format;
 	std::shared_ptr<RenderTarget> m_shadow_rt;
+	//std::shared_ptr<Texture> m_shadow_map_texture;
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissor_rect;
 };

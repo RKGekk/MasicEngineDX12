@@ -29,6 +29,7 @@ public:
 		DirectX::XMMATRIX ModelViewMatrix;
 		DirectX::XMMATRIX InverseTransposeModelViewMatrix;
 		DirectX::XMMATRIX ModelViewProjectionMatrix;
+		DirectX::XMMATRIX ShadowMatrix;
 	};
 
 	enum RootParameters {
@@ -51,17 +52,19 @@ public:
 	void XM_CALLCONV SetWorldMatrix(DirectX::FXMMATRIX world_matrix);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
 	void XM_CALLCONV SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix);
+	void XM_CALLCONV SetShadowMatrix(DirectX::FXMMATRIX shadow_matrix);
+	void AddShadowTexture(std::shared_ptr<Texture> shadow_texture);
 
 	void Apply(CommandList& command_list);
 
 private:
 	enum DirtyFlags {
-		DF_None = 0,
-		DF_PointLights = (1 << 0),
-		DF_SpotLights = (1 << 1),
+		DF_None              = 0,
+		DF_PointLights       = (1 << 0),
+		DF_SpotLights        = (1 << 1),
 		DF_DirectionalLights = (1 << 2),
-		DF_Material = (1 << 3),
-		DF_Matrices = (1 << 4),
+		DF_Material          = (1 << 3),
+		DF_Matrices          = (1 << 4),
 		DF_All = DF_PointLights | DF_SpotLights | DF_DirectionalLights | DF_Material | DF_Matrices
 	};
 
@@ -69,6 +72,7 @@ private:
 		DirectX::XMMATRIX World;
 		DirectX::XMMATRIX View;
 		DirectX::XMMATRIX Projection;
+		DirectX::XMMATRIX Shadow;
 	};
 
 	inline void BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture);

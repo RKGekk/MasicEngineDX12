@@ -7,6 +7,7 @@
 #include "../graphics/directx12_wrappers/command_list.h"
 #include "../graphics/directx12_wrappers/swap_chain.h"
 #include "../graphics/directx12_wrappers/texture.h"
+#include "../graphics/directx12_wrappers/resource_state_tracker.h"
 #include "../nodes/scene_visitor.h"
 #include "../nodes/shadow_scene_visitor.h"
 #include "../nodes/qualifier_node.h"
@@ -110,15 +111,37 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 		root_scene_node->Accept(shadow_pass);
 		m_shadow_instanced_pso->Apply(*command_list, delta);
+
+		m_lighting_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
+		//m_shadow_manager->GetShadowMapTexture()->
+
+		if (!m_shadow_map_texture) {
+			//DXGI_SAMPLE_DESC sample_desc = device->GetMultisampleQualityLevels(m_back_buffer_format);
+			DXGI_SAMPLE_DESC sample_desc = { 1, 0 };
+			//auto depth_desc = CD3DX12_RESOURCE_DESC::Tex2D(m_shadow_manager->GetShadowBufferFormat(), shadow_camera_props.ShadowMapWidth, shadow_camera_props.ShadowMapHeight, 1, 1, sample_desc.Count, sample_desc.Quality);
+			auto depth_desc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R32_FLOAT, shadow_camera_props.ShadowMapWidth, shadow_camera_props.ShadowMapHeight, 1, 1, sample_desc.Count, sample_desc.Quality);
+			//D3D12_CLEAR_VALUE shadow_clear_value = {};
+			//shadow_clear_value.Format = depth_desc.Format;
+			//shadow_clear_value.DepthStencil = { 1.0f, 0 };
+
+			//m_shadow_map_texture = device->CreateTexture(depth_desc, &shadow_clear_value);
+			m_shadow_map_texture = device->CreateTexture(depth_desc);
+			m_shadow_map_texture->SetName(L"Shadow Texture");
+
+			//ResourceStateTracker::AddGlobalResourceState(m_shadow_map_texture->GetD3D12Resource().Get(), D3D12_RESOURCE_STATE_COMMON);
+		}
+		command_list->CopyResource(m_shadow_map_texture, m_shadow_manager->GetShadowMapTexture());
+		m_lighting_instanced_pso->SetShadowMapTexture(m_shadow_map_texture);
 	}
 	
 	m_lighting_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetLightManager(m_light_manager);
+	m_lighting_instanced_pso->SetShadowManager(m_shadow_manager);
 	m_lighting_instanced_pso->SetMeshManager(m_mesh_manager);
 	m_lighting_instanced_pso->SetViewMatrix(*camera);
 	m_lighting_instanced_pso->SetRenderTargetSize({ (float)m_width, (float)m_height });
 
-	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false);
+	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false, m_shadow_map_texture);
 
 	FLOAT clear_color[] = { 0.4f, 0.6f, 0.9f, 1.0f };
 

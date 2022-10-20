@@ -10,10 +10,13 @@ struct PerPassData {
 	
 	float2 RenderTargetSize;
     float2 InverseRenderTargetSize;
+	
     float  NearZ;
     float  FarZ;
     float  TotalTime;
     float  DeltaTime;
+	
+	float4x4 ShadowTransform;
 };
 
 ConstantBuffer<PerPassData> gPerPassData : register(b0);
@@ -50,6 +53,7 @@ struct VertexShaderOutput {
 	float3 TangentWS   : TANGENT;
 	float3 BitangentWS : BITANGENT;
 	float2 TextureUV   : TEXCOORD;
+	float4 ShadowPosHS : SHADOW;
 };
 
 VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture vs_in, uint instanceID : SV_InstanceID) {
@@ -82,6 +86,9 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture vs_in, uint 
 	
 	float4 texure_uv = mul(float4(vs_in.TextureUV, 1.0f), texture_transform);
 	vout.TextureUV = texure_uv.xy;
+	
+	float4 shadow_pos_hs = mul(pos_ws, gPerPassData.ShadowTransform);
+	vout.ShadowPosHS = shadow_pos_hs;
 	
 	return vout;
 }

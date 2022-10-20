@@ -17,6 +17,7 @@ class PipelineStateObject;
 class ShaderResourceView;
 class Texture;
 class LightManager;
+class ShadowManager;
 class MeshManager;
 class StructuredBuffer;
 class BasicCameraNode;
@@ -48,6 +49,8 @@ public:
 		float  FarZ;
 		float  TotalTime;
 		float  DeltaTime;
+
+		DirectX::XMMATRIX ShadowTransform;
 	};
 
 	enum class RootParameters {
@@ -67,6 +70,7 @@ public:
 	virtual ~EffectInstancedPSO();
 
 	void SetLightManager(std::shared_ptr<LightManager> light_manager);
+	void SetShadowManager(std::shared_ptr<ShadowManager> shadow_manager);
 	void SetMeshManager(std::shared_ptr<MeshManager> mesh_manager);
 
 	void SetViewMatrix(const BasicCameraNode& camera);
@@ -75,6 +79,7 @@ public:
 	void SetNearZ(float near_z);
 	void SetFarZ(float far_z);
 	void SetRenderTargetSize(DirectX::XMFLOAT2 render_target_size);
+	void SetShadowMapTexture(std::shared_ptr<Texture> shadow_map_texture);
 
 	void Apply(CommandList& command_list, const GameTimerDelta& delta);
 
@@ -111,10 +116,12 @@ private:
 	DXGI_FORMAT m_depth_buffer_format;
 	DXGI_SAMPLE_DESC m_sample_desc;
 
+	std::shared_ptr<ShadowManager> m_shadow_manager;
 	std::shared_ptr<LightManager> m_light_manager;
 	std::shared_ptr<MeshManager> m_mesh_manager;
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;
+	std::shared_ptr<Texture> m_shadow_map_texture;
 
 	VP* m_pAligned_mvp;
 

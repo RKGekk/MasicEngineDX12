@@ -48,6 +48,7 @@ private:
 	std::shared_ptr<EffectInstancedPSO> m_lighting_instanced_pso;
 	std::shared_ptr<EffectShadowPSO> m_shadow_pso;
 	std::shared_ptr<EffectShadowInstancedPSO> m_shadow_instanced_pso;
+	std::shared_ptr<Texture> m_shadow_map_texture;
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissor_rect;
 

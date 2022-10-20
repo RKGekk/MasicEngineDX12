@@ -5,6 +5,7 @@
 #include "material.h"
 #include "directx12_wrappers/pipeline_state_object.h"
 #include "directx12_wrappers/root_signature.h"
+#include "directx12_wrappers/texture.h"
 #include "vertex_types.h"
 #include "../tools/com_exception.h"
 #include "../tools/string_utility.h"
@@ -14,6 +15,8 @@
 #include <d3dcompiler.h>
 #include <directx/d3dx12.h>
 #include <wrl/client.h>
+
+#include <array>
 
 EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal), m_need_transpose(true) {
     using namespace std::literals;
@@ -50,10 +53,12 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     root_parameters[RootParameters::DirectionalLights].InitAsShaderResourceView(2, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[RootParameters::Textures].InitAsDescriptorTable(1, &descriptor_rage, D3D12_SHADER_VISIBILITY_PIXEL);
 
-    CD3DX12_STATIC_SAMPLER_DESC anisotropic_sampler(0, D3D12_FILTER_ANISOTROPIC);
+    const CD3DX12_STATIC_SAMPLER_DESC anisotropic_sampler(0, D3D12_FILTER_ANISOTROPIC);
+    const CD3DX12_STATIC_SAMPLER_DESC shadow_sampler(1, D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, D3D12_TEXTURE_ADDRESS_MODE_BORDER, D3D12_TEXTURE_ADDRESS_MODE_BORDER, D3D12_TEXTURE_ADDRESS_MODE_BORDER, 0.0f, 16, D3D12_COMPARISON_FUNC_LESS_EQUAL, D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK);
+    std::array<const CD3DX12_STATIC_SAMPLER_DESC, 2> samplers = { anisotropic_sampler, shadow_sampler };
 
     CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC root_signature_description;
-    root_signature_description.Init_1_1(RootParameters::NumRootParameters, root_parameters, 1, &anisotropic_sampler, root_signature_flags);
+    root_signature_description.Init_1_1(RootParameters::NumRootParameters, root_parameters, samplers.size(), samplers.data(), root_signature_flags);
 
     m_root_signature = m_device->CreateRootSignature("RootSignFor"s + pixel_shader_name, root_signature_description);
 
@@ -92,7 +97,9 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     m_pixel_shader->AddRegister({ 10, 0, ShaderRegister::ShaderResource }, "OpacityTexture"s);
     m_pixel_shader->AddRegister({ 11, 0, ShaderRegister::ShaderResource }, "DisplacementTexture"s);
     m_pixel_shader->AddRegister({ 12, 0, ShaderRegister::ShaderResource }, "MetalnessTexture"s);
+    m_pixel_shader->AddRegister({ 13, 0, ShaderRegister::ShaderResource }, "ShadowTexture"s);
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::Sampler }, "TextureSampler"s);
+    m_pixel_shader->AddRegister({ 1, 0, ShaderRegister::Sampler }, "ShadowSampler"s);
     m_pixel_shader->SetRenderTargetFormat(rtv_formats);
     m_pixel_shader->SetRenderTargetFormat(AttachmentPoint::DepthStencil, depth_buffer_format);
     //m_pixel_shader->SetBlendState();
@@ -142,6 +149,7 @@ void EffectPSO::Apply(CommandList& command_list) {
         m.ModelViewMatrix = m_pAligned_mvp->World * m_pAligned_mvp->View;
         m.ModelViewProjectionMatrix = m.ModelViewMatrix * m_pAligned_mvp->Projection;
         m.InverseTransposeModelViewMatrix = XMMatrixTranspose(XMMatrixInverse(nullptr, m.ModelViewMatrix));
+        m.ShadowMatrix = m_pAligned_mvp->Shadow;
 
         command_list.SetGraphicsDynamicConstantBuffer(RootParameters::MatricesCB, m);
     }
@@ -164,6 +172,7 @@ void EffectPSO::Apply(CommandList& command_list) {
             BindTexture(command_list, 7, m_material->GetTexture(TextureType::Opacity));
             BindTexture(command_list, 8, m_material->GetTexture(TextureType::Displacement));
             BindTexture(command_list, 9, m_material->GetTexture(TextureType::Metalness));
+            BindTexture(command_list, 10, m_material->GetTexture(TextureType::Shadow));
         }
     }
 
@@ -209,4 +218,13 @@ void XM_CALLCONV EffectPSO::SetViewMatrix(DirectX::FXMMATRIX view_matrix) {
 void XM_CALLCONV EffectPSO::SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix) {
     m_pAligned_mvp->Projection = projection_matrix;
     m_dirty_flags |= DF_Matrices;
+}
+
+void XM_CALLCONV EffectPSO::SetShadowMatrix(DirectX::FXMMATRIX shadow_matrix) {
+    m_pAligned_mvp->Shadow = shadow_matrix;
+    m_dirty_flags |= DF_Matrices;
+}
+
+void EffectPSO::AddShadowTexture(std::shared_ptr<Texture> shadow_texture) {
+    m_material->SetTexture(Material::TextureType::Shadow, shadow_texture);
 }
