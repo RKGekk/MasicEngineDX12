@@ -17,6 +17,7 @@ public:
 
 	virtual void VSetClearColor(BYTE R, BYTE G, BYTE B, BYTE A) = 0;
 	virtual void VSetClearColor4f(float R, float G, float B, float A) = 0;
+	virtual DirectX::XMFLOAT4 VGetClearColor4f() = 0;
 
 	virtual HRESULT VOnRestore() = 0;
 	virtual void VShutdown() = 0;

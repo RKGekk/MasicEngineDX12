@@ -92,6 +92,12 @@ struct LightProperties {
     uint NumDirectionalLights;
 };
 
+struct FogProperties {
+    float4 FogColor;
+    float  FogStart;
+    float  FogRange;
+};
+
 struct PerPassData {
 	matrix ViewMatrix;
 	matrix InverseTransposeViewMatrix;
@@ -124,6 +130,7 @@ struct BlinnPhongSpecMaterial {
 ConstantBuffer<PerPassData>        gPerPassData       : register(b0);
 ConstantBuffer<Material>           gMaterialData      : register(b0, space1);
 ConstantBuffer<LightProperties>    gLightPropertiesCB : register(b1);
+ConstantBuffer<FogProperties>      FogPropertiesCB    : register(b2);
 
 StructuredBuffer<PointLight>       PointLights        : register(t0);
 StructuredBuffer<SpotLight>        SpotLights         : register(t1);
@@ -564,15 +571,17 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 	float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     //float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._14_24_34;
     float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._41_42_43;
-    float3 to_eye_ws = normalize(eye_position_w - ps_in.PositionWS.xyz);
+    float3 to_eye = eye_position_w - ps_in.PositionWS.xyz;
+    float distance_to_eye = length(to_eye);
+    float3 to_eye_normal_ws = normalize(to_eye);
     
 	BlinnPhongSpecMaterial pbr = (BlinnPhongSpecMaterial)0.0f;
     pbr.FresnelR0 = fresnelR0;
     pbr.Shininess = specular_power;
 
-    LightResult lit = DoLightingWS(ps_in.PositionWS.xyz, normal_t_ws, to_eye_ws, pbr);
+    LightResult lit = DoLightingWS(ps_in.PositionWS.xyz, normal_t_ws, to_eye_normal_ws, pbr);
+    ambient *= diffuse_albedo * lit.Ambient;
     diffuse_albedo *= lit.Diffuse;
-    ambient *= lit.Ambient;
     // Specular power less than 1 doesn't really make sense.
     // Ignore specular on materials with a specular power less than 1.
     if (material.SpecularPower > 1.0f) {
@@ -583,7 +592,19 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
         specular *= lit.Specular;
     }
     
-    float4 result = float4((emissive + ambient + diffuse_albedo + specular).rgb * shadow, alpha * material.Opacity);
+    float4 result = float4(ambient.rgb + (emissive + diffuse_albedo + specular).rgb * shadow, alpha * material.Opacity);
+    //float fog_start = 1.0f;
+    //float fog_range = 3.0f;
+    //float3 fog_color = float3(0.729412f, 0.72549f, 0.705882f) * 0.5f;
+    //float fog_lerp = saturate((distance_to_eye - fog_start) / fog_range);
+    //result = float4(lerp(result.xyz, fog_color, fog_lerp), result.w);
+    
+    float fog_start = FogPropertiesCB.FogStart;
+    float fog_range = FogPropertiesCB.FogRange;
+    float3 fog_color = FogPropertiesCB.FogColor;
+    float fog_lerp = saturate((distance_to_eye - fog_start) / fog_range);
+    result = float4(lerp(result.xyz, fog_color, fog_lerp), result.w);
+    
     return float4(LinearToSRGB(result.xyz), result.a);
 	//return result;
 }

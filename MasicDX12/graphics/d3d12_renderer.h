@@ -44,6 +44,7 @@ public:
 
 	virtual void VSetClearColor(BYTE R, BYTE G, BYTE B, BYTE A) override;
 	virtual void VSetClearColor4f(float R, float G, float B, float A) override;
+	virtual DirectX::XMFLOAT4 VGetClearColor4f() override;
 
 	virtual bool VPreRender(std::shared_ptr<CommandList> command_list) override;
 	virtual bool VPresent() override;
@@ -61,6 +62,8 @@ public:
 	virtual RenderTarget& GetRenderTarget() override;
 	uint32_t GetRenderTargetWidth() override;
 	uint32_t GetRenderTargetHeight() override;
+
+	
 
 protected:
 	bool m_vsync_enabled;

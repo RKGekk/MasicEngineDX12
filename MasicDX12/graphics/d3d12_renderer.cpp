@@ -53,6 +53,10 @@ void D3DRenderer12::VSetClearColor4f(float R, float G, float B, float A) {
 	m_back_buffer_clear_color.w = A;
 }
 
+DirectX::XMFLOAT4 D3DRenderer12::VGetClearColor4f() {
+	return m_back_buffer_clear_color;
+}
+
 bool D3DRenderer12::VPreRender(std::shared_ptr<CommandList> command_list) {
 	m_render_target.AttachTexture(AttachmentPoint::Color0, m_swap_chain->GetRenderTarget().GetTexture(AttachmentPoint::Color0));
 	command_list->ClearTexture(m_render_target.GetTexture(AttachmentPoint::Color0), &m_back_buffer_clear_color.x);

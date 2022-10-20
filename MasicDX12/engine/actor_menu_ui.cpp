@@ -31,6 +31,7 @@ ActorMenuUI::ActorMenuUI(std::shared_ptr<ProcessManager> pm) {
 	m_show_menu = true;
 	m_actor_id = 0;
 
+
 	Set(pm);
 }
 
@@ -45,6 +46,45 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 	if (!m_show_menu) { return S_OK; }
 
 	if (ImGui::Begin("Actor Menu")) {
+		if (ImGui::CollapsingHeader("Fog")) {
+			std::shared_ptr<Engine> engine = Engine::GetEngine();
+			std::shared_ptr<BaseEngineLogic> engine_logic = engine->GetGameLogic();
+			std::shared_ptr<HumanView> human_view = engine_logic->GetHumanView();
+			std::shared_ptr<Scene> scene = human_view->VGetScene();
+			std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
+
+			m_bg_color = renderer->VGetClearColor4f();
+			if (ImGui::ColorEdit4("Background Color", ((float*)&m_bg_color))) {
+				renderer->VSetClearColor4f(m_bg_color.x, m_bg_color.y, m_bg_color.z, m_bg_color.w);
+			}
+
+			m_fog_start = scene->GetSceneConfig().FogStart;
+			if (ImGui::SliderFloat("Fog Start At", ((float*)&m_fog_start), 0.1f, 10.0f)) {
+				Scene::SceneConfig sc_cfg = {};
+				sc_cfg.FogColor = m_fog_color;
+				sc_cfg.FogStart = m_fog_start;
+				sc_cfg.FogRange = m_fog_range;
+				scene->SetSceneConfig(sc_cfg);
+			}
+
+			m_fog_range = scene->GetSceneConfig().FogRange;
+			if (ImGui::SliderFloat("Fog Range To", ((float*)&m_fog_range), 0.5f, 30.0f)) {
+				Scene::SceneConfig sc_cfg = {};
+				sc_cfg.FogColor = m_fog_color;
+				sc_cfg.FogStart = m_fog_start;
+				sc_cfg.FogRange = m_fog_range;
+				scene->SetSceneConfig(sc_cfg);
+			}
+
+			m_fog_color = scene->GetSceneConfig().FogColor;
+			if (ImGui::ColorEdit4("Fog Color", ((float*)&m_fog_color))) {
+				Scene::SceneConfig sc_cfg = {};
+				sc_cfg.FogColor = m_fog_color;
+				sc_cfg.FogStart = m_fog_start;
+				sc_cfg.FogRange = m_fog_range;
+				scene->SetSceneConfig(sc_cfg);
+			}
+		}
 		if (ImGui::CollapsingHeader("Actors")) {
 			ImGui::Text(m_actor_name.c_str());
 			if (ImGui::InputInt("Actor ID", &m_actor_id)) {

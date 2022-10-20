@@ -133,8 +133,20 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		command_list->CopyResource(m_shadow_map_texture, m_shadow_manager->GetShadowMapTexture());
 		m_lighting_instanced_pso->SetShadowMapTexture(m_shadow_map_texture);
 	}
-	
+
+	EffectPSO::FogProperties fog_props = {};
+	fog_props.FogColor = m_scene_config.FogColor;
+	fog_props.FogRange = m_scene_config.FogRange;
+	fog_props.FogStart = m_scene_config.FogStart;
+
+	EffectInstancedPSO::FogProperties fog_inst_props = {};
+	fog_inst_props.FogColor = m_scene_config.FogColor;
+	fog_inst_props.FogRange = m_scene_config.FogRange;
+	fog_inst_props.FogStart = m_scene_config.FogStart;
+
+	m_lighting_pso->SetFogProperties(fog_props);
 	m_lighting_pso->SetLightManager(m_light_manager);
+	m_lighting_instanced_pso->SetFogProperties(fog_inst_props);
 	m_lighting_instanced_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetShadowManager(m_shadow_manager);
 	m_lighting_instanced_pso->SetMeshManager(m_mesh_manager);
@@ -143,12 +155,15 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false, m_shadow_map_texture);
 
-	FLOAT clear_color[] = { 0.4f, 0.6f, 0.9f, 1.0f };
+	//FLOAT clear_color[] = { 0.4f, 0.6f, 0.9f, 1.0f };
+	//FLOAT clear_color[] = { 0.729412f, 0.72549f, 0.705882f, 1.0f };
+	DirectX::XMFLOAT4 cc = renderer->VGetClearColor4f();
 
 	std::shared_ptr<Texture> render_target_color = m_render_target.GetTexture(AttachmentPoint::Color0);
 	std::shared_ptr<Texture> render_target_depth = m_render_target.GetTexture(AttachmentPoint::DepthStencil);
 	
-	command_list->ClearTexture(render_target_color, clear_color);
+	//command_list->ClearTexture(render_target_color, clear_color);
+	command_list->ClearTexture(render_target_color, &cc.x);
 	command_list->ClearDepthStencilTexture(render_target_depth, D3D12_CLEAR_FLAG_DEPTH);
 
 	command_list->SetViewport(m_viewport);

@@ -13,6 +13,7 @@
 #include "../tools/com_exception.h"
 #include "../tools/memory_utility.h"
 #include "../tools/string_utility.h"
+#include "../nodes/scene.h"
 #include "../nodes/camera_node.h"
 #include "../nodes/basic_camera_node.h"
 #include "../nodes/light_manager.h"
@@ -57,6 +58,7 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     root_parameters[to_underlying(RootParameters::InstanceIndexData)].InitAsShaderResourceView(1, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[to_underlying(RootParameters::MaterialCB)].InitAsConstantBufferView(0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::LightPropertiesCB)].InitAsConstants(sizeof(LightProperties) / 4, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
+    root_parameters[to_underlying(RootParameters::FogPropertiesCB)].InitAsConstants(sizeof(FogProperties) / 4, 2, 0, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::PointLights)].InitAsShaderResourceView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::SpotLights)].InitAsShaderResourceView(1, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[to_underlying(RootParameters::DirectionalLights)].InitAsShaderResourceView(2, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
@@ -96,6 +98,7 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "gPerPassData"s);
     m_pixel_shader->AddRegister({ 0, 1, ShaderRegister::ConstantBuffer }, "MaterialCB"s);
     m_pixel_shader->AddRegister({ 1, 0, ShaderRegister::ConstantBuffer }, "LightPropertiesCB");
+    m_pixel_shader->AddRegister({ 2, 0, ShaderRegister::ConstantBuffer }, "FogPropertiesCB");
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ShaderResource }, "PointLights"s);
     m_pixel_shader->AddRegister({ 1, 0, ShaderRegister::ShaderResource }, "SpotLights"s);
     m_pixel_shader->AddRegister({ 2, 0, ShaderRegister::ShaderResource }, "DirectionalLights"s);
@@ -131,6 +134,10 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     default_srv.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
     m_default_srv = m_device->CreateShaderResourceView(nullptr, &default_srv);
+
+    m_fog_properties.FogColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    m_fog_properties.FogStart = 1.0f;
+    m_fog_properties.FogRange = 10.0f;
 }
 
 EffectInstancedPSO::~EffectInstancedPSO() {
@@ -215,6 +222,8 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
         command_list.SetGraphics32BitConstants(to_underlying(RootParameters::LightPropertiesCB), light_props);
     }
 
+    command_list.SetGraphics32BitConstants(to_underlying(RootParameters::FogPropertiesCB), m_fog_properties);
+
     const MeshManager::MeshMap& mesh_map = m_mesh_manager->GetMeshMap();
     for (const auto& [mesh_name, mesh_list] : mesh_map) {
         auto instance_buffer_view = m_mesh_manager->GetInstanceBufferView(mesh_name);
@@ -275,6 +284,10 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
     }
 
     m_dirty_flags = DF_None;
+}
+
+void EffectInstancedPSO::SetFogProperties(const FogProperties& fog_props) {
+    m_fog_properties = fog_props;
 }
 
 void EffectInstancedPSO::SetViewMatrix(const BasicCameraNode& camera) {

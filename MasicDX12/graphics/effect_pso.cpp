@@ -48,6 +48,7 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     root_parameters[RootParameters::MatricesCB].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[RootParameters::MaterialCB].InitAsConstantBufferView(0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[RootParameters::LightPropertiesCB].InitAsConstants(sizeof(LightProperties) / 4, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
+    root_parameters[RootParameters::FogPropertiesCB].InitAsConstants(sizeof(FogProperties) / 4, 2, 0, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[RootParameters::PointLights].InitAsShaderResourceView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[RootParameters::SpotLights].InitAsShaderResourceView(1, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
     root_parameters[RootParameters::DirectionalLights].InitAsShaderResourceView(2, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
@@ -119,6 +120,10 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     default_srv.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
     m_default_srv = m_device->CreateShaderResourceView(nullptr, &default_srv);
+
+    m_fog_properties.FogColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    m_fog_properties.FogStart = 1.0f;
+    m_fog_properties.FogRange = 10.0f;
 }
 
 EffectPSO::~EffectPSO() {
@@ -197,12 +202,18 @@ void EffectPSO::Apply(CommandList& command_list) {
         command_list.SetGraphics32BitConstants(RootParameters::LightPropertiesCB, light_props);
     }
 
+    command_list.SetGraphics32BitConstants(to_underlying(RootParameters::FogPropertiesCB), m_fog_properties);
+
     m_dirty_flags = DF_None;
 }
 
 void EffectPSO::SetMaterial(const std::shared_ptr<Material>& material) {
     m_material = material;
     m_dirty_flags |= DF_Material;
+}
+
+void EffectPSO::SetFogProperties(const FogProperties& fog_props) {
+    m_fog_properties = fog_props;
 }
 
 void XM_CALLCONV EffectPSO::SetWorldMatrix(DirectX::FXMMATRIX world_matrix) {

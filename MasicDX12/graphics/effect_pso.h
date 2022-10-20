@@ -24,6 +24,12 @@ public:
 		uint32_t NumDirectionalLights;
 	};
 
+	struct FogProperties {
+		DirectX::XMFLOAT4 FogColor;
+		float FogStart;
+		float FogRange;
+	};
+
 	struct alignas(16) Matrices {
 		DirectX::XMMATRIX ModelMatrix;
 		DirectX::XMMATRIX ModelViewMatrix;
@@ -36,6 +42,7 @@ public:
 		MatricesCB,
 		MaterialCB,
 		LightPropertiesCB,
+		FogPropertiesCB,
 		PointLights,
 		SpotLights,
 		DirectionalLights,
@@ -49,6 +56,7 @@ public:
 	void SetLightManager(std::shared_ptr<LightManager> light_manager);
 	void SetMaterial(const std::shared_ptr<Material>& material);
 
+	void SetFogProperties(const FogProperties& fog_props);
 	void XM_CALLCONV SetWorldMatrix(DirectX::FXMMATRIX world_matrix);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
 	void XM_CALLCONV SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix);
@@ -87,6 +95,7 @@ private:
 	std::shared_ptr<LightManager> m_light_manager;
 
 	std::shared_ptr<Material> m_material;
+	FogProperties m_fog_properties;
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 

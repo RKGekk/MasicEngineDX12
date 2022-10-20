@@ -297,9 +297,32 @@ bool HumanView::VLoadGameDelegate(const pugi::xml_node& pLevel_data) {
 	if (scene_config_node) {
 		for (pugi::xml_node node = scene_config_node.first_child(); node; node = node.next_sibling()) {
 			std::string param_name = node.name();
+
 			if (param_name == "Camera"s) {
 				std::string camera_name = node.child("SelectName").text().as_string();
 				VSetCameraByName(camera_name);
+			}
+
+			if (param_name == "BackgroundColor"s) {
+				std::shared_ptr<Engine> engine = Engine::GetEngine();
+				std::shared_ptr<D3DRenderer12> renderer = std::dynamic_pointer_cast<D3DRenderer12>(engine->GetRenderer());
+
+				DirectX::XMFLOAT3 default_color = { 1.0f, 1.0f, 1.0f };
+				DirectX::XMFLOAT3 bg_color = colorfromattr3f(node, default_color);
+				renderer->VSetClearColor4f(bg_color.x, bg_color.y, bg_color.z, 1.0f);
+			}
+
+			if (param_name == "Fog"s) {
+
+				DirectX::XMFLOAT3 default_fog_color = { 1.0f, 1.0f, 1.0f };
+				DirectX::XMFLOAT3 fog_color = colorfromattr3f(node.child("FogColor"), default_fog_color);
+				float fog_range = node.child("FogRange").text().as_float();
+				float fog_start = node.child("FogStart").text().as_float();
+				Scene::SceneConfig sc_cfg = {};
+				sc_cfg.FogColor = DirectX::XMFLOAT4(fog_color.x, fog_color.y, fog_color.z, 1.0f);
+				sc_cfg.FogStart = fog_start;
+				sc_cfg.FogRange = fog_range;
+				m_scene->SetSceneConfig(sc_cfg);
 			}
 		}
 	}

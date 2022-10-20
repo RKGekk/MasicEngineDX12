@@ -106,7 +106,14 @@ StructuredBuffer<SpotLight> SpotLights : register(t1);
 StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
 #endif // ENABLE_LIGHTING
 
-ConstantBuffer<Material> MaterialCB : register(b0, space1);
+struct FogProperties {
+    float4 FogColor;
+    float  FogStart;
+    float  FogRange;
+};
+
+ConstantBuffer<Material> MaterialCB           : register(b0, space1);
+ConstantBuffer<FogProperties> FogPropertiesCB : register(b2);
 
 // Textures
 Texture2D AmbientTexture       : register(t3);
@@ -406,8 +413,8 @@ float4 main(PixelShaderInput IN) : SV_Target {
 	float4 specular = 0;
 #if ENABLE_LIGHTING
     LightResult lit = DoLighting( IN.PositionVS.xyz, N, specularPower );
+    ambient *= diffuse * lit.Ambient;
     diffuse *= lit.Diffuse;
-    ambient *= lit.Ambient;
     // Specular power less than 1 doesn't really make sense.
     // Ignore specular on materials with a specular power less than 1.
     if (material.SpecularPower > 1.0f) {
@@ -421,5 +428,5 @@ float4 main(PixelShaderInput IN) : SV_Target {
 	shadow = -N.z;
 #endif // ENABLE_LIGHTING
 
-	return float4((emissive + ambient + diffuse + specular).rgb * shadow, alpha * material.Opacity);
+	return float4(ambient.rgb + (emissive + diffuse + specular).rgb * shadow, alpha * material.Opacity);
 }

@@ -70,4 +70,9 @@ private:
 
 	bool m_mesh_exists;
 	std::string m_mesh_name;
+
+	DirectX::XMFLOAT4 m_bg_color;
+	DirectX::XMFLOAT4 m_fog_color;
+	float m_fog_start;
+	float m_fog_range;
 };

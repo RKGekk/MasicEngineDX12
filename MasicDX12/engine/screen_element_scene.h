@@ -52,6 +52,8 @@ private:
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissor_rect;
 
+
+
 private:
 	void RegisterAllDelegates();
 	void RemoveAllDelegates();

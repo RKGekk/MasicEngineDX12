@@ -37,6 +37,14 @@ std::shared_ptr<QualifierNode> Scene::GetRootNode() {
 	return m_root_node;
 }
 
+const Scene::SceneConfig& Scene::GetSceneConfig() {
+	return m_scene_config;
+}
+
+void Scene::SetSceneConfig(const SceneConfig& scene_config) {
+	m_scene_config = scene_config;
+}
+
 void Scene::ManageAddNodes(std::shared_ptr<SceneNode> node) {
 	if (!node) return;
 	if (std::shared_ptr<LightNode> pLight = std::dynamic_pointer_cast<LightNode>(node)) {
@@ -74,6 +82,10 @@ Scene::Scene() {
 	m_light_manager = std::make_shared<LightManager>();
 	m_shadow_manager = std::make_shared<ShadowManager>();
 	m_mesh_manager = std::make_shared<MeshManager>();
+
+	m_scene_config.FogColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_scene_config.FogStart = 1.0f;
+	m_scene_config.FogRange = 100.0f;
 }
 
 Scene::~Scene() {}

@@ -30,6 +30,12 @@ public:
 		uint32_t NumDirectionalLights;
 	};
 
+	struct FogProperties {
+		DirectX::XMFLOAT4 FogColor;
+		float FogStart;
+		float FogRange;
+	};
+
 	struct alignas(16) PerPassData {
 		DirectX::XMMATRIX ViewMatrix;
 		DirectX::XMMATRIX InverseTransposeViewMatrix;
@@ -59,6 +65,7 @@ public:
 		InstanceIndexData,
 		MaterialCB,
 		LightPropertiesCB,
+		FogPropertiesCB,
 		PointLights,
 		SpotLights,
 		DirectionalLights,
@@ -73,6 +80,7 @@ public:
 	void SetShadowManager(std::shared_ptr<ShadowManager> shadow_manager);
 	void SetMeshManager(std::shared_ptr<MeshManager> mesh_manager);
 
+	void SetFogProperties(const FogProperties& fog_props);
 	void SetViewMatrix(const BasicCameraNode& camera);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
 	void XM_CALLCONV SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix);
@@ -80,6 +88,7 @@ public:
 	void SetFarZ(float far_z);
 	void SetRenderTargetSize(DirectX::XMFLOAT2 render_target_size);
 	void SetShadowMapTexture(std::shared_ptr<Texture> shadow_map_texture);
+	
 
 	void Apply(CommandList& command_list, const GameTimerDelta& delta);
 
@@ -122,6 +131,7 @@ private:
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 	std::shared_ptr<Texture> m_shadow_map_texture;
+	FogProperties m_fog_properties;
 
 	VP* m_pAligned_mvp;
 
