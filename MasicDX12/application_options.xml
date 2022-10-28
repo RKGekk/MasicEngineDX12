@@ -2,8 +2,8 @@
 <PlayerOptions>
   <Graphics>
     <Renderer>Direct3D 12</Renderer>
-    <Width>1280</Width>
-    <Height>720</Height>
+    <Width>1920</Width>
+    <Height>1080</Height>
     <RunFullSpeed>false</RunFullSpeed>
     <FullScreen>false</FullScreen>
     <FullScreenMax>ture</FullScreenMax>

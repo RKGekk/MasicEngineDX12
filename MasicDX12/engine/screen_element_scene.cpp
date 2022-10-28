@@ -1,6 +1,7 @@
 #include "screen_element_scene.h"
 
 #include "engine.h"
+#include "../actors/transform_component.h"
 #include "../graphics/d3d12_renderer.h"
 #include "../graphics/i_renderer.h"
 #include "../graphics/directx12_wrappers/command_queue.h"
@@ -85,6 +86,27 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 	std::shared_ptr<HumanView> human_view = engine->GetGameLogic()->GetHumanView();
 	std::shared_ptr<BasicCameraNode> camera = human_view->VGetCamera();
+
+	//DirectX::XMFLOAT3 cam_pos = camera->Get().Position3();
+	//DirectX::XMFLOAT3 cam_pos = camera->Get().CumulativePosition3();
+	//cam_pos.x += delta.fGetDeltaSeconds() * 0.5f;
+	//if (cam_pos.x > 3.0f) cam_pos.x -= 3.0f;
+	//camera->SetPosition3(cam_pos);
+	//camera->GetParent()->SetPosition3(cam_pos);
+
+	//DirectX::XMFLOAT4X4 cam_trans = camera->Get().CumulativeToWorld4x4();
+	//cam_trans.m[3][0] += delta.fGetDeltaSeconds() * 0.5f;
+	//camera->SetTransform4x4(&cam_trans, nullptr);
+	//camera->GetParent()->SetTransform4x4(&cam_trans, nullptr);
+
+	/*WeakActorPtr weak_camera_actor = engine->GetGameLogic()->VGetActorByName("camera1");
+	if (auto cam_actor = weak_camera_actor.lock()) {
+		std::shared_ptr<TransformComponent> tc = cam_actor->GetComponent<TransformComponent>().lock();
+		DirectX::XMFLOAT3 cam_pos = tc->GetPosition3f();
+		cam_pos.x += delta.fGetDeltaSeconds() * 0.1f;
+		if (cam_pos.x > 0.0f) cam_pos.x -= 2.0f;
+		tc->SetPosition3f(cam_pos);
+	}*/
 
 	m_mesh_manager->CalcInstances(*camera);
 	m_light_manager->CalcLighting(camera->GetView());

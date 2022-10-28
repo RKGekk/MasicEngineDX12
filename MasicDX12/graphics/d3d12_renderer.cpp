@@ -17,6 +17,7 @@ bool D3DRenderer12::Initialize(std::shared_ptr<WindowSurface> rw) {
 	m_adapter = m_adapter_reader->GetAdapter();
 	m_device = Device::Create(m_adapter);
 	m_swap_chain = m_device->CreateSwapChain(m_window_surface->GetWindowHandle(), m_back_buffer_format);
+	//m_swap_chain->
 
 	m_width = m_swap_chain->GetWidth();
 	m_height = m_swap_chain->GetHeight();

@@ -636,6 +636,9 @@
     <ClCompile Include="nodes\shadow_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nodes\skinned_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1319,6 +1322,9 @@
     <ClInclude Include="nodes\shadow_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="nodes\skinned_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_options.xml">
@@ -1480,6 +1486,103 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="data\textures\road_roughness.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\objects\Mr_Man_Walking.fbx" />
+    <None Include="data\textures\Mr_Man_Beard_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Beard_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Beard_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Beard_Specular.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Body_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Body_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Body_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Body_Specular.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Bottom_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Bottom_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Bottom_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Bottom_Specular.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Eyewear_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Eyewear_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Eyewear_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Eyewear_Specular.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Hair_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Hair_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Hair_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Hair_Specular.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Moustache_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Moustache_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Moustache_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Moustache_Specular.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Shoes_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Shoes_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Shoes_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Shoes_Specular.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Top_Diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Top_Normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Top_Opacity.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Mr_Man_Top_Specular.png">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

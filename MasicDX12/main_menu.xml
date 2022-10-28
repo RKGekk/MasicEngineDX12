@@ -30,7 +30,7 @@
     <Actor name="building3" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-2.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -43,7 +43,7 @@
     <Actor name="building4" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-3.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -56,7 +56,7 @@
     <Actor name="building5" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-4.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -69,7 +69,7 @@
     <Actor name="building6" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-5.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -82,6 +82,32 @@
     <Actor name="building7" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-6.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\lpAsianTowerBlock.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="building8" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-7.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\lpAsianTowerBlock.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="building9" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-8.000000" y="0.000000" z="0.000000" />
         <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
@@ -121,7 +147,7 @@
     <Actor name="building3L" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-2.000000" y="0.000000" z="-2.000000" />
-        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -134,7 +160,7 @@
     <Actor name="building4L" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-3.000000" y="0.000000" z="-2.000000" />
-        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -147,7 +173,7 @@
     <Actor name="building5L" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-4.000000" y="0.000000" z="-2.000000" />
-        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -160,7 +186,7 @@
     <Actor name="building6L" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-5.000000" y="0.000000" z="-2.000000" />
-        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
       <MeshComponent>
@@ -173,6 +199,32 @@
     <Actor name="building7L" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="-6.000000" y="0.000000" z="-2.000000" />
+        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\lpAsianTowerBlock.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="building8L" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-7.000000" y="0.000000" z="-2.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\lpAsianTowerBlock.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="building9L" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-8.000000" y="0.000000" z="-2.000000" />
         <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
@@ -208,10 +260,10 @@
         <Mesh>data\objects\road_traffic_sign.obj</Mesh>
       </MeshComponent>
     </Actor>
-    
+
     <Actor name="road3" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="-4.000000" y="-1.000000" z="-1.000000" />
+        <Position x="-4.00000" y="-1.000000" z="-1.000000" />
         <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
@@ -235,9 +287,35 @@
       </MeshComponent>
     </Actor>
 
+    <Actor name="road5" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-8.000000" y="-1.000000" z="-1.000000" />
+        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\road_traffic_sign.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="road6" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-10.000000" y="-1.000000" z="-1.000000" />
+        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\road_traffic_sign.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+    
     <Actor name="camera1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="0.100000" z="-1.000000" />
+        <Position x="-2.000000" y="0.100000" z="-1.000000" />
         <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
@@ -273,7 +351,7 @@
 
   </Actors>
   <Scene>
-    <BackgroundColor r="1.0" g="1.0" b="1.0" />
+    <BackgroundColor r="0.729412" g="0.72549" b="0.705882" />
     <Camera>
       <SelectName>camera1</SelectName>
     </Camera>

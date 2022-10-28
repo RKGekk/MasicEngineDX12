@@ -14,6 +14,7 @@
 #endif
 
 const float EPSILON = std::numeric_limits<float>::epsilon();
+//const float INFINITY = std::numeric_limits<float>::infinity();
 
 DirectX::XMVECTOR GetTranslation(DirectX::XMMATRIX mat);
 DirectX::XMVECTOR BarycentricToVec3(DirectX::FXMVECTOR v0, DirectX::FXMVECTOR v1, DirectX::FXMVECTOR v2, float u, float v);
