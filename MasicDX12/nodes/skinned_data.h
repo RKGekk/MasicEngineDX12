@@ -3,9 +3,16 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <memory>
 #include <unordered_map>
 
 #include <DirectXMath.h>
+
+constexpr auto MAX_BONE_TRANSFORMS = 96;
+
+struct SkinnedConstants {
+	DirectX::XMFLOAT4X4 BoneTransforms[MAX_BONE_TRANSFORMS];
+};
 
 struct Keyframe {
 	Keyframe();
@@ -15,6 +22,8 @@ struct Keyframe {
 	DirectX::XMFLOAT3 Translation;
 	DirectX::XMFLOAT3 Scale;
 	DirectX::XMFLOAT4 RotationQuat;
+
+	friend bool operator<(const Keyframe& kf1, const Keyframe& kf2);
 };
 
 struct BoneAnimation {
@@ -23,7 +32,7 @@ struct BoneAnimation {
 
 	void Interpolate(float t, DirectX::XMFLOAT4X4& M) const;
 
-	std::vector<Keyframe> Keyframes;
+	std::vector<Keyframe> Keyframes; // ASC sorted by time
 };
 
 struct AnimationClip {
@@ -49,8 +58,16 @@ public:
 
 private:
 	std::vector<int> m_bone_hierarchy;
-
 	std::vector<DirectX::XMFLOAT4X4> m_bone_offsets;
 
 	std::unordered_map<std::string, AnimationClip> m_animations;
+};
+
+struct SkinnedModelInstance {
+	std::shared_ptr<SkinnedData> SkinnedInfo = nullptr;
+	std::vector<DirectX::XMFLOAT4X4> FinalTransforms;
+	std::string ClipName;
+	float TimePos = 0.0f;
+
+	void UpdateSkinnedAnimation(float dt);
 };
