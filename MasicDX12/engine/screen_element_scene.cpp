@@ -244,6 +244,10 @@ void ScreenElementScene::ModifiedSceneNodeComponentDelegate(IEventDataPtr pEvent
 	std::shared_ptr<EvtData_Modified_Scene_Component> pCastEventData = std::static_pointer_cast<EvtData_Modified_Scene_Component>(pEventData);
 	std::shared_ptr<SceneNode> node = pCastEventData->GetSceneNode().lock();
 
+	ModifiedSceneNode(node);
+}
+
+void ScreenElementScene::ModifiedSceneNode(std::shared_ptr<SceneNode> node) {
 	if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(node)) {
 		if (pMesh->GetIsInstanced() && m_mesh_manager->GetMeshCount(pMesh)) {
 			m_mesh_manager->UpdateInstancesBuffer();
@@ -255,18 +259,9 @@ void ScreenElementScene::ModifiedSceneNodeComponentDelegate(IEventDataPtr pEvent
 			m_skinned_mesh_manager->UpdateInstancesBuffer();
 		}
 	};
-	
+
 	for (const auto& child_node : node->VGetChildren()) {
-		if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(child_node)) {
-			if (pMesh->GetIsInstanced() && m_mesh_manager->GetMeshCount(pMesh)) {
-				m_mesh_manager->UpdateInstancesBuffer();
-			}
-		};
-		if (std::shared_ptr<AnimatedMeshNode> pAnimMesh = std::dynamic_pointer_cast<AnimatedMeshNode>(child_node)) {
-			if (pAnimMesh->GetIsInstanced() && m_skinned_mesh_manager->GetMeshCount(pAnimMesh)) {
-				m_skinned_mesh_manager->UpdateInstancesBuffer();
-			}
-		};
+		ModifiedSceneNode(child_node);
 	}
 }
 

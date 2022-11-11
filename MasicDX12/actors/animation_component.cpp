@@ -655,13 +655,13 @@ void AnimationComponent::VDelegatePostInit() {
 }
 
 void AnimationComponent::VDelegateUpdate(const GameTimerDelta& delta) {
-    if (m_current_gen_updated) {
-        m_loaded_scene_node->AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
-    }
-    
     for (auto animated_node : gs_mesh_nodes_list[m_resource_name]) {
         auto& final_transform_list = animated_node->GetFinalTransformList();
-        m_skinned_data->GetFinalTransforms("mixamo.com", delta.fGetTotalSeconds(), final_transform_list);
+        float time = std::fmodf(delta.fGetTotalSeconds(), 1.0f);
+        m_skinned_data->GetFinalTransforms("mixamo.com", time, final_transform_list);
+    }
+    if (m_current_gen_updated) {
+        m_loaded_scene_node->AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
     }
 }
 

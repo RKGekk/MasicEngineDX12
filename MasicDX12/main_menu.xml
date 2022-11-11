@@ -3,33 +3,7 @@
   <Actors>
     <Actor name="building1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
-        <Scale x="1.000000" y="1.000000" z="1.000000" />
-      </TransformComponent>
-      <MeshComponent>
-        <IsInvYNormalTexture>false</IsInvYNormalTexture>
-        <IsInstanced>true</IsInstanced>
-        <Mesh>data\objects\lpAsianTowerBlock.obj</Mesh>
-      </MeshComponent>
-    </Actor>
-
-    <Actor name="building2" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
-      <TransformComponent>
-        <Position x="-1.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
-        <Scale x="1.000000" y="1.000000" z="1.000000" />
-      </TransformComponent>
-      <MeshComponent>
-        <IsInvYNormalTexture>false</IsInvYNormalTexture>
-        <IsInstanced>true</IsInstanced>
-        <Mesh>data\objects\lpAsianTowerBlock.obj</Mesh>
-      </MeshComponent>
-    </Actor>
-
-    <Actor name="building3" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
-      <TransformComponent>
-        <Position x="-2.000000" y="0.000000" z="0.000000" />
+        <Position x="0.000000" y="1.000000" z="1.000000" />
         <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
@@ -42,7 +16,20 @@
 
     <Actor name="road1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="-1.000000" z="-1.000000" />
+        <Position x="-1.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <Scale x="1.000000" y="1.000000" z="1.000000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\road_traffic_sign.obj</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="road2" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="1.000000" y="0.000000" z="0.000000" />
         <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
@@ -55,9 +42,9 @@
 
     <Actor name="character1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="-1.000000" z="-1.000000" />
-        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
-        <Scale x="1.000000" y="1.000000" z="1.000000" />
+        <Position x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="0.125000" y="0.125000" z="0.125000" />
       </TransformComponent>
       <AnimationComponent>
         <IsInvYNormalTexture>false</IsInvYNormalTexture>
@@ -68,7 +55,7 @@
 
     <Actor name="camera1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="0.000000" z="-3.000000" />
+        <Position x="0.000000" y="0.500000" z="-1.000000" />
         <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>

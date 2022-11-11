@@ -37,6 +37,9 @@ public:
 
 	void ModifiedSceneNodeComponentDelegate(IEventDataPtr pEventData);
 
+protected:
+	void ModifiedSceneNode(std::shared_ptr<SceneNode> node);
+
 private:
 	bool m_is_visible = true;
 	RenderTarget m_render_target;

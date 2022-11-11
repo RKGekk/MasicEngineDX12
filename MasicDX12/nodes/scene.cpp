@@ -77,6 +77,9 @@ void Scene::ManageRemoveNodes(std::shared_ptr<SceneNode> node) {
 	if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(node)) {
 		m_mesh_manager->RemoveMesh(node);
 	};
+	if (std::shared_ptr<AnimatedMeshNode> pAnimMesh = std::dynamic_pointer_cast<AnimatedMeshNode>(node)) {
+		m_skinned_mesh_manager->RemoveMesh(node);
+	};
 	for (auto& current_node : node->m_children) {
 		ManageRemoveNodes(current_node);
 	}
