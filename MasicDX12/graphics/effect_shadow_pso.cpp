@@ -18,6 +18,7 @@
 EffectShadowPSO::EffectShadowPSO(std::shared_ptr<Device> device, std::shared_ptr<ShadowManager> shadow_manager) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_need_transpose(true), m_shadow_manager(shadow_manager) {
     using namespace std::literals;
     m_pAligned_mvp = (MVP*)_aligned_malloc(sizeof(MVP), 16);
+    m_pAligned_fbt = (FinalBoneTransforms*)_aligned_malloc(sizeof(FinalBoneTransforms), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
     HRESULT hr = D3DReadFileToBlob(L"BasicShadow_VS.cso", vertex_shader_blob.GetAddressOf());
@@ -36,6 +37,7 @@ EffectShadowPSO::EffectShadowPSO(std::shared_ptr<Device> device, std::shared_ptr
 
     CD3DX12_ROOT_PARAMETER1 root_parameters[RootParameters::NumRootParameters];
     root_parameters[RootParameters::MatricesCB].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+    root_parameters[RootParameters::FinalBoneTransformsCB].InitAsConstantBufferView(3, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
 
     CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC root_signature_description;
     root_signature_description.Init_1_1(RootParameters::NumRootParameters, root_parameters, 0u, nullptr, root_signature_flags);
@@ -45,7 +47,8 @@ EffectShadowPSO::EffectShadowPSO(std::shared_ptr<Device> device, std::shared_ptr
     DXGI_FORMAT depth_buffer_format = DXGI_FORMAT_D32_FLOAT;
 
     m_vertex_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "MatricesCB"s);
-    m_vertex_shader->SetInputAssemblerLayout(VertexPositionNormalTangentBitangentTexture::InputLayout);
+    m_vertex_shader->AddRegister({ 3, 0, ShaderRegister::ConstantBuffer }, "SkinnedDataCB"s);
+    m_vertex_shader->SetInputAssemblerLayout(VertexPosNormTgBtgUVAnim::InputLayout);
     m_vertex_shader->SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
     std::shared_ptr<ShadowCameraNode> shadow_node = m_shadow_manager->GetShadow();
@@ -73,6 +76,7 @@ EffectShadowPSO::EffectShadowPSO(std::shared_ptr<Device> device, std::shared_ptr
 
 EffectShadowPSO::~EffectShadowPSO() {
     _aligned_free(m_pAligned_mvp);
+    _aligned_free(m_pAligned_fbt);
 }
 
 void EffectShadowPSO::Apply(CommandList& command_list) {
@@ -89,7 +93,20 @@ void EffectShadowPSO::Apply(CommandList& command_list) {
         command_list.SetGraphicsDynamicConstantBuffer(RootParameters::MatricesCB, m);
     }
 
+    if (m_dirty_flags & DF_FinalBoneTransforms) {
+        command_list.SetGraphicsDynamicConstantBuffer(RootParameters::FinalBoneTransformsCB, *m_pAligned_fbt);
+    }
+
     m_dirty_flags = DF_None;
+}
+
+void EffectShadowPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix) {
+    size_t sz = final_transforms_matrix.size();
+    for (int i = 0; i < sz; ++i) {
+        m_pAligned_fbt->BoneTransforms[i] = DirectX::XMLoadFloat4x4(&final_transforms_matrix[i]);
+        m_pAligned_fbt->InverseTransposeBoneTransforms[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, m_pAligned_fbt->BoneTransforms[i]));
+    }
+    m_dirty_flags |= DF_FinalBoneTransforms;
 }
 
 void XM_CALLCONV EffectShadowPSO::SetWorldMatrix(DirectX::FXMMATRIX world_matrix) {

@@ -5,6 +5,7 @@
 #include "qualifier_node.h"
 #include "camera_node.h"
 #include "light_node.h"
+#include "aminated_mesh_node.h"
 #include "mesh_node.h"
 #include "shadow_camera_node.h"
 #include "../events/evt_data_new_render_component.h"
@@ -13,6 +14,7 @@
 #include "../events/evt_data_modified_render_component.h"
 #include "light_manager.h"
 #include "mesh_manager.h"
+#include "skinned_mesh_manager.h"
 #include "shadow_manager.h"
 #include "light_node.h"
 #include "../engine/engine.h"
@@ -58,6 +60,10 @@ void Scene::ManageAddNodes(std::shared_ptr<SceneNode> node) {
 			m_mesh_manager->AddMesh(node);
 		}
 	};
+	if (std::shared_ptr<AnimatedMeshNode> pAnimMesh = std::dynamic_pointer_cast<AnimatedMeshNode>(node)) {
+		m_skinned_mesh_manager->AddMesh(node);
+	};
+
 	for (auto& current_node : node->m_children) {
 		ManageAddNodes(current_node);
 	}
@@ -82,6 +88,7 @@ Scene::Scene() {
 	m_light_manager = std::make_shared<LightManager>();
 	m_shadow_manager = std::make_shared<ShadowManager>();
 	m_mesh_manager = std::make_shared<MeshManager>();
+	m_skinned_mesh_manager = std::make_shared<SkinnedMeshManager>();
 
 	m_scene_config.FogColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_scene_config.FogStart = 1.0f;

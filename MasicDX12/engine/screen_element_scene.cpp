@@ -14,8 +14,10 @@
 #include "../nodes/qualifier_node.h"
 #include "../nodes/light_manager.h"
 #include "../nodes/mesh_manager.h"
+#include "../nodes/skinned_mesh_manager.h"
 #include "../nodes/shadow_manager.h"
 #include "../nodes/mesh_node.h"
+#include "../nodes/aminated_mesh_node.h"
 #include "../nodes/camera_node.h"
 #include "../nodes/basic_camera_node.h"
 #include "../nodes/shadow_camera_node.h"
@@ -109,6 +111,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	}*/
 
 	m_mesh_manager->CalcInstances(*camera);
+	m_skinned_mesh_manager->CalcInstances(*camera);
 	m_light_manager->CalcLighting(camera->GetView());
 
 	std::shared_ptr<ShadowCameraNode> shadow_camera = m_shadow_manager->GetShadow();
@@ -119,6 +122,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		if(!m_shadow_instanced_pso) m_shadow_instanced_pso = std::make_shared<EffectShadowInstancedPSO>(device, m_shadow_manager);
 
 		m_shadow_instanced_pso->SetMeshManager(m_mesh_manager);
+		m_shadow_instanced_pso->SetSkinnedMeshManager(m_skinned_mesh_manager);
 		m_shadow_instanced_pso->SetViewMatrix(*shadow_camera);
 		m_shadow_instanced_pso->SetRenderTargetSize({ (float)shadow_camera_props.ShadowMapWidth, (float)shadow_camera_props.ShadowMapHeight });
 
@@ -172,6 +176,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	m_lighting_instanced_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetShadowManager(m_shadow_manager);
 	m_lighting_instanced_pso->SetMeshManager(m_mesh_manager);
+	m_lighting_instanced_pso->SetSkinnedMeshManager(m_skinned_mesh_manager);
 	m_lighting_instanced_pso->SetViewMatrix(*camera);
 	m_lighting_instanced_pso->SetRenderTargetSize({ (float)m_width, (float)m_height });
 
@@ -244,11 +249,22 @@ void ScreenElementScene::ModifiedSceneNodeComponentDelegate(IEventDataPtr pEvent
 			m_mesh_manager->UpdateInstancesBuffer();
 		}
 	};
+
+	if (std::shared_ptr<AnimatedMeshNode> pAnimMesh = std::dynamic_pointer_cast<AnimatedMeshNode>(node)) {
+		if (pAnimMesh->GetIsInstanced() && m_skinned_mesh_manager->GetMeshCount(pAnimMesh)) {
+			m_skinned_mesh_manager->UpdateInstancesBuffer();
+		}
+	};
 	
 	for (const auto& child_node : node->VGetChildren()) {
 		if (std::shared_ptr<MeshNode> pMesh = std::dynamic_pointer_cast<MeshNode>(child_node)) {
 			if (pMesh->GetIsInstanced() && m_mesh_manager->GetMeshCount(pMesh)) {
 				m_mesh_manager->UpdateInstancesBuffer();
+			}
+		};
+		if (std::shared_ptr<AnimatedMeshNode> pAnimMesh = std::dynamic_pointer_cast<AnimatedMeshNode>(child_node)) {
+			if (pAnimMesh->GetIsInstanced() && m_skinned_mesh_manager->GetMeshCount(pAnimMesh)) {
+				m_skinned_mesh_manager->UpdateInstancesBuffer();
 			}
 		};
 	}

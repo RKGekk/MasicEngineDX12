@@ -7,6 +7,7 @@
 
 class LightManager;
 class MeshManager;
+class SkinnedMeshManager;
 class ShadowManager;
 class QualifierNode;
 
@@ -48,6 +49,7 @@ protected:
 	std::shared_ptr<LightManager> m_light_manager;
 	std::shared_ptr<ShadowManager> m_shadow_manager;
 	std::shared_ptr<MeshManager> m_mesh_manager;
+	std::shared_ptr<SkinnedMeshManager> m_skinned_mesh_manager;
 
 	SceneConfig m_scene_config;
 };

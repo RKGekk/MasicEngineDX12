@@ -209,7 +209,7 @@ protected:
 	std::shared_ptr<CommandList> GetGenerateMipsCommandList() const;
 
 private:
-	using VertexCollection = std::vector<VertexPositionNormalTangentBitangentTexture>;
+	using VertexCollection = std::vector<VertexPosNormTgBtgUVAnim>;
 	using IndexCollection = std::vector<uint16_t>;
 
 	inline void ReverseWinding(IndexCollection& indices, VertexCollection& vertices);

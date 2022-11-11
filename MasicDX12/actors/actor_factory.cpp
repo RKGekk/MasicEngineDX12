@@ -8,6 +8,7 @@
 #include "camera_component.h"
 #include "light_component.h"
 #include "shadow_camera_component.h"
+#include "animation_component.h"
 
 unsigned int ActorFactory::GetNextActorId() {
     return ++m_last_actorId;
@@ -24,6 +25,7 @@ ActorFactory::ActorFactory() {
     m_component_factory.Register<CameraComponent>(ActorComponent::GetIdFromName(CameraComponent::g_Name), CameraComponent::g_Name);
     m_component_factory.Register<ShadowCameraComponent>(ActorComponent::GetIdFromName(ShadowCameraComponent::g_Name), ShadowCameraComponent::g_Name);
     m_component_factory.Register<LightComponent>(ActorComponent::GetIdFromName(LightComponent::g_Name), LightComponent::g_Name);
+    m_component_factory.Register<AnimationComponent>(ActorComponent::GetIdFromName(AnimationComponent::g_Name), AnimationComponent::g_Name);
 }
 
 std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resource, const pugi::xml_node& overrides, const DirectX::XMFLOAT4X4* pInitial_transform, const ActorId servers_actorId) {

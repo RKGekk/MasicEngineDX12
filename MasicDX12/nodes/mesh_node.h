@@ -31,8 +31,6 @@ public:
 protected:
 	void CalcAABB();
 
-	using MeshList = std::vector<std::shared_ptr<Mesh>>;
-
 	MeshList m_meshes;
 	bool m_instanced;
 };

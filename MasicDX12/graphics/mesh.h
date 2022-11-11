@@ -13,6 +13,7 @@ class IndexBuffer;
 class Material;
 class VertexBuffer;
 class Visitor;
+class SkinnedData;
 
 class Mesh {
 public:
@@ -37,6 +38,9 @@ public:
 	void SetMaterial(std::shared_ptr<Material> material);
 	std::shared_ptr<Material> GetMaterial() const;
 
+	void SetSkinnedData(std::shared_ptr<SkinnedData> skinned_data);
+	std::shared_ptr<SkinnedData> GetSkinnedData() const;
+
 	void SetAABB(const DirectX::BoundingBox& aabb);
 	const DirectX::BoundingBox& GetAABB() const;
 	const DirectX::BoundingSphere& GetSphere() const;
@@ -48,6 +52,7 @@ private:
 	BufferMap m_vertex_buffers;
 	std::shared_ptr<IndexBuffer> m_index_buffer;
 	std::shared_ptr<Material> m_material;
+	std::shared_ptr<SkinnedData> m_skinned_data;
 
 	D3D12_PRIMITIVE_TOPOLOGY m_primitive_topology;
 	DirectX::BoundingBox m_AABB;

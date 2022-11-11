@@ -88,6 +88,44 @@ private:
 	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 };
 
+struct VertexPosNormTgBtgUVAnim {
+	VertexPosNormTgBtgUVAnim() = default;
+
+	explicit VertexPosNormTgBtgUVAnim(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& normal, const DirectX::XMFLOAT3& texCoord, const DirectX::XMFLOAT3& tangent = { 0, 0, 0 }, const DirectX::XMFLOAT3& bitangent = { 0, 0, 0 }, DirectX::XMFLOAT3 bone_weights = { 1.0f, 0.0f, 0.0f }, BYTE BoneId1 = 255, BYTE BoneId2 = 255, BYTE BoneId3 = 255, BYTE BoneId4 = 255) : Position(position), Normal(normal), Tangent(tangent), Bitangent(bitangent), TexCoord(texCoord), BoneWeights(bone_weights) {
+		BoneIndices[0] = BoneId1;
+		BoneIndices[1] = BoneId2;
+		BoneIndices[2] = BoneId3;
+		BoneIndices[3] = BoneId4;
+	}
+
+	explicit VertexPosNormTgBtgUVAnim(DirectX::FXMVECTOR position, DirectX::FXMVECTOR normal, DirectX::FXMVECTOR texCoord, DirectX::GXMVECTOR tangent = { 0, 0, 0, 0 }, DirectX::HXMVECTOR bitangent = { 0, 0, 0, 0 }, DirectX::HXMVECTOR bone_weights = { 1.0f, 0.0f, 0.0f, 0.0f }, BYTE BoneId1 = 255, BYTE BoneId2 = 255, BYTE BoneId3 = 255, BYTE BoneId4 = 255) {
+		DirectX::XMStoreFloat3(&(this->Position), position);
+		DirectX::XMStoreFloat3(&(this->Normal), normal);
+		DirectX::XMStoreFloat3(&(this->Tangent), tangent);
+		DirectX::XMStoreFloat3(&(this->Bitangent), bitangent);
+		DirectX::XMStoreFloat3(&(this->TexCoord), texCoord);
+		DirectX::XMStoreFloat3(&(this->BoneWeights), bone_weights);
+		BoneIndices[0] = BoneId1;
+		BoneIndices[1] = BoneId2;
+		BoneIndices[2] = BoneId3;
+		BoneIndices[3] = BoneId4;
+	}
+
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT3 Tangent;
+	DirectX::XMFLOAT3 Bitangent;
+	DirectX::XMFLOAT3 TexCoord;
+	DirectX::XMFLOAT3 BoneWeights;
+	BYTE BoneIndices[4];
+
+	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
+
+private:
+	static const int InputElementCount = 7;
+	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
+};
+
 struct VertexPositionNormalTangentTexture {
 	VertexPositionNormalTangentTexture() = default;
 

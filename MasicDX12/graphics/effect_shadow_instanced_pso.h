@@ -15,6 +15,7 @@ class RootSignature;
 class PipelineStateObject;
 class ShaderResourceView;
 class MeshManager;
+class SkinnedMeshManager;
 class ShadowManager;
 class StructuredBuffer;
 class ShadowCameraNode;
@@ -43,10 +44,16 @@ public:
 		float  DeltaTime;
 	};
 
+	struct alignas(16) FinalBoneTransforms {
+		DirectX::XMMATRIX BoneTransforms[96];
+		DirectX::XMMATRIX InverseTransposeBoneTransforms[96];
+	};
+
 	enum class RootParameters {
 		PerPassData,
 		InstanceData,
 		InstanceIndexData,
+		FinalBoneTransformsData,
 		NumRootParameters
 	};
 
@@ -54,7 +61,9 @@ public:
 	virtual ~EffectShadowInstancedPSO();
 
 	void SetMeshManager(std::shared_ptr<MeshManager> mesh_manager);
+	void SetSkinnedMeshManager(std::shared_ptr<SkinnedMeshManager> skinned_mesh_manager);
 
+	void SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix);
 	void SetViewMatrix(const ShadowCameraNode& camera);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
 	void XM_CALLCONV SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix);
@@ -66,12 +75,13 @@ public:
 
 private:
 	enum DirtyFlags {
-		DF_None              = 0,
-		DF_PerPassData       = (1 << 0),
-		DF_InstanceData      = (1 << 1),
-		DF_InstanceIndexData = (1 << 2),
-		DF_RT_Size           = (1 << 3),
-		DF_Near_Far          = (1 << 4),
+		DF_None                = 0,
+		DF_PerPassData         = (1 << 0),
+		DF_InstanceData        = (1 << 1),
+		DF_InstanceIndexData   = (1 << 2),
+		DF_RT_Size             = (1 << 3),
+		DF_Near_Far            = (1 << 4),
+		DF_FinalBoneTransforms = (1 << 5),
 		DF_All = DF_PerPassData | DF_InstanceData | DF_RT_Size | DF_Near_Far
 	};
 
@@ -88,11 +98,13 @@ private:
 	std::shared_ptr<PixelShader> m_pixel_shader;
 
 	std::shared_ptr<MeshManager> m_mesh_manager;
+	std::shared_ptr<SkinnedMeshManager> m_skinned_mesh_manager;
 	std::shared_ptr<ShadowManager> m_shadow_manager;
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 
 	VP* m_pAligned_mvp;
+	FinalBoneTransforms* m_pAligned_fbt;
 
 	bool m_need_transpose;
 

@@ -57,7 +57,7 @@ void ImportMesh(MeshList& mesh_list, CommandList& command_list, const aiMesh& ai
         mesh->SetName(ai_mesh.mName.C_Str());
     }
 
-    std::vector<VertexPositionNormalTangentBitangentTexture> vertex_data(ai_mesh.mNumVertices);
+    std::vector<VertexPosNormTgBtgUVAnim> vertex_data(ai_mesh.mNumVertices);
     if (ai_mesh.HasPositions()) {
         for (unsigned int i = 0u; i < ai_mesh.mNumVertices; ++i) {
             vertex_data[i].Position = { ai_mesh.mVertices[i].x, ai_mesh.mVertices[i].y, ai_mesh.mVertices[i].z };
@@ -95,6 +95,14 @@ void ImportMesh(MeshList& mesh_list, CommandList& command_list, const aiMesh& ai
                 indices.push_back(face.mIndices[0]);
                 indices.push_back(face.mIndices[1]);
                 indices.push_back(face.mIndices[2]);
+            }
+            else if (face.mNumIndices == 4) {
+                indices.push_back(face.mIndices[0]);
+                indices.push_back(face.mIndices[1]);
+                indices.push_back(face.mIndices[2]);
+                indices.push_back(face.mIndices[0]);
+                indices.push_back(face.mIndices[2]);
+                indices.push_back(face.mIndices[3]);
             }
         }
 

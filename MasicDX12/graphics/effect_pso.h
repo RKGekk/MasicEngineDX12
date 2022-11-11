@@ -38,11 +38,17 @@ public:
 		DirectX::XMMATRIX ShadowMatrix;
 	};
 
+	struct alignas(16) FinalBoneTransforms {
+		DirectX::XMMATRIX BoneTransforms[96];
+		DirectX::XMMATRIX InverseTransposeBoneTransforms[96];
+	};
+
 	enum RootParameters {
 		MatricesCB,
 		MaterialCB,
 		LightPropertiesCB,
 		FogPropertiesCB,
+		BonePropertiesCB,
 		PointLights,
 		SpotLights,
 		DirectionalLights,
@@ -56,6 +62,7 @@ public:
 	void SetLightManager(std::shared_ptr<LightManager> light_manager);
 	void SetMaterial(const std::shared_ptr<Material>& material);
 
+	void SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix);
 	void SetFogProperties(const FogProperties& fog_props);
 	void XM_CALLCONV SetWorldMatrix(DirectX::FXMMATRIX world_matrix);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
@@ -67,12 +74,13 @@ public:
 
 private:
 	enum DirtyFlags {
-		DF_None              = 0,
-		DF_PointLights       = (1 << 0),
-		DF_SpotLights        = (1 << 1),
-		DF_DirectionalLights = (1 << 2),
-		DF_Material          = (1 << 3),
-		DF_Matrices          = (1 << 4),
+		DF_None                = 0,
+		DF_PointLights         = (1 << 0),
+		DF_SpotLights          = (1 << 1),
+		DF_DirectionalLights   = (1 << 2),
+		DF_Material            = (1 << 3),
+		DF_Matrices            = (1 << 4),
+		DF_FinalBoneTransforms = (1 << 5),
 		DF_All = DF_PointLights | DF_SpotLights | DF_DirectionalLights | DF_Material | DF_Matrices
 	};
 
@@ -100,6 +108,7 @@ private:
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 
 	MVP* m_pAligned_mvp;
+	FinalBoneTransforms* m_pAligned_fbt;
 	bool m_need_transpose;
 
 	bool m_enable_lighting;

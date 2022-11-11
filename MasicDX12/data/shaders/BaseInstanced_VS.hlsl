@@ -44,6 +44,8 @@ struct VertexPositionNormalTangentBitangentTexture {
 	float3 TangentLS   : TANGENT;
 	float3 BitangentLS : BITANGENT;
 	float3 TextureUV   : TEXCOORD;
+	float3 BoneWeights : WEIGHTS;
+	uint4  BoneIndices : BONEINDICES;
 };
 
 struct VertexShaderOutput {

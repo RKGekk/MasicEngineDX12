@@ -19,6 +19,7 @@ class Texture;
 class LightManager;
 class ShadowManager;
 class MeshManager;
+class SkinnedMeshManager;
 class StructuredBuffer;
 class BasicCameraNode;
 
@@ -59,6 +60,11 @@ public:
 		DirectX::XMMATRIX ShadowTransform;
 	};
 
+	struct alignas(16) FinalBoneTransforms {
+		DirectX::XMMATRIX BoneTransforms[96];
+		DirectX::XMMATRIX InverseTransposeBoneTransforms[96];
+	};
+
 	enum class RootParameters {
 		PerPassData,
 		InstanceData,
@@ -66,6 +72,7 @@ public:
 		MaterialCB,
 		LightPropertiesCB,
 		FogPropertiesCB,
+		BonePropertiesCB,
 		PointLights,
 		SpotLights,
 		DirectionalLights,
@@ -79,7 +86,9 @@ public:
 	void SetLightManager(std::shared_ptr<LightManager> light_manager);
 	void SetShadowManager(std::shared_ptr<ShadowManager> shadow_manager);
 	void SetMeshManager(std::shared_ptr<MeshManager> mesh_manager);
+	void SetSkinnedMeshManager(std::shared_ptr<SkinnedMeshManager> skinned_mesh_manager);
 
+	void SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix);
 	void SetFogProperties(const FogProperties& fog_props);
 	void SetViewMatrix(const BasicCameraNode& camera);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
@@ -94,16 +103,17 @@ public:
 
 private:
 	enum DirtyFlags {
-		DF_None              = 0,
-		DF_PointLights       = (1 << 0),
-		DF_SpotLights        = (1 << 1),
-		DF_DirectionalLights = (1 << 2),
-		DF_Material          = (1 << 3),
-		DF_PerPassData       = (1 << 4),
-		DF_InstanceData      = (1 << 5),
-		DF_InstanceIndexData = (1 << 6),
-		DF_RT_Size           = (1 << 7),
-		DF_Near_Far          = (1 << 8),
+		DF_None                = 0,
+		DF_PointLights         = (1 << 0),
+		DF_SpotLights          = (1 << 1),
+		DF_DirectionalLights   = (1 << 2),
+		DF_Material            = (1 << 3),
+		DF_PerPassData         = (1 << 4),
+		DF_InstanceData        = (1 << 5),
+		DF_InstanceIndexData   = (1 << 6),
+		DF_RT_Size             = (1 << 7),
+		DF_Near_Far            = (1 << 8),
+		DF_FinalBoneTransforms = (1 << 9),
 		DF_All = DF_PointLights | DF_SpotLights | DF_DirectionalLights | DF_Material | DF_PerPassData | DF_InstanceData | DF_RT_Size | DF_Near_Far
 	};
 
@@ -127,6 +137,7 @@ private:
 
 	std::shared_ptr<ShadowManager> m_shadow_manager;
 	std::shared_ptr<LightManager> m_light_manager;
+	std::shared_ptr<SkinnedMeshManager> m_skinned_mesh_manager;
 	std::shared_ptr<MeshManager> m_mesh_manager;
 
 	std::shared_ptr<ShaderResourceView> m_default_srv;
@@ -134,6 +145,7 @@ private:
 	FogProperties m_fog_properties;
 
 	VP* m_pAligned_mvp;
+	FinalBoneTransforms* m_pAligned_fbt;
 
 	bool m_need_transpose;
 

@@ -3,6 +3,7 @@
 #include "directx12_wrappers/command_list.h"
 #include "directx12_wrappers/index_buffer.h"
 #include "directx12_wrappers/vertex_buffer.h"
+#include "../nodes/skinned_data.h"
 
 #include <utility>
 
@@ -65,6 +66,14 @@ void Mesh::SetMaterial(std::shared_ptr<Material> material) {
 
 std::shared_ptr<Material> Mesh::GetMaterial() const {
     return m_material;
+}
+
+void Mesh::SetSkinnedData(std::shared_ptr<SkinnedData> skinned_data) {
+    m_skinned_data = skinned_data;
+}
+
+std::shared_ptr<SkinnedData> Mesh::GetSkinnedData() const {
+    return m_skinned_data;
 }
 
 void Mesh::SetAABB(const DirectX::BoundingBox& aabb) {

@@ -20,7 +20,9 @@
 #include "../nodes/shadow_manager.h"
 #include "../nodes/shadow_camera_node.h"
 #include "../nodes/mesh_manager.h"
+#include "../nodes/skinned_mesh_manager.h"
 #include "../nodes/mesh_node.h"
+#include "../nodes/aminated_mesh_node.h"
 
 #include <d3dcompiler.h>
 #include <directx/d3dx12.h>
@@ -29,6 +31,7 @@
 EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_need_transpose(false) {
     using namespace std::literals;
     m_pAligned_mvp = (VP*)_aligned_malloc(sizeof(VP), 16);
+    m_pAligned_fbt = (FinalBoneTransforms*)_aligned_malloc(sizeof(FinalBoneTransforms), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
     std::string vertex_shader_name = "BaseInstanced_VS.cso";
@@ -53,6 +56,7 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     CD3DX12_ROOT_PARAMETER1 root_parameters[to_underlying(RootParameters::NumRootParameters)];
 
     root_parameters[to_underlying(RootParameters::PerPassData)].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL);
+    root_parameters[to_underlying(RootParameters::BonePropertiesCB)].InitAsConstantBufferView(3, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL);
     //root_parameters[to_underlying(RootParameters::InstanceData)].InitAsShaderResourceView(0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[to_underlying(RootParameters::InstanceData)].InitAsDescriptorTable(1, &descriptor_rage_instance, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[to_underlying(RootParameters::InstanceIndexData)].InitAsShaderResourceView(1, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
@@ -90,9 +94,10 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     CD3DX12_RASTERIZER_DESC rasterizer_state(D3D12_DEFAULT);
 
     m_vertex_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "gPerPassData"s);
+    m_vertex_shader->AddRegister({ 3, 0, ShaderRegister::ConstantBuffer }, "SkinnedDataCB"s);
     m_vertex_shader->AddRegister({ 0, 1, ShaderRegister::ShaderResource }, "gInstanceData"s);
     m_vertex_shader->AddRegister({ 1, 1, ShaderRegister::ShaderResource }, "gInstanceIndexData"s);
-    m_vertex_shader->SetInputAssemblerLayout(VertexPositionNormalTangentBitangentTexture::InputLayout);
+    m_vertex_shader->SetInputAssemblerLayout(VertexPosNormTgBtgUVAnim::InputLayout);
     m_vertex_shader->SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
     m_pixel_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "gPerPassData"s);
@@ -142,6 +147,7 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
 
 EffectInstancedPSO::~EffectInstancedPSO() {
     _aligned_free(m_pAligned_mvp);
+    _aligned_free(m_pAligned_fbt);
 }
 
 void EffectInstancedPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
@@ -157,6 +163,10 @@ void EffectInstancedPSO::SetShadowManager(std::shared_ptr<ShadowManager> shadow_
 void EffectInstancedPSO::SetMeshManager(std::shared_ptr<MeshManager> mesh_manager) {
     m_mesh_manager = mesh_manager;
     m_dirty_flags |= DF_InstanceData | DF_PerPassData;
+}
+
+void EffectInstancedPSO::SetSkinnedMeshManager(std::shared_ptr<SkinnedMeshManager> skinned_mesh_manager) {
+    m_skinned_mesh_manager = skinned_mesh_manager;
 }
 
 inline void EffectInstancedPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
@@ -225,7 +235,7 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
     command_list.SetGraphics32BitConstants(to_underlying(RootParameters::FogPropertiesCB), m_fog_properties);
 
     const MeshManager::MeshMap& mesh_map = m_mesh_manager->GetMeshMap();
-    for (const auto& [mesh_name, mesh_list] : mesh_map) {
+    for (const auto& [mesh_name, mesh_node_list] : mesh_map) {
         auto instance_buffer_view = m_mesh_manager->GetInstanceBufferView(mesh_name);
         //auto instance_data = m_mesh_manager->GetInstanceData(mesh_name);
         command_list.SetShaderResourceView(to_underlying(RootParameters::InstanceData), 0, instance_buffer_view);
@@ -234,56 +244,135 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
         const auto& instance_index_list = m_mesh_manager->GetInstanceIndexData(mesh_name);
         command_list.SetGraphicsDynamicStructuredBuffer(to_underlying(RootParameters::InstanceIndexData), instance_index_list);
         
-        std::shared_ptr<MeshNode> mesh_node = mesh_list[0u];
-        const MeshNode::MeshList& mesh_list = mesh_node->GetMeshes();
-        for (const auto& mesh : mesh_list) {
-            auto material = mesh->GetMaterial();
-            if (material->IsTransparent()) continue;
+        //std::shared_ptr<MeshNode> mesh_node = mesh_list[0u];
+        //const MeshNode::MeshList& mesh_list = mesh_node->GetMeshes();
+        for (const auto& mesh_node : mesh_node_list) {
+            const MeshNode::MeshList& mesh_list = mesh_node->GetMeshes();
+            for (const auto& mesh : mesh_list) {
+                auto material = mesh->GetMaterial();
+                if (material->IsTransparent()) continue;
 
-            if (material) {
-                auto& material_props = material->GetMaterialProperties();
-                if (shadow_camera) {
-                    material->SetTexture(Material::TextureType::Shadow, m_shadow_map_texture);
+                if (material) {
+                    auto& material_props = material->GetMaterialProperties();
+                    if (shadow_camera) {
+                        material->SetTexture(Material::TextureType::Shadow, m_shadow_map_texture);
+                    }
+                    command_list.SetGraphicsDynamicConstantBuffer(to_underlying(RootParameters::MaterialCB), material_props);
+
+                    using TextureType = Material::TextureType;
+
+                    BindTexture(command_list, 0, material->GetTexture(TextureType::Ambient));
+                    BindTexture(command_list, 1, material->GetTexture(TextureType::Emissive));
+                    BindTexture(command_list, 2, material->GetTexture(TextureType::Diffuse));
+                    BindTexture(command_list, 3, material->GetTexture(TextureType::Specular));
+                    BindTexture(command_list, 4, material->GetTexture(TextureType::SpecularPower));
+                    BindTexture(command_list, 5, material->GetTexture(TextureType::Normal));
+                    BindTexture(command_list, 6, material->GetTexture(TextureType::Bump));
+                    BindTexture(command_list, 7, material->GetTexture(TextureType::Opacity));
+                    BindTexture(command_list, 8, material->GetTexture(TextureType::Displacement));
+                    BindTexture(command_list, 9, material->GetTexture(TextureType::Metalness));
+                    BindTexture(command_list, 10, material->GetTexture(TextureType::Shadow));
                 }
-                command_list.SetGraphicsDynamicConstantBuffer(to_underlying(RootParameters::MaterialCB), material_props);
 
-                using TextureType = Material::TextureType;
+                command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
 
-                BindTexture(command_list, 0, material->GetTexture(TextureType::Ambient));
-                BindTexture(command_list, 1, material->GetTexture(TextureType::Emissive));
-                BindTexture(command_list, 2, material->GetTexture(TextureType::Diffuse));
-                BindTexture(command_list, 3, material->GetTexture(TextureType::Specular));
-                BindTexture(command_list, 4, material->GetTexture(TextureType::SpecularPower));
-                BindTexture(command_list, 5, material->GetTexture(TextureType::Normal));
-                BindTexture(command_list, 6, material->GetTexture(TextureType::Bump));
-                BindTexture(command_list, 7, material->GetTexture(TextureType::Opacity));
-                BindTexture(command_list, 8, material->GetTexture(TextureType::Displacement));
-                BindTexture(command_list, 9, material->GetTexture(TextureType::Metalness));
-                BindTexture(command_list, 10, material->GetTexture(TextureType::Shadow));
+                const Mesh::BufferMap& buffer_map = mesh->GetVertexBuffers();
+                for (auto vertex_buffer : buffer_map) {
+                    command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
+                }
+
+                size_t index_count = mesh->GetIndexCount();
+                size_t vertex_count = mesh->GetVertexCount();
+                size_t instance_count = instance_index_list.size();
+                size_t start_instance = 0u;
+                if (index_count > 0u) {
+                    command_list.SetIndexBuffer(mesh->GetIndexBuffer());
+                    command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
+                }
+                else if (vertex_count > 0u) {
+                    command_list.Draw(vertex_count, instance_count, 0u, start_instance);
+                }
             }
+        }
+    }
 
-            command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
+    const SkinnedMeshManager::AnimatedMeshMap& animated_mesh_map = m_skinned_mesh_manager->GetMeshMap();
+    for (const auto& [mesh_name, mesh_node_list] : animated_mesh_map) {
+        if (mesh_node_list.size() > 0u) {
+            SetFinalBoneTransforms((*mesh_node_list.begin())->GetFinalTransformList());
+            command_list.SetGraphicsDynamicConstantBuffer(to_underlying(RootParameters::BonePropertiesCB), *m_pAligned_fbt);
+        }
 
-            const Mesh::BufferMap& buffer_map = mesh->GetVertexBuffers();
-            for (auto vertex_buffer : buffer_map) {
-                command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
-            }
+        auto instance_buffer_view = m_skinned_mesh_manager->GetInstanceBufferView(mesh_name);
+        //auto instance_data = m_mesh_manager->GetInstanceData(mesh_name);
+        command_list.SetShaderResourceView(to_underlying(RootParameters::InstanceData), 0, instance_buffer_view);
+        //command_list.SetGraphicsDynamicStructuredBuffer(to_underlying(RootParameters::InstanceIndexData), instance_data);
 
-            size_t index_count = mesh->GetIndexCount();
-            size_t vertex_count = mesh->GetVertexCount();
-            size_t instance_count = instance_index_list.size();
-            size_t start_instance = 0u;
-            if (index_count > 0u) {
-                command_list.SetIndexBuffer(mesh->GetIndexBuffer());
-                command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
-            }
-            else if (vertex_count > 0u) {
-                command_list.Draw(vertex_count, instance_count, 0u, start_instance);
+        const auto& instance_index_list = m_skinned_mesh_manager->GetInstanceIndexData(mesh_name);
+        command_list.SetGraphicsDynamicStructuredBuffer(to_underlying(RootParameters::InstanceIndexData), instance_index_list);
+
+        //std::shared_ptr<MeshNode> mesh_node = mesh_list[0u];
+        //const MeshNode::MeshList& mesh_list = mesh_node->GetMeshes();
+        for (const auto& mesh_node : mesh_node_list) {
+            const auto& mesh_list = mesh_node->GetMeshes();
+            for (const auto& mesh : mesh_list) {
+                auto material = mesh->GetMaterial();
+                if (material->IsTransparent()) continue;
+
+                if (material) {
+                    auto& material_props = material->GetMaterialProperties();
+                    if (shadow_camera) {
+                        material->SetTexture(Material::TextureType::Shadow, m_shadow_map_texture);
+                    }
+                    command_list.SetGraphicsDynamicConstantBuffer(to_underlying(RootParameters::MaterialCB), material_props);
+
+                    using TextureType = Material::TextureType;
+
+                    BindTexture(command_list, 0, material->GetTexture(TextureType::Ambient));
+                    BindTexture(command_list, 1, material->GetTexture(TextureType::Emissive));
+                    BindTexture(command_list, 2, material->GetTexture(TextureType::Diffuse));
+                    BindTexture(command_list, 3, material->GetTexture(TextureType::Specular));
+                    BindTexture(command_list, 4, material->GetTexture(TextureType::SpecularPower));
+                    BindTexture(command_list, 5, material->GetTexture(TextureType::Normal));
+                    BindTexture(command_list, 6, material->GetTexture(TextureType::Bump));
+                    BindTexture(command_list, 7, material->GetTexture(TextureType::Opacity));
+                    BindTexture(command_list, 8, material->GetTexture(TextureType::Displacement));
+                    BindTexture(command_list, 9, material->GetTexture(TextureType::Metalness));
+                    BindTexture(command_list, 10, material->GetTexture(TextureType::Shadow));
+                }
+
+                command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
+
+                const Mesh::BufferMap& buffer_map = mesh->GetVertexBuffers();
+                for (auto vertex_buffer : buffer_map) {
+                    command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
+                }
+
+                size_t index_count = mesh->GetIndexCount();
+                size_t vertex_count = mesh->GetVertexCount();
+                size_t instance_count = instance_index_list.size();
+                size_t start_instance = 0u;
+                if (index_count > 0u) {
+                    command_list.SetIndexBuffer(mesh->GetIndexBuffer());
+                    command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
+                }
+                else if (vertex_count > 0u) {
+                    command_list.Draw(vertex_count, instance_count, 0u, start_instance);
+                }
             }
         }
     }
 
     m_dirty_flags = DF_None;
+}
+
+void EffectInstancedPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix) {
+    size_t sz = final_transforms_matrix.size();
+    for (int i = 0; i < sz; ++i) {
+        m_pAligned_fbt->BoneTransforms[i] = DirectX::XMLoadFloat4x4(&final_transforms_matrix[i]);
+        m_pAligned_fbt->InverseTransposeBoneTransforms[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, m_pAligned_fbt->BoneTransforms[i]));
+    }
+    m_dirty_flags |= DF_FinalBoneTransforms;
 }
 
 void EffectInstancedPSO::SetFogProperties(const FogProperties& fog_props) {
