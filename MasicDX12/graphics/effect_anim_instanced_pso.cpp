@@ -1,4 +1,4 @@
-#include "effect_instanced_pso.h"
+#include "effect_anim_instanced_pso.h"
 
 #include "d3d12_renderer.h"
 #include "directx12_wrappers/command_list.h"
@@ -20,18 +20,21 @@
 #include "../nodes/shadow_manager.h"
 #include "../nodes/shadow_camera_node.h"
 #include "../nodes/mesh_manager.h"
+#include "../nodes/skinned_mesh_manager.h"
 #include "../nodes/mesh_node.h"
+#include "../nodes/aminated_mesh_node.h"
 
 #include <d3dcompiler.h>
 #include <directx/d3dx12.h>
 #include <wrl/client.h>
 
-EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_need_transpose(false) {
+EffectAnimInstancedPSO::EffectAnimInstancedPSO(std::shared_ptr<Device> device) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_need_transpose(false) {
     using namespace std::literals;
     m_pAligned_mvp = (VP*)_aligned_malloc(sizeof(VP), 16);
+    m_pAligned_fbt = (FinalBoneTransforms*)_aligned_malloc(sizeof(FinalBoneTransforms), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
-    std::string vertex_shader_name = "BaseInstanced_VS.cso";
+    std::string vertex_shader_name = "BaseInstancedAnim_VS.cso";
     HRESULT hr = D3DReadFileToBlob(to_wstring(vertex_shader_name).c_str(), vertex_shader_blob.GetAddressOf());
     ThrowIfFailed(hr);
     m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, vertex_shader_name);
@@ -53,6 +56,7 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     CD3DX12_ROOT_PARAMETER1 root_parameters[to_underlying(RootParameters::NumRootParameters)];
 
     root_parameters[to_underlying(RootParameters::PerPassData)].InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL);
+    root_parameters[to_underlying(RootParameters::BonePropertiesCB)].InitAsConstantBufferView(3, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL);
     //root_parameters[to_underlying(RootParameters::InstanceData)].InitAsShaderResourceView(0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[to_underlying(RootParameters::InstanceData)].InitAsDescriptorTable(1, &descriptor_rage_instance, D3D12_SHADER_VISIBILITY_VERTEX);
     root_parameters[to_underlying(RootParameters::InstanceIndexData)].InitAsShaderResourceView(1, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
@@ -90,6 +94,7 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     CD3DX12_RASTERIZER_DESC rasterizer_state(D3D12_DEFAULT);
 
     m_vertex_shader->AddRegister({ 0, 0, ShaderRegister::ConstantBuffer }, "gPerPassData"s);
+    m_vertex_shader->AddRegister({ 3, 0, ShaderRegister::ConstantBuffer }, "SkinnedDataCB"s);
     m_vertex_shader->AddRegister({ 0, 1, ShaderRegister::ShaderResource }, "gInstanceData"s);
     m_vertex_shader->AddRegister({ 1, 1, ShaderRegister::ShaderResource }, "gInstanceIndexData"s);
     m_vertex_shader->SetInputAssemblerLayout(VertexPosNormTgBtgUVAnim::InputLayout);
@@ -140,31 +145,31 @@ EffectInstancedPSO::EffectInstancedPSO(std::shared_ptr<Device> device) : m_devic
     m_fog_properties.FogRange = 10.0f;
 }
 
-EffectInstancedPSO::~EffectInstancedPSO() {
+EffectAnimInstancedPSO::~EffectAnimInstancedPSO() {
     _aligned_free(m_pAligned_mvp);
+    _aligned_free(m_pAligned_fbt);
 }
 
-void EffectInstancedPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
+void EffectAnimInstancedPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
     m_light_manager = light_manager;
     m_dirty_flags |= DF_PointLights | DF_SpotLights | DF_DirectionalLights;
 }
 
-void EffectInstancedPSO::SetShadowManager(std::shared_ptr<ShadowManager> shadow_manager) {
+void EffectAnimInstancedPSO::SetShadowManager(std::shared_ptr<ShadowManager> shadow_manager) {
     m_shadow_manager = shadow_manager;
     m_dirty_flags |= DF_InstanceData | DF_PerPassData;
 }
 
-void EffectInstancedPSO::SetMeshManager(std::shared_ptr<MeshManager> mesh_manager) {
-    m_mesh_manager = mesh_manager;
-    m_dirty_flags |= DF_InstanceData | DF_PerPassData;
+void EffectAnimInstancedPSO::SetSkinnedMeshManager(std::shared_ptr<SkinnedMeshManager> skinned_mesh_manager) {
+    m_skinned_mesh_manager = skinned_mesh_manager;
 }
 
-inline void EffectInstancedPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
+inline void EffectAnimInstancedPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
     if (texture) command_list.SetShaderResourceView(to_underlying(RootParameters::Textures), offset, texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     else command_list.SetShaderResourceView(to_underlying(RootParameters::Textures), offset, m_default_srv, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
-void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& delta) {
+void EffectAnimInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& delta) {
     command_list.SetPipelineState(m_pipeline_state_object);
     command_list.SetGraphicsRootSignature(m_root_signature);
 
@@ -224,20 +229,23 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
 
     command_list.SetGraphics32BitConstants(to_underlying(RootParameters::FogPropertiesCB), m_fog_properties);
 
-    const MeshManager::MeshMap& mesh_map = m_mesh_manager->GetMeshMap();
-    for (const auto& [mesh_name, mesh_node_list] : mesh_map) {
+    const SkinnedMeshManager::AnimatedMeshMap& animated_mesh_map = m_skinned_mesh_manager->GetMeshMap();
+    for (const auto& [mesh_name, mesh_node_list] : animated_mesh_map) {
         if (mesh_node_list.size() == 0u) continue;
 
-        auto instance_buffer_view = m_mesh_manager->GetInstanceBufferView(mesh_name);
+        SetFinalBoneTransforms((*mesh_node_list.begin())->GetFinalTransformList());
+        command_list.SetGraphicsDynamicConstantBuffer(to_underlying(RootParameters::BonePropertiesCB), *m_pAligned_fbt);
+
+        auto instance_buffer_view = m_skinned_mesh_manager->GetInstanceBufferView(mesh_name);
         //auto instance_data = m_mesh_manager->GetInstanceData(mesh_name);
         command_list.SetShaderResourceView(to_underlying(RootParameters::InstanceData), 0, instance_buffer_view);
         //command_list.SetGraphicsDynamicStructuredBuffer(to_underlying(RootParameters::InstanceIndexData), instance_data);
 
-        const auto& instance_index_list = m_mesh_manager->GetInstanceIndexData(mesh_name);
+        const auto& instance_index_list = m_skinned_mesh_manager->GetInstanceIndexData(mesh_name);
         command_list.SetGraphicsDynamicStructuredBuffer(to_underlying(RootParameters::InstanceIndexData), instance_index_list);
-        
-        std::shared_ptr<MeshNode> mesh_node = mesh_node_list[0u];
-        const MeshNode::MeshList& mesh_list = mesh_node->GetMeshes();
+
+        std::shared_ptr<AnimatedMeshNode> mesh_node = mesh_node_list[0u];
+        const auto& mesh_list = mesh_node->GetMeshes();
         for (const auto& mesh : mesh_list) {
             auto material = mesh->GetMaterial();
             if (material->IsTransparent()) continue;
@@ -288,11 +296,22 @@ void EffectInstancedPSO::Apply(CommandList& command_list, const GameTimerDelta& 
     m_dirty_flags = DF_None;
 }
 
-void EffectInstancedPSO::SetFogProperties(const FogProperties& fog_props) {
+void EffectAnimInstancedPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix) {
+    size_t sz = final_transforms_matrix.size();
+    for (int i = 0; i < sz; ++i) {
+        m_pAligned_fbt->BoneTransforms[i] = DirectX::XMLoadFloat4x4(&final_transforms_matrix[i]);
+        m_pAligned_fbt->InverseTransposeBoneTransforms[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, m_pAligned_fbt->BoneTransforms[i]));
+        //m_pAligned_fbt->BoneTransforms[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&final_transforms_matrix[i]));
+        //m_pAligned_fbt->InverseTransposeBoneTransforms[i] = DirectX::XMMatrixInverse(nullptr, m_pAligned_fbt->BoneTransforms[i]);
+    }
+    m_dirty_flags |= DF_FinalBoneTransforms;
+}
+
+void EffectAnimInstancedPSO::SetFogProperties(const FogProperties& fog_props) {
     m_fog_properties = fog_props;
 }
 
-void EffectInstancedPSO::SetViewMatrix(const BasicCameraNode& camera) {
+void EffectAnimInstancedPSO::SetViewMatrix(const BasicCameraNode& camera) {
     m_pAligned_mvp->View = camera.GetView();
     m_pAligned_mvp->Projection = camera.GetProjection();
     m_near_z = camera.GetFrustum().Near;
@@ -300,27 +319,27 @@ void EffectInstancedPSO::SetViewMatrix(const BasicCameraNode& camera) {
     m_dirty_flags |= DF_PerPassData | DF_Near_Far | DF_Near_Far;
 }
 
-void XM_CALLCONV EffectInstancedPSO::SetViewMatrix(DirectX::FXMMATRIX view_matrix) {
+void XM_CALLCONV EffectAnimInstancedPSO::SetViewMatrix(DirectX::FXMMATRIX view_matrix) {
     m_pAligned_mvp->View = view_matrix;
     m_dirty_flags |= DF_PerPassData;
 }
 
-void XM_CALLCONV EffectInstancedPSO::SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix) {
+void XM_CALLCONV EffectAnimInstancedPSO::SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix) {
     m_pAligned_mvp->Projection = projection_matrix;
     m_dirty_flags |= DF_PerPassData;
 }
 
-void EffectInstancedPSO::SetNearZ(float near_z) {
+void EffectAnimInstancedPSO::SetNearZ(float near_z) {
     m_near_z = near_z;
     m_dirty_flags |= DF_Near_Far;
 }
 
-void EffectInstancedPSO::SetFarZ(float far_z) {
+void EffectAnimInstancedPSO::SetFarZ(float far_z) {
     m_far_z = far_z;
     m_dirty_flags |= DF_Near_Far;
 }
 
-void EffectInstancedPSO::SetRenderTargetSize(DirectX::XMFLOAT2 render_target_size) {
+void EffectAnimInstancedPSO::SetRenderTargetSize(DirectX::XMFLOAT2 render_target_size) {
     m_render_target_size.x = render_target_size.x;
     m_render_target_size.y = render_target_size.y;
     m_render_target_size.z = 1.0f / render_target_size.x;
@@ -328,6 +347,6 @@ void EffectInstancedPSO::SetRenderTargetSize(DirectX::XMFLOAT2 render_target_siz
     m_dirty_flags |= DF_RT_Size;
 }
 
-void EffectInstancedPSO::SetShadowMapTexture(std::shared_ptr<Texture> shadow_map_texture) {
+void EffectAnimInstancedPSO::SetShadowMapTexture(std::shared_ptr<Texture> shadow_map_texture) {
     m_shadow_map_texture = shadow_map_texture;
 }

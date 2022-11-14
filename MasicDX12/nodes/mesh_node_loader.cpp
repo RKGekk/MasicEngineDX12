@@ -326,7 +326,9 @@ void ImportMaterial(MaterialList& material_list, CommandList& command_list, cons
 std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* aiNode, const std::string& file_name) {
     if (!aiNode) return nullptr;
 
-    auto node = std::make_shared<MeshNode>(file_name + aiNode->mName.C_Str(), DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
+    DirectX::XMMATRIX transform(&(aiNode->mTransformation.a1));
+    transform = DirectX::XMMatrixTranspose(transform);
+    auto node = std::make_shared<MeshNode>(file_name + aiNode->mName.C_Str(), transform);
     node->SetParent(parent);
 
     /*if (aiNode->mName.length > 0) {

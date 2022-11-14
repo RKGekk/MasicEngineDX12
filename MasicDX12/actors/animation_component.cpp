@@ -80,6 +80,27 @@ DirectX::BoundingBox CreateBoundingBox2(const aiAABB& aabb) {
     return bb;
 }
 
+void ChangeBoneWeight(DirectX::XMFLOAT3& bone_weights, size_t index, float weight) {
+    switch (index) {
+    case 0u: bone_weights.x = weight; break;
+    case 1u: bone_weights.y = weight; break;
+    case 2u: bone_weights.z = weight; break;
+    default:
+        break;
+    }
+}
+
+void AddVertexBoneInfo(VertexPosNormTgBtgUVAnim& vert, float vertex_weight, BYTE new_bone_index) {
+    for (unsigned int k = 0u; k < MAX_BONE_WEIGHTS; ++k) {
+        auto current_bone_index = vert.BoneIndices[k];
+        if (current_bone_index == EMPTY_BONE) {
+            ChangeBoneWeight(vert.BoneWeights, k, vertex_weight);
+            vert.BoneIndices[k] = new_bone_index;
+            break;
+        }
+    }
+}
+
 void ImportMesh2(MeshList& mesh_list, CommandList& command_list, const aiMesh& ai_mesh, const BoneOffsetInfoMap& bone_offset_info_map) {
     auto mesh = std::make_shared<Mesh>();
 
@@ -125,26 +146,23 @@ void ImportMesh2(MeshList& mesh_list, CommandList& command_list, const aiMesh& a
         for (unsigned int i = 0u; i < ai_mesh.mNumBones; ++i) {
             const aiBone& ai_bone = *(ai_mesh.mBones[i]);
             std::string bone_name(ai_bone.mName.C_Str());
-
-            uint32_t sz = std::min(MAX_BONE_WEIGHTS, ai_bone.mNumWeights);
-            uint32_t sz_remainder = MAX_BONE_WEIGHTS - sz;
+            const auto& bone_offset_info = bone_offset_info_map.at(bone_name);
+            //uint32_t sz = std::min(MAX_BONE_WEIGHTS, ai_bone.mNumWeights);
+            //uint32_t sz_remainder = MAX_BONE_WEIGHTS - sz;
+            uint32_t sz = ai_bone.mNumWeights;
             for (unsigned int j = 0u; j < sz; ++j) {
                 const aiVertexWeight& ai_vertex_weight = ai_bone.mWeights[j];
                 int vertex_id = ai_vertex_weight.mVertexId;
                 float vertex_weight = ai_vertex_weight.mWeight;
-                for (unsigned int k = 0u; k < MAX_BONE_WEIGHTS; ++k) {
-                    if (vertex_data[vertex_id].BoneIndices[k] == EMPTY_BONE) {
-                        ((float*)&vertex_data[vertex_id].BoneWeights)[k] = vertex_weight;
-                        vertex_data[vertex_id].BoneIndices[k] = bone_offset_info_map.at(bone_name).id;
-                        break;
-                    }
-                }
+                if (vertex_weight == 0.0f) continue;
+                auto& vert = vertex_data[vertex_id];
+                AddVertexBoneInfo(vert, vertex_weight, bone_offset_info.id);
             }
         }
         for (unsigned int j = 0u; j < vertex_sz; ++j) {
             for (unsigned int k = 0u; k < MAX_BONE_WEIGHTS; ++k) {
                 if (vertex_data[j].BoneIndices[k] == EMPTY_BONE) {
-                    ((float*)&vertex_data[j].BoneWeights)[k] = 0.0f;
+                    ChangeBoneWeight(vertex_data[j].BoneWeights, k, 0.0f);
                     vertex_data[j].BoneIndices[k] = 0u;
                 }
             }
@@ -156,6 +174,8 @@ void ImportMesh2(MeshList& mesh_list, CommandList& command_list, const aiMesh& a
 
     if (ai_mesh.HasFaces()) {
         std::vector<unsigned int> indices;
+        size_t sz = ai_mesh.mNumFaces * ai_mesh.mFaces[0u].mNumIndices;
+        indices.reserve(sz);
         for (unsigned int i = 0u; i < ai_mesh.mNumFaces; ++i) {
             const aiFace& face = ai_mesh.mFaces[i];
 
@@ -203,7 +223,10 @@ void ImportBoneOffsetInfo2(BoneOffsetInfoMap& bone_offset_info_map, const aiScen
             const aiBone& ai_bone = *ai_mesh.mBones[i];
             std::string bone_name(ai_bone.mName.C_Str());
             
-            DirectX::XMFLOAT4X4 offset_matrix(&(ai_bone.mOffsetMatrix.a1));
+            //DirectX::XMFLOAT4X4 offset_matrix(&(ai_bone.mOffsetMatrix.a1));
+            DirectX::XMFLOAT4X4 offset_matrix = {};
+            DirectX::XMMATRIX offset_matrixXM(&(ai_bone.mOffsetMatrix.a1));
+            DirectX::XMStoreFloat4x4(&offset_matrix, DirectX::XMMatrixTranspose(offset_matrixXM));
             if (!bone_offset_info_map.count(bone_name)) {
                 bone_offset_info_map[bone_name].id = bone_offset_info_map.size();
             }
@@ -390,7 +413,9 @@ std::shared_ptr<SceneNode> ImportSceneNode2(MeshList mesh_list, std::shared_ptr<
 
     std::shared_ptr<SceneNode> node = nullptr;
     if (aiNode->mNumMeshes) {
-        std::shared_ptr<AnimatedMeshNode> mesh_node = std::make_shared<AnimatedMeshNode>(file_name + node_name, DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
+        DirectX::XMMATRIX transform(&(aiNode->mTransformation.a1));
+        transform = DirectX::XMMatrixTranspose(transform);
+        std::shared_ptr<AnimatedMeshNode> mesh_node = std::make_shared<AnimatedMeshNode>(file_name + node_name, transform);
         mesh_node->SetParent(parent);
 
         for (unsigned int i = 0; i < aiNode->mNumMeshes; ++i) {
@@ -494,16 +519,18 @@ std::shared_ptr<SceneNode> AnimationComponent::ImportScene2(CommandList& command
         for (unsigned int i = 0; i < scene.mNumAnimations; ++i) {
             const aiAnimation& animation = *(scene.mAnimations[i]);
             std::string animation_name(animation.mName.C_Str());
+
             float tick_time_sec = 1.0f / animation.mTicksPerSecond;
             float duration_sec = animation.mDuration * tick_time_sec;
 
             AnimationClip ac;
             ac.KeyframesMap.reserve(animation.mNumChannels);
-            ac.BoneAnimations.reserve(animation.mNumChannels);
-
+            //ac.BoneAnimations.reserve(animation.mNumChannels);
+            ac.BoneAnimations = std::vector<BoneAnimationPtr>(bone_offset_info_map.size(), nullptr);
             for (unsigned int i = 0; i < animation.mNumChannels; ++i) {
                 const aiNodeAnim& animation_channel = *(animation.mChannels[i]);
                 std::string channel_name(animation_channel.mNodeName.C_Str());
+                const auto& bone_info = bone_offset_info_map.at(channel_name);
 
                 if (!bone_offset_info_map.count(channel_name)) {
                     DirectX::XMFLOAT4X4 identity_offset_matrix;
@@ -558,7 +585,11 @@ std::shared_ptr<SceneNode> AnimationComponent::ImportScene2(CommandList& command
                 pBoneAnimation->RotationKeyframes = std::move(rotation_key_frames);
 
                 ac.KeyframesMap[channel_name] = pBoneAnimation;
-                ac.BoneAnimations.push_back(pBoneAnimation);
+                //ac.BoneAnimations.push_back(pBoneAnimation);
+
+                //ac.BoneAnimations = std::vector<BoneAnimationPtr>(bone_offset_info_map.size(), nullptr);
+                size_t bone_index = bone_info.id;
+                ac.BoneAnimations[bone_index] = pBoneAnimation;
             }
             m_skinned_data->AddAnimations(animation_name, std::move(ac));
         }

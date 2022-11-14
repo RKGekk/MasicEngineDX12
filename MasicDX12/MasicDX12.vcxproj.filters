@@ -648,6 +648,12 @@
     <ClCompile Include="nodes\aminated_mesh_node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\effect_anim_instanced_pso.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\effect_shadow_anim_instanced_pso.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1343,6 +1349,12 @@
     <ClInclude Include="nodes\aminated_mesh_node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\effect_anim_instanced_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\effect_shadow_anim_instanced_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_options.xml">
@@ -1607,6 +1619,78 @@
     <None Include="data\objects\Mr_Man_Walking.bin">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="data\textures\Beardmat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Beardmat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Beardmat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Bodymat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Bodymat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Bodymat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Bottommat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Bottommat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Bottommat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Eyewearmat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Eyewearmat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Eyewearmat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Hairmat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Hairmat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Hairmat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Moustachemat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Moustachemat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Moustachemat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Shoesmat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Shoesmat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Shoesmat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Topmat_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Topmat_normal.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Topmat_specularGlossiness.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">
@@ -1713,79 +1797,5 @@
     <FxCompile Include="data\shaders\BasicShadow_VS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstancedShadow_VS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstancedAnim_VS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="data\textures\Beardmat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Beardmat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Beardmat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Bodymat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Bodymat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Bodymat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Bottommat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Bottommat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Bottommat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Eyewearmat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Eyewearmat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Eyewearmat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Hairmat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Hairmat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Hairmat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Moustachemat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Moustachemat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Moustachemat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Topmat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Topmat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Topmat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Shoesmat_specularGlossiness.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Shoesmat_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="data\textures\Shoesmat_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

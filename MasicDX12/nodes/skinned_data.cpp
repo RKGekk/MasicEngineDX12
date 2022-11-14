@@ -135,7 +135,12 @@ float AnimationClip::GetClipEndTime() const {
 
 void AnimationClip::Interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& bone_transforms) const {
 	for (uint32_t i = 0; i < BoneAnimations.size(); ++i) {
-		BoneAnimations[i]->Interpolate(t, bone_transforms[i]);
+		if (!BoneAnimations[i]) {
+			DirectX::XMStoreFloat4x4(&bone_transforms[i], DirectX::XMMatrixIdentity());
+		}
+		else {
+			BoneAnimations[i]->Interpolate(t, bone_transforms[i]);
+		}
 	}
 }
 

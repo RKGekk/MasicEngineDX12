@@ -157,6 +157,8 @@
     <ClCompile Include="actors\enemy_component.cpp" />
     <ClCompile Include="actors\base_scene_node_component.cpp" />
     <ClCompile Include="actors\animation_component.cpp" />
+    <ClCompile Include="graphics\effect_shadow_anim_instanced_pso.cpp" />
+    <ClCompile Include="graphics\effect_anim_instanced_pso.cpp" />
     <ClCompile Include="nodes\aminated_mesh_node.cpp" />
     <ClCompile Include="nodes\basic_camera_node.cpp" />
     <ClCompile Include="graphics\effect_shadow_instanced_pso.cpp" />
@@ -348,6 +350,8 @@
     <ClInclude Include="actors\light_component.h" />
     <ClInclude Include="actors\base_scene_node_component.h" />
     <ClInclude Include="actors\animation_component.h" />
+    <ClInclude Include="graphics\effect_shadow_anim_instanced_pso.h" />
+    <ClInclude Include="graphics\effect_anim_instanced_pso.h" />
     <ClInclude Include="nodes\aminated_mesh_node.h" />
     <ClInclude Include="nodes\basic_camera_node.h" />
     <ClInclude Include="graphics\effect_shadow_instanced_pso.h" />

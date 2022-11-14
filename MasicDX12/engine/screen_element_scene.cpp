@@ -58,6 +58,7 @@ ScreenElementScene::ScreenElementScene() : Scene() {
 
 	m_lighting_pso = std::make_shared<EffectPSO>(device, true, false);
 	m_lighting_instanced_pso = std::make_shared<EffectInstancedPSO>(device);
+	m_lighting_anim_instanced_pso = std::make_shared<EffectAnimInstancedPSO>(device);
 
 	m_viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, static_cast<float>(m_width), static_cast<float>(m_height));
 	m_scissor_rect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
@@ -120,11 +121,14 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 		if(!m_shadow_pso) m_shadow_pso = std::make_shared<EffectShadowPSO>(device, m_shadow_manager);
 		if(!m_shadow_instanced_pso) m_shadow_instanced_pso = std::make_shared<EffectShadowInstancedPSO>(device, m_shadow_manager);
+		if(!m_shadow_anim_instanced_pso) m_shadow_anim_instanced_pso = std::make_shared<EffectAnimShadowInstancedPSO>(device, m_shadow_manager);
 
 		m_shadow_instanced_pso->SetMeshManager(m_mesh_manager);
-		m_shadow_instanced_pso->SetSkinnedMeshManager(m_skinned_mesh_manager);
+		m_shadow_anim_instanced_pso->SetSkinnedMeshManager(m_skinned_mesh_manager);
 		m_shadow_instanced_pso->SetViewMatrix(*shadow_camera);
+		m_shadow_anim_instanced_pso->SetViewMatrix(*shadow_camera);
 		m_shadow_instanced_pso->SetRenderTargetSize({ (float)shadow_camera_props.ShadowMapWidth, (float)shadow_camera_props.ShadowMapHeight });
+		m_shadow_anim_instanced_pso->SetRenderTargetSize({ (float)shadow_camera_props.ShadowMapWidth, (float)shadow_camera_props.ShadowMapHeight });
 
 		ShadowSceneVisitor shadow_pass(*command_list, shadow_camera, *m_shadow_pso, false);
 
@@ -137,6 +141,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 		root_scene_node->Accept(shadow_pass);
 		m_shadow_instanced_pso->Apply(*command_list, delta);
+		m_shadow_anim_instanced_pso->Apply(*command_list, delta);
 
 		m_lighting_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
 		//m_shadow_manager->GetShadowMapTexture()->
@@ -158,6 +163,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		}
 		command_list->CopyResource(m_shadow_map_texture, m_shadow_manager->GetShadowMapTexture());
 		m_lighting_instanced_pso->SetShadowMapTexture(m_shadow_map_texture);
+		m_lighting_anim_instanced_pso->SetShadowMapTexture(m_shadow_map_texture);
 	}
 
 	EffectPSO::FogProperties fog_props = {};
@@ -170,15 +176,25 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	fog_inst_props.FogRange = m_scene_config.FogRange;
 	fog_inst_props.FogStart = m_scene_config.FogStart;
 
+	EffectAnimInstancedPSO::FogProperties fog_anim_inst_props = {};
+	fog_anim_inst_props.FogColor = m_scene_config.FogColor;
+	fog_anim_inst_props.FogRange = m_scene_config.FogRange;
+	fog_anim_inst_props.FogStart = m_scene_config.FogStart;
+
 	m_lighting_pso->SetFogProperties(fog_props);
 	m_lighting_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetFogProperties(fog_inst_props);
+	m_lighting_anim_instanced_pso->SetFogProperties(fog_anim_inst_props);
 	m_lighting_instanced_pso->SetLightManager(m_light_manager);
+	m_lighting_anim_instanced_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetShadowManager(m_shadow_manager);
+	m_lighting_anim_instanced_pso->SetShadowManager(m_shadow_manager);
 	m_lighting_instanced_pso->SetMeshManager(m_mesh_manager);
-	m_lighting_instanced_pso->SetSkinnedMeshManager(m_skinned_mesh_manager);
+	m_lighting_anim_instanced_pso->SetSkinnedMeshManager(m_skinned_mesh_manager);
 	m_lighting_instanced_pso->SetViewMatrix(*camera);
+	m_lighting_anim_instanced_pso->SetViewMatrix(*camera);
 	m_lighting_instanced_pso->SetRenderTargetSize({ (float)m_width, (float)m_height });
+	m_lighting_anim_instanced_pso->SetRenderTargetSize({ (float)m_width, (float)m_height });
 
 	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false, m_shadow_map_texture);
 
@@ -199,6 +215,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 
 	root_scene_node->Accept(opaque_pass);
 	m_lighting_instanced_pso->Apply(*command_list, delta);
+	m_lighting_anim_instanced_pso->Apply(*command_list, delta);
 
 	auto swap_chain_back_buffer_color = renderer->GetRenderTarget().GetTexture(AttachmentPoint::Color0);
 	auto swap_chain_back_buffer_depth = renderer->GetRenderTarget().GetTexture(AttachmentPoint::DepthStencil);
