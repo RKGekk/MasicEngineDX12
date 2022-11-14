@@ -29,7 +29,7 @@ EffectShadowInstancedPSO::EffectShadowInstancedPSO(std::shared_ptr<Device> devic
     m_pAligned_mvp = (VP*)_aligned_malloc(sizeof(VP), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
-    std::string vertex_shader_name = "BaseInstanced_VS.cso";
+    std::string vertex_shader_name = "BaseInstancedShadow_VS.cso";
     HRESULT hr = D3DReadFileToBlob(to_wstring(vertex_shader_name).c_str(), vertex_shader_blob.GetAddressOf());
     ThrowIfFailed(hr);
     m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, vertex_shader_name);

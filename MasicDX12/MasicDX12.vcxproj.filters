@@ -1797,5 +1797,6 @@
     <FxCompile Include="data\shaders\BasicShadow_VS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstancedShadow_VS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstancedAnim_VS.hlsl" />
+    <FxCompile Include="data\shaders\BaseInstancedShadowAnim_VS.hlsl" />
   </ItemGroup>
 </Project>

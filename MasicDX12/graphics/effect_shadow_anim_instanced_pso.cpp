@@ -29,7 +29,8 @@ EffectAnimShadowInstancedPSO::EffectAnimShadowInstancedPSO(std::shared_ptr<Devic
     m_pAligned_fbt = (FinalBoneTransforms*)_aligned_malloc(sizeof(FinalBoneTransforms), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
-    std::string vertex_shader_name = "BaseInstanced_VS.cso";
+    //std::string vertex_shader_name = "BaseInstanced_VS.cso";
+    std::string vertex_shader_name = "BaseInstancedShadowAnim_VS.cso";
     HRESULT hr = D3DReadFileToBlob(to_wstring(vertex_shader_name).c_str(), vertex_shader_blob.GetAddressOf());
     ThrowIfFailed(hr);
     m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, vertex_shader_name);

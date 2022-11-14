@@ -26,6 +26,13 @@ struct InstanceData {
 
 StructuredBuffer<InstanceData> gInstanceData : register(t0, space1);
 
+struct SkinnedData {
+	float4x4 BoneTransforms[96];
+	float4x4 InverseTransposeBoneTransforms[96];
+};
+
+ConstantBuffer<SkinnedData> gBoneTransforms : register(b3);
+
 struct InstanceIndexData {
 	uint InstanceIndex;
 	uint Pad1;
@@ -56,7 +63,23 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture vs_in, uint 
 	InstanceData instance_data = gInstanceData[instance_index];
 	float4x4 world = instance_data.World;
 	
-	float4 pos_ws = mul(float4(vs_in.PositionLS, 1.0f), world);
+	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    weights[0] = vs_in.BoneWeights.x;
+    weights[1] = vs_in.BoneWeights.y;
+    weights[2] = vs_in.BoneWeights.z;
+    weights[3] = 1.0f - weights[0] - weights[1] - weights[2];
+	
+	float3 pos_accum_ls = float3(0.0f, 0.0f, 0.0f);
+	float3 pos_ls = vs_in.PositionLS;
+	
+    for(int i = 0; i < 4; ++i) {
+		uint bone_idx = vs_in.BoneIndices[i];
+        pos_accum_ls += weights[i] * mul(float4(pos_ls, 1.0f), gBoneTransforms.BoneTransforms[bone_idx]).xyz;
+    }
+
+	pos_ls = pos_accum_ls;
+	
+	float4 pos_ws = mul(float4(pos_ls, 1.0f), world);
 	float4 pos_hs = mul(gPerPassData.ViewProjectionMatrix, pos_ws);
 	vout.PositionHS = pos_hs;
 	
