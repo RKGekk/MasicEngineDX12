@@ -34,7 +34,9 @@ public:
 	std::shared_ptr<LightManager> GetLightManager();
 	std::shared_ptr<ShadowManager> GetShadowManager();
 	std::shared_ptr<MeshManager> GetMeshManager();
+
 	std::shared_ptr<QualifierNode> GetRootNode();
+	std::shared_ptr<SceneNode> GetRootCast();
 
 	const SceneConfig& GetSceneConfig();
 	void SetSceneConfig(const SceneConfig& scene_config);

@@ -17,6 +17,7 @@
 #include "../nodes/basic_camera_node.h"
 #include "screen_element_scene.h"
 #include "actor_menu_ui.h"
+#include "node_menu_ui.h"
 #include "movement_controller.h"
 
 class HumanView : public IEngineView {
@@ -89,6 +90,7 @@ protected:
 	bool m_bShow_debug_ui;
 	std::wstring m_gameplay_text;
 	std::shared_ptr<ActorMenuUI> m_actor_menu_ui;
+	std::shared_ptr<NodeMenuUI> m_node_menu_ui;
 
 	std::shared_ptr<MovementController> m_pFree_camera_controller;
 	std::weak_ptr<Actor> m_pTeapot;

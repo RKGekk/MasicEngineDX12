@@ -37,6 +37,10 @@ void ShadowCameraComponent::VDelegatePostInit() {
 	std::shared_ptr<LightComponent> lc = MakeStrongPtr(act->GetComponent<LightComponent>(ActorComponent::GetIdFromName("LightComponent")));
 	std::shared_ptr<LightNode> light_node = lc->VGetLightNode();
 
+	std::string name = act->GetName() + "-ShadowCameraComponent"s;
+	std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
+	scene_node->SetName(name);
+
 	ShadowCameraNode::ShadowCameraProps shadow_props = {};
 	shadow_props.ShadowMapWidth = m_shadow_map_width;
 	shadow_props.ShadowMapHeight = m_shadow_map_height;
@@ -46,7 +50,7 @@ void ShadowCameraComponent::VDelegatePostInit() {
 
 	m_loaded_scene_node = std::make_shared<ShadowCameraNode>("ShadowCameraComponent"s, DirectX::XMMatrixIdentity(), root_node, light_node, shadow_props);
 
-	std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
+	//std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
 	scene_node->VAddChild(m_loaded_scene_node);
 }
 

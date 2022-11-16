@@ -56,7 +56,12 @@ bool LightComponent::VDelegateInit(const pugi::xml_node& data) {
 }
 
 void LightComponent::VDelegatePostInit() {
+	std::shared_ptr<Actor> act = GetOwner();
+	std::string name = act->GetName() + "-LightComponent"s;
 	std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
+	scene_node->SetName(name);
+
+	//std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
 	scene_node->VAddChild(m_loaded_scene_node);
 }
 

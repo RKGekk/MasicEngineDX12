@@ -39,6 +39,10 @@ std::shared_ptr<QualifierNode> Scene::GetRootNode() {
 	return m_root_node;
 }
 
+std::shared_ptr<SceneNode> Scene::GetRootCast() {
+	return m_root_node;;
+}
+
 const Scene::SceneConfig& Scene::GetSceneConfig() {
 	return m_scene_config;
 }

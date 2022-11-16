@@ -53,7 +53,12 @@ MeshComponent::~MeshComponent() {
 }
 
 void MeshComponent::VDelegatePostInit() {
+    std::shared_ptr<Actor> act = GetOwner();
+    std::string name = act->GetName() + "-MeshComponent"s;
     std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
+    scene_node->SetName(name);
+
+    //std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
     scene_node->VAddChild(m_loaded_scene_node);
 }
 

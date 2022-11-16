@@ -224,6 +224,7 @@
     <ClCompile Include="graphics\directx12_wrappers\primitive_topology.cpp" />
     <ClCompile Include="nodes\scene_visitor.cpp" />
     <ClCompile Include="nodes\skinned_data.cpp" />
+    <ClCompile Include="engine\node_menu_ui.cpp" />
     <ClCompile Include="render_window_config.cpp" />
     <ClCompile Include="events\base_event_data.cpp" />
     <ClCompile Include="events\event_manager.cpp" />
@@ -469,6 +470,7 @@
     <ClInclude Include="nodes\shadow_manager.h" />
     <ClInclude Include="nodes\skinned_data.h" />
     <ClInclude Include="nodes\skinned_mesh_manager.h" />
+    <ClInclude Include="engine\node_menu_ui.h" />
     <ClInclude Include="window_keycodes.h" />
     <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />

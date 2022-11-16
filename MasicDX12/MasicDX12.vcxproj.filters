@@ -654,6 +654,9 @@
     <ClCompile Include="graphics\effect_shadow_anim_instanced_pso.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="engine\node_menu_ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1353,6 +1356,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\effect_shadow_anim_instanced_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\node_menu_ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
