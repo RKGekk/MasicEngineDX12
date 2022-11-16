@@ -95,6 +95,8 @@ public:
 		NumTypes,
 	};
 
+	using TextureMap = std::map<TextureType, std::shared_ptr<Texture>>;
+
 	Material(const MaterialProperties& material_properties = MaterialProperties());
 	Material(const Material& copy);
 
@@ -130,6 +132,7 @@ public:
 	void  SetBumpIntensity(float bump_intensity);
 
 	std::shared_ptr<Texture> GetTexture(TextureType ID) const;
+	TextureMap& GetTextureMap();
 	void SetTexture(TextureType type, std::shared_ptr<Texture> texture);
 	void SetInvYNormalTextureFlag(bool is_inv_y_texture);
 
@@ -178,7 +181,6 @@ public:
 
 protected:
 private:
-	using TextureMap = std::map<TextureType, std::shared_ptr<Texture>>;
 	using MaterialPropertiesPtr = std::unique_ptr<MaterialProperties, void (*)(MaterialProperties*)>;
 
 	MaterialPropertiesPtr m_material_properties;

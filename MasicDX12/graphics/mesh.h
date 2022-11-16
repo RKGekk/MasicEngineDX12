@@ -34,6 +34,7 @@ public:
 
 	size_t GetIndexCount() const;
 	size_t GetVertexCount() const;
+	size_t GetVertexCountSum() const;
 
 	void SetMaterial(std::shared_ptr<Material> material);
 	std::shared_ptr<Material> GetMaterial() const;

@@ -110,6 +110,10 @@ std::shared_ptr<Texture> Material::GetTexture(TextureType ID) const {
     return nullptr;
 }
 
+Material::TextureMap& Material::GetTextureMap() {
+    return m_textures;
+}
+
 void Material::SetTexture(TextureType type, std::shared_ptr<Texture> texture) {
     m_textures[type] = texture;
     bool has_texture = (texture != nullptr);

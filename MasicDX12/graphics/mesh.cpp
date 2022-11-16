@@ -60,6 +60,17 @@ size_t Mesh::GetVertexCount() const {
     return vertex_count;
 }
 
+size_t Mesh::GetVertexCountSum() const {
+    size_t vertex_count = 0u;
+
+    BufferMap::const_iterator iter = m_vertex_buffers.cbegin();
+    if (iter != m_vertex_buffers.cend()) {
+        vertex_count += iter->second->GetNumVertices();
+    }
+
+    return vertex_count;
+}
+
 void Mesh::SetMaterial(std::shared_ptr<Material> material) {
     m_material = material;
 }
