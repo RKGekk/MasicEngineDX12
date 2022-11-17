@@ -459,7 +459,7 @@ int NodeMenuUI::VGetZOrder() const {
 void NodeMenuUI::VSetZOrder(int const zOrder) {}
 
 LRESULT NodeMenuUI::VOnMsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) { return true; }
+	//if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) { return true; }
 	return 0;
 }
 

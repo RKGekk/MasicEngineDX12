@@ -412,10 +412,19 @@ std::shared_ptr<SceneNode> ImportSceneNode2(MeshList mesh_list, std::shared_ptr<
     std::string node_name(aiNode->mName.C_Str());
 
     std::shared_ptr<SceneNode> node = nullptr;
+
+    DirectX::XMMATRIX transform(&(aiNode->mTransformation.a1));
+    transform = DirectX::XMMatrixTranspose(transform);
+    DirectX::XMVECTOR scale;
+    DirectX::XMVECTOR rotation;
+    DirectX::XMVECTOR translation;
+    DirectX::XMMatrixDecompose(&scale, &rotation, &translation, transform);
+    DirectX::XMMATRIX to_worlad = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationQuaternion(rotation), DirectX::XMMatrixTranslationFromVector(translation));
+
     if (aiNode->mNumMeshes) {
-        DirectX::XMMATRIX transform(&(aiNode->mTransformation.a1));
-        transform = DirectX::XMMatrixTranspose(transform);
-        std::shared_ptr<AnimatedMeshNode> mesh_node = std::make_shared<AnimatedMeshNode>(file_name + node_name, transform);
+        //std::shared_ptr<AnimatedMeshNode> mesh_node = std::make_shared<AnimatedMeshNode>(file_name + node_name, transform);
+        std::shared_ptr<AnimatedMeshNode> mesh_node = std::make_shared<AnimatedMeshNode>(file_name + node_name, to_worlad);
+        mesh_node->SetScale(scale);
         mesh_node->SetParent(parent);
 
         for (unsigned int i = 0; i < aiNode->mNumMeshes; ++i) {
@@ -427,7 +436,9 @@ std::shared_ptr<SceneNode> ImportSceneNode2(MeshList mesh_list, std::shared_ptr<
         node = mesh_node;
     }
     else {
-        node = std::make_shared<SceneNode>(file_name + node_name, DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
+        //node = std::make_shared<SceneNode>(file_name + node_name, DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
+        node = std::make_shared<SceneNode>(file_name + node_name, to_worlad);
+        node->SetScale(scale);
         node->SetParent(parent);
     }
 
@@ -694,7 +705,9 @@ void AnimationComponent::VDelegateUpdate(const GameTimerDelta& delta) {
     for (auto animated_node : gs_mesh_nodes_list[m_resource_name]) {
         auto& final_transform_list = animated_node->GetFinalTransformList();
         float time = std::fmodf(delta.fGetTotalSeconds(), 1.0f);
-        m_skinned_data->GetFinalTransforms("mixamo.com", time, final_transform_list);
+        std::string clip_name = m_skinned_data->GetAnimations().cbegin()->first;
+        //m_skinned_data->GetFinalTransforms("mixamo.com", time, final_transform_list);
+        m_skinned_data->GetFinalTransforms(clip_name, time, final_transform_list);
     }
     if (m_current_gen_updated) {
         m_loaded_scene_node->AddDirtyFlags(to_underlying(SceneNodeProperties::DirtyFlags::DF_Mesh));
@@ -764,10 +777,12 @@ std::shared_ptr<SceneNode> AnimationComponent::DeepCopyNode(const std::shared_pt
     std::shared_ptr<AnimatedMeshNode> mesh_node = std::dynamic_pointer_cast<AnimatedMeshNode>(node);
     if (!mesh_node) {
         node_copy = std::make_shared<SceneNode>(node_props.Name(), &node_props.ToWorld4x4());
+        node_copy->SetScale(node_props.Scale3());
     }
     else {
         const auto& mesh_list = mesh_node->GetMeshes();
         std::shared_ptr<AnimatedMeshNode> temp_node_copy = std::make_shared<AnimatedMeshNode>(node_props.Name(), node_props.ToWorld4x4(), mesh_list);
+        temp_node_copy->SetScale(node_props.Scale3());
         temp_node_copy->SetIsInstanced(is_instanced);
         gs_mesh_nodes_list[m_resource_name].push_back(temp_node_copy);
 

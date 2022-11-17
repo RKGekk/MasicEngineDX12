@@ -57,16 +57,25 @@ void BoneAnimation::Interpolate(float t, DirectX::XMFLOAT4X4& M) const {
 	}
 	else {
 		auto it1 = std::lower_bound(TranslationKeyframes.cbegin(), TranslationKeyframes.cend(), t, [](const auto it, float t) { return it.TimePos < t; });
-		auto it0 = std::prev(it1);
+		if (it1 == TranslationKeyframes.cbegin()) {
+			P = XMLoadFloat3(&it1->Translation);
+		}
+		else {
+			auto it0 = std::prev(it1);
 
-		float current_time_pos = it0->TimePos;
-		float next_time_pos = it1->TimePos;
-		float lerp_percent = (t - current_time_pos) / (next_time_pos - current_time_pos);
+			float current_time_pos = it0->TimePos;
+			float next_time_pos = it1->TimePos;
+			float time_delta = next_time_pos - current_time_pos;
+			float lerp_percent = 0.5f;
+			if (time_delta > 0.0001f) {
+				lerp_percent = (t - current_time_pos) / (next_time_pos - current_time_pos);
+			}
 
-		XMVECTOR p0 = XMLoadFloat3(&it0->Translation);
-		XMVECTOR p1 = XMLoadFloat3(&it1->Translation);
+			XMVECTOR p0 = XMLoadFloat3(&it0->Translation);
+			XMVECTOR p1 = XMLoadFloat3(&it1->Translation);
 
-		P = XMVectorLerp(p0, p1, lerp_percent);
+			P = XMVectorLerp(p0, p1, lerp_percent);
+		}
 	}
 
 	if (ScaleKeyframes.size() == 1) {
@@ -79,16 +88,25 @@ void BoneAnimation::Interpolate(float t, DirectX::XMFLOAT4X4& M) const {
 	}
 	else {
 		auto it1 = std::lower_bound(ScaleKeyframes.cbegin(), ScaleKeyframes.cend(), t, [](const auto it, float t) { return it.TimePos < t; });
-		auto it0 = std::prev(it1);
+		if (it1 == ScaleKeyframes.cbegin()) {
+			S = XMLoadFloat3(&it1->Scale);
+		}
+		else {
+			auto it0 = std::prev(it1);
 
-		float current_time_pos = it0->TimePos;
-		float next_time_pos = it1->TimePos;
-		float lerp_percent = (t - current_time_pos) / (next_time_pos - current_time_pos);
+			float current_time_pos = it0->TimePos;
+			float next_time_pos = it1->TimePos;
+			float time_delta = next_time_pos - current_time_pos;
+			float lerp_percent = 0.5f;
+			if (time_delta > 0.0001f) {
+				lerp_percent = (t - current_time_pos) / (next_time_pos - current_time_pos);
+			}
 
-		XMVECTOR s0 = XMLoadFloat3(&it0->Scale);
-		XMVECTOR s1 = XMLoadFloat3(&it1->Scale);
+			XMVECTOR s0 = XMLoadFloat3(&it0->Scale);
+			XMVECTOR s1 = XMLoadFloat3(&it1->Scale);
 
-		S = XMVectorLerp(s0, s1, lerp_percent);
+			S = XMVectorLerp(s0, s1, lerp_percent);
+		}
 	}
 
 	if (RotationKeyframes.size() == 1) {
@@ -101,16 +119,25 @@ void BoneAnimation::Interpolate(float t, DirectX::XMFLOAT4X4& M) const {
 	}
 	else {
 		auto it1 = std::lower_bound(RotationKeyframes.cbegin(), RotationKeyframes.cend(), t, [](const auto it, float t) { return it.TimePos < t; });
-		auto it0 = std::prev(it1);
+		if (it1 == RotationKeyframes.cbegin()) {
+			Q = XMLoadFloat4(&it1->RotationQuat);
+		}
+		else {
+			auto it0 = std::prev(it1);
 
-		float current_time_pos = it0->TimePos;
-		float next_time_pos = it1->TimePos;
-		float lerp_percent = (t - current_time_pos) / (next_time_pos - current_time_pos);
+			float current_time_pos = it0->TimePos;
+			float next_time_pos = it1->TimePos;
+			float time_delta = next_time_pos - current_time_pos;
+			float lerp_percent = 0.5f;
+			if (time_delta > 0.0001f) {
+				lerp_percent = (t - current_time_pos) / (next_time_pos - current_time_pos);
+			}
 
-		XMVECTOR q0 = XMLoadFloat4(&it0->RotationQuat);
-		XMVECTOR q1 = XMLoadFloat4(&it1->RotationQuat);
+			XMVECTOR q0 = XMLoadFloat4(&it0->RotationQuat);
+			XMVECTOR q1 = XMLoadFloat4(&it1->RotationQuat);
 
-		Q = XMQuaternionSlerp(q0, q1, lerp_percent);
+			Q = XMQuaternionSlerp(q0, q1, lerp_percent);
+		}
 	}
 	XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, P));
 }
@@ -217,6 +244,7 @@ void SkinnedData::GetFinalTransforms(const std::string& clip_name, float time_po
 
 	// Interpolate all the bones of this clip at the given time instance.
 	auto clip = m_animations.find(clip_name);
+	//auto clip = m_animations.cbegin();
 	clip->second.Interpolate(time_pos, to_parent_transforms);
 
 	// Traverse the hierarchy and transform all the bones to the root space.
