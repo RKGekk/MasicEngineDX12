@@ -273,7 +273,8 @@ void ScreenElementScene::ModifiedSceneNode(std::shared_ptr<SceneNode> node) {
 
 	if (std::shared_ptr<AnimatedMeshNode> pAnimMesh = std::dynamic_pointer_cast<AnimatedMeshNode>(node)) {
 		if (pAnimMesh->GetIsInstanced() && m_skinned_mesh_manager->GetMeshCount(pAnimMesh)) {
-			m_skinned_mesh_manager->UpdateInstancesBuffer();
+			//m_skinned_mesh_manager->UpdateInstancesBuffer();
+			m_skinned_mesh_manager->UpdateInstancesBuffer(pAnimMesh->Get().Name());
 		}
 	};
 

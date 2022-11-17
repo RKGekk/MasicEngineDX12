@@ -132,6 +132,26 @@ void SkinnedMeshManager::UpdateInstancesBuffer() {
 	}
 }
 
+void SkinnedMeshManager::UpdateInstancesBuffer(MeshName mesh_name) {
+	using namespace DirectX;
+	if (!m_mesh_map.count(mesh_name)) return;
+	const auto& mesh_list = m_mesh_map.at(mesh_name);
+	int sz = mesh_list.size();
+	for (int i = 0; i < sz; ++i) {
+		const auto& mesh_node = mesh_list[i];
+		const auto& props = mesh_node->Get();
+		InstanceData id = {};
+		id.World = props.FullCumulativeToWorld4x4T();
+		XMMATRIX world = XMLoadFloat4x4(&id.World);
+		XMMATRIX inv_world_t = XMMatrixTranspose(XMMatrixInverse(nullptr, world));
+		XMStoreFloat4x4(&id.InverseTransposeWorld, inv_world_t);
+		XMStoreFloat4x4(&id.TexureUVTransform, XMMatrixIdentity());
+		m_instance_map[mesh_name][i] = id;
+	}
+	ManageInstanceBufferMap(mesh_name);
+	
+}
+
 SkinnedMeshManager::InstanceMap& SkinnedMeshManager::GetInstanceMap() {
 	return m_instance_map;
 }

@@ -120,13 +120,13 @@ void MeshManager::UpdateInstancesBuffer() {
 		for (int i = 0; i < sz; ++i) {
 			const auto& mesh_node = mesh_list[i];
 			const auto& props = mesh_node->Get();
-			InstanceData id = {};
-			id.World = props.FullCumulativeToWorld4x4T();
-			XMMATRIX world = XMLoadFloat4x4(&id.World);
+			InstanceData instance_data = {};
+			instance_data.World = props.FullCumulativeToWorld4x4T();
+			XMMATRIX world = XMLoadFloat4x4(&instance_data.World);
 			XMMATRIX inv_world_t = XMMatrixTranspose(XMMatrixInverse(nullptr, world));
-			XMStoreFloat4x4(&id.InverseTransposeWorld, inv_world_t);
-			XMStoreFloat4x4(&id.TexureUVTransform, XMMatrixIdentity());
-			m_instance_map[name][i] = id;
+			XMStoreFloat4x4(&instance_data.InverseTransposeWorld, inv_world_t);
+			XMStoreFloat4x4(&instance_data.TexureUVTransform, XMMatrixIdentity());
+			m_instance_map[name][i] = instance_data;
 		}
 		ManageInstanceBufferMap(name);
 	}

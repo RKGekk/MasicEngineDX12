@@ -54,6 +54,7 @@ public:
 
 	void CalcInstances(const BasicCameraNode& camera);
 	void UpdateInstancesBuffer();
+	void UpdateInstancesBuffer(MeshName mesh_name);
 
 	InstanceMap& GetInstanceMap();
 	std::vector<InstanceData>& GetInstanceData(MeshName mesh_name);
