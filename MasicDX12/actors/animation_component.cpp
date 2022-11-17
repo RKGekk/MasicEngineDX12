@@ -517,11 +517,65 @@ void ImportBoneHierarchy(const aiNode* parent_aiNode, const aiNode* current_aiNo
     }
 }
 
-//const aiNode* GetRootSceneNode(const aiNode* ai_node) {
-//    for (unsigned int i = 0; i < ai_node->mNumChildren; ++i) {
-//        const aiNode* child = ai_node->mChildren[i];
-//    }
-//}
+
+const aiNode* GetRootSceneNode(const aiNode* ai_current_node, const aiNode* ai_parent_node) {
+    if (ai_current_node->mNumMeshes > 0u) return ai_parent_node;
+    bool have_mesh_child = false;
+    for (unsigned int i = 0; i < ai_current_node->mNumChildren; ++i) {
+        const aiNode* child = ai_current_node->mChildren[i];
+        if (child->mNumMeshes > 0u) {
+            have_mesh_child = true;
+            break;
+        }
+    }
+    if (have_mesh_child) return ai_current_node;
+    for (unsigned int i = 0; i < ai_current_node->mNumChildren; ++i) {
+        const aiNode* child = ai_current_node->mChildren[i];
+        const aiNode* root = GetRootSceneNode(child, ai_current_node);
+        if (root) return root;
+    }
+    return nullptr;
+}
+
+const aiNode* GetRootSceneNode(const aiNode* ai_node) {
+    if (ai_node->mNumMeshes > 0u) return ai_node;
+    bool have_mesh_child = false;
+    for (unsigned int i = 0; i < ai_node->mNumChildren; ++i) {
+        const aiNode* child = ai_node->mChildren[i];
+        if (child->mNumMeshes > 0u) {
+            have_mesh_child = true;
+            break;
+        }
+    }
+    if (have_mesh_child) return ai_node;
+    for (unsigned int i = 0; i < ai_node->mNumChildren; ++i) {
+        const aiNode* child = ai_node->mChildren[i];
+        const aiNode* root = GetRootSceneNode(child, ai_node);
+        if (root) return root;
+    }
+    return ai_node;
+}
+
+DirectX::XMMATRIX GetMatrixOnTop(const aiNode* ai_current_node) {
+    DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+    if (!ai_current_node) return matrix;
+    std::vector<DirectX::XMMATRIX> matrices;
+    while (ai_current_node) {
+        DirectX::XMMATRIX transform(&(ai_current_node->mTransformation.a1));
+        transform = DirectX::XMMatrixTranspose(transform);
+        DirectX::XMVECTOR scale;
+        DirectX::XMVECTOR rotation;
+        DirectX::XMVECTOR translation;
+        DirectX::XMMatrixDecompose(&scale, &rotation, &translation, transform);
+        DirectX::XMMATRIX to_worlad = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationQuaternion(rotation), DirectX::XMMatrixTranslationFromVector(translation));
+
+        matrices.push_back(to_worlad);
+
+        ai_current_node = ai_current_node->mParent;
+    }
+
+    return matrix;
+}
 
 std::shared_ptr<SceneNode> AnimationComponent::ImportScene2(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path, const std::string& file_name, bool is_inv_y_texture) {
     MaterialList material_list;
@@ -643,7 +697,20 @@ std::shared_ptr<SceneNode> AnimationComponent::ImportScene2(CommandList& command
         mesh_list[i]->SetSkinnedData(m_skinned_data);
     }
 
-    std::shared_ptr<SceneNode> root_node = ImportSceneNode2(mesh_list, nullptr, scene.mRootNode, file_name);
+    /*const aiNode* ai_root_node = scene.mRootNode;
+    if (ai_root_node->mNumMeshes == 0u) {
+        while(ai_root_node)
+        bool childs_have_mesh = false;
+        for (unsigned int i = 0; i < ai_root_node->mNumChildren; ++i) {
+            const aiNode* child = ai_node->mChildren[i];
+            if (child->mNumMeshes > 0u) return true;
+            bool deep = CheckForMesh(child);
+            if (deep == true) return true;
+        }
+        return false;
+    }*/
+    const aiNode* ai_root_node = GetRootSceneNode(scene.mRootNode);
+    std::shared_ptr<SceneNode> root_node = ImportSceneNode2(mesh_list, nullptr, ai_root_node, file_name);
     
     return root_node;
 }

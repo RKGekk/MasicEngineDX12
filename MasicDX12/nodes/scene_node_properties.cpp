@@ -36,18 +36,21 @@ DirectX::XMFLOAT4X4 SceneNodeProperties::ToWorld4x4T() const {
 }
 
 DirectX::XMMATRIX SceneNodeProperties::FullToWorld() const {
-	return DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world), DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z));
+	//return DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world), DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z));
+	return DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z), DirectX::XMLoadFloat4x4(&m_to_world));
 }
 
 DirectX::XMMATRIX SceneNodeProperties::FullToWorldT() const {
-	return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world), DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z)));
+	//return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world), DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z)));
+	return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z), DirectX::XMLoadFloat4x4(&m_to_world)));
 }
 
 DirectX::XMFLOAT4X4 SceneNodeProperties::FullToWorld4x4() const {
 	DirectX::XMFLOAT4X4 res = {};
 	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world);
 	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(transformXM, scaleXM));
+	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(transformXM, scaleXM));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(scaleXM, transformXM));
 	return res;
 }
 
@@ -55,7 +58,8 @@ DirectX::XMFLOAT4X4 SceneNodeProperties::FullToWorld4x4T() const {
 	DirectX::XMFLOAT4X4 res = {};
 	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world_cumulative);
 	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z);
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(transformXM, scaleXM)));
+	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(transformXM, scaleXM)));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(scaleXM, transformXM)));
 	return res;
 }
 
@@ -78,18 +82,21 @@ DirectX::XMFLOAT4X4 SceneNodeProperties::CumulativeToWorld4x4T() const {
 }
 
 DirectX::XMMATRIX SceneNodeProperties::FullCumulativeToWorld() const {
-	return DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world_cumulative), DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z));
+	//return DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world_cumulative), DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z));
+	return DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z), DirectX::XMLoadFloat4x4(&m_to_world_cumulative));
 }
 
 DirectX::XMMATRIX SceneNodeProperties::FullCumulativeToWorldT() const {
-	return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world_cumulative), DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z)));
+	//return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world_cumulative), DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z)));
+	return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z), DirectX::XMLoadFloat4x4(&m_to_world_cumulative)));
 }
 
 DirectX::XMFLOAT4X4 SceneNodeProperties::FullCumulativeToWorld4x4() const {
 	DirectX::XMFLOAT4X4 res = {};
 	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world_cumulative);
 	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z);
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(transformXM, scaleXM));
+	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(transformXM, scaleXM));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(scaleXM, transformXM));
 	return res;
 }
 
@@ -97,7 +104,8 @@ DirectX::XMFLOAT4X4 SceneNodeProperties::FullCumulativeToWorld4x4T() const {
 	DirectX::XMFLOAT4X4 res = {};
 	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world_cumulative);
 	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z);
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(transformXM, scaleXM)));
+	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(transformXM, scaleXM)));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(scaleXM, transformXM)));
 	return res;
 }
 
