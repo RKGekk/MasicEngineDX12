@@ -71,6 +71,7 @@ void DrawNodes(const std::shared_ptr<SceneNode>& current_node) {
 	};
 
 	if (ImGui::TreeNode(node_name.c_str())) {
+
 		if (ImGui::TreeNode("Props")) {
 			DirectX::XMFLOAT4X4 to_world = props.ToWorld4x4();
 			DirectX::XMFLOAT4X4 from_world = props.FromWorld4x4();
@@ -422,10 +423,11 @@ void DrawNodes(const std::shared_ptr<SceneNode>& current_node) {
 			ImGui::TreePop();
 		}
 
-
-
-		for (auto& next_node : current_node->VGetChildren()) {
-			DrawNodes(next_node);
+		if (ImGui::TreeNode("Childs")) {
+			for (auto& next_node : current_node->VGetChildren()) {
+				DrawNodes(next_node);
+			}
+			ImGui::TreePop();
 		}
 
 		ImGui::TreePop();

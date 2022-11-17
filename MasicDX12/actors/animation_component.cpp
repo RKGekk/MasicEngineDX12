@@ -406,14 +406,25 @@ void ImportMaterial2(MaterialList& material_list, CommandList& command_list, con
     }
 }
 
-std::shared_ptr<SceneNode> ImportSceneNode2(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* aiNode, const std::string& file_name) {
-    if (!aiNode) return nullptr;
+bool CheckForMesh(const aiNode* ai_node) {
+    if (ai_node->mNumMeshes) return true;
+    for (unsigned int i = 0; i < ai_node->mNumChildren; ++i) {
+        const aiNode* child = ai_node->mChildren[i];
+        if (child->mNumMeshes > 0u) return true;
+        bool deep = CheckForMesh(child);
+        if (deep == true) return true;
+    }
+    return false;
+}
 
-    std::string node_name(aiNode->mName.C_Str());
+std::shared_ptr<SceneNode> ImportSceneNode2(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* ai_node, const std::string& file_name) {
+    if (!ai_node) return nullptr;
+
+    std::string node_name(ai_node->mName.C_Str());
 
     std::shared_ptr<SceneNode> node = nullptr;
 
-    DirectX::XMMATRIX transform(&(aiNode->mTransformation.a1));
+    DirectX::XMMATRIX transform(&(ai_node->mTransformation.a1));
     transform = DirectX::XMMatrixTranspose(transform);
     DirectX::XMVECTOR scale;
     DirectX::XMVECTOR rotation;
@@ -421,16 +432,16 @@ std::shared_ptr<SceneNode> ImportSceneNode2(MeshList mesh_list, std::shared_ptr<
     DirectX::XMMatrixDecompose(&scale, &rotation, &translation, transform);
     DirectX::XMMATRIX to_worlad = DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationQuaternion(rotation), DirectX::XMMatrixTranslationFromVector(translation));
 
-    if (aiNode->mNumMeshes) {
+    if (ai_node->mNumMeshes) {
         //std::shared_ptr<AnimatedMeshNode> mesh_node = std::make_shared<AnimatedMeshNode>(file_name + node_name, transform);
         std::shared_ptr<AnimatedMeshNode> mesh_node = std::make_shared<AnimatedMeshNode>(file_name + node_name, to_worlad);
-        mesh_node->SetScale(scale);
+        //mesh_node->SetScale(scale);
         mesh_node->SetParent(parent);
 
-        for (unsigned int i = 0; i < aiNode->mNumMeshes; ++i) {
-            assert(aiNode->mMeshes[i] < mesh_list.size());
+        for (unsigned int i = 0; i < ai_node->mNumMeshes; ++i) {
+            assert(ai_node->mMeshes[i] < mesh_list.size());
 
-            std::shared_ptr<Mesh> pMesh = mesh_list[aiNode->mMeshes[i]];
+            std::shared_ptr<Mesh> pMesh = mesh_list[ai_node->mMeshes[i]];
             mesh_node->AddMesh(pMesh);
         }
         node = mesh_node;
@@ -438,13 +449,16 @@ std::shared_ptr<SceneNode> ImportSceneNode2(MeshList mesh_list, std::shared_ptr<
     else {
         //node = std::make_shared<SceneNode>(file_name + node_name, DirectX::XMMATRIX(&(aiNode->mTransformation.a1)));
         node = std::make_shared<SceneNode>(file_name + node_name, to_worlad);
-        node->SetScale(scale);
+        //node->SetScale(scale);
         node->SetParent(parent);
     }
 
-    for (unsigned int i = 0; i < aiNode->mNumChildren; ++i) {
-        auto child = ImportSceneNode2(mesh_list, node, aiNode->mChildren[i], file_name);
-        node->VAddChild(child);
+    for (unsigned int i = 0; i < ai_node->mNumChildren; ++i) {
+        const aiNode* child_ai_node = ai_node->mChildren[i];
+        if (!CheckForMesh(child_ai_node)) continue;
+        
+        auto child = ImportSceneNode2(mesh_list, node, child_ai_node, file_name);
+        if (child) node->VAddChild(child);
     }
 
     return node;
@@ -502,6 +516,12 @@ void ImportBoneHierarchy(const aiNode* parent_aiNode, const aiNode* current_aiNo
         ImportBoneHierarchy(current_aiNode, current_aiNode->mChildren[i], bone_offset_info_map, hierarchy);
     }
 }
+
+//const aiNode* GetRootSceneNode(const aiNode* ai_node) {
+//    for (unsigned int i = 0; i < ai_node->mNumChildren; ++i) {
+//        const aiNode* child = ai_node->mChildren[i];
+//    }
+//}
 
 std::shared_ptr<SceneNode> AnimationComponent::ImportScene2(CommandList& command_list, const aiScene& scene, std::filesystem::path parent_path, const std::string& file_name, bool is_inv_y_texture) {
     MaterialList material_list;
