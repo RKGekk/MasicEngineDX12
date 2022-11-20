@@ -62,7 +62,7 @@ public:
 	void SetLightManager(std::shared_ptr<LightManager> light_manager);
 	void SetMaterial(const std::shared_ptr<Material>& material);
 
-	void SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix);
+	//void SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix);
 	void SetFogProperties(const FogProperties& fog_props);
 	void XM_CALLCONV SetWorldMatrix(DirectX::FXMMATRIX world_matrix);
 	void XM_CALLCONV SetViewMatrix(DirectX::FXMMATRIX view_matrix);
@@ -108,7 +108,7 @@ private:
 	std::shared_ptr<ShaderResourceView> m_default_srv;
 
 	MVP* m_pAligned_mvp;
-	FinalBoneTransforms* m_pAligned_fbt;
+	//FinalBoneTransforms* m_pAligned_fbt;
 	bool m_need_transpose;
 
 	bool m_enable_lighting;

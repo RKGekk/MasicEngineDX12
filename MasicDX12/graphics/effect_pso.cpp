@@ -21,7 +21,7 @@
 EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal), m_need_transpose(true) {
     using namespace std::literals;
     m_pAligned_mvp = (MVP*)_aligned_malloc(sizeof(MVP), 16);
-    m_pAligned_fbt = (FinalBoneTransforms*)_aligned_malloc(sizeof(FinalBoneTransforms), 16);
+    //m_pAligned_fbt = (FinalBoneTransforms*)_aligned_malloc(sizeof(FinalBoneTransforms), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
     HRESULT hr = D3DReadFileToBlob(L"Basic_VS.cso", vertex_shader_blob.GetAddressOf());
@@ -132,7 +132,7 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
 
 EffectPSO::~EffectPSO() {
     _aligned_free(m_pAligned_mvp);
-    _aligned_free(m_pAligned_fbt);
+    //_aligned_free(m_pAligned_fbt);
 }
 
 void EffectPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
@@ -207,9 +207,9 @@ void EffectPSO::Apply(CommandList& command_list) {
         command_list.SetGraphics32BitConstants(RootParameters::LightPropertiesCB, light_props);
     }
 
-    if (m_dirty_flags & DF_FinalBoneTransforms) {
-        command_list.SetGraphicsDynamicConstantBuffer(RootParameters::BonePropertiesCB, *m_pAligned_fbt);
-    }
+    //if (m_dirty_flags & DF_FinalBoneTransforms) {
+    //    command_list.SetGraphicsDynamicConstantBuffer(RootParameters::BonePropertiesCB, *m_pAligned_fbt);
+    //}
 
     command_list.SetGraphics32BitConstants(to_underlying(RootParameters::FogPropertiesCB), m_fog_properties);
 
@@ -221,14 +221,14 @@ void EffectPSO::SetMaterial(const std::shared_ptr<Material>& material) {
     m_dirty_flags |= DF_Material;
 }
 
-void EffectPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix) {
-    size_t sz = final_transforms_matrix.size();
-    for (int i = 0; i < sz; ++i) {
-        m_pAligned_fbt->BoneTransforms[i] = DirectX::XMLoadFloat4x4(&final_transforms_matrix[i]);
-        m_pAligned_fbt->InverseTransposeBoneTransforms[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, m_pAligned_fbt->BoneTransforms[i]));
-    }
-    m_dirty_flags |= DF_FinalBoneTransforms;
-}
+//void EffectPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix) {
+//    size_t sz = final_transforms_matrix.size();
+//    for (int i = 0; i < sz; ++i) {
+//        m_pAligned_fbt->BoneTransforms[i] = DirectX::XMLoadFloat4x4(&final_transforms_matrix[i]);
+//        m_pAligned_fbt->InverseTransposeBoneTransforms[i] = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, m_pAligned_fbt->BoneTransforms[i]));
+//    }
+//    m_dirty_flags |= DF_FinalBoneTransforms;
+//}
 
 void EffectPSO::SetFogProperties(const FogProperties& fog_props) {
     m_fog_properties = fog_props;

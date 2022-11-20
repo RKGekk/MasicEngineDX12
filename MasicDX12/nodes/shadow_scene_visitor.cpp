@@ -20,15 +20,15 @@ void ShadowSceneVisitor::ResetCamera() {
 	m_shadow_pso.SetProjectionMatrix(m_camera->GetProjection());
 }
 
-void ShadowSceneVisitor::ResetBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms) {
-	m_shadow_pso.SetFinalBoneTransforms(final_transforms);
-}
+//void ShadowSceneVisitor::ResetBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms) {
+//	m_shadow_pso.SetFinalBoneTransforms(final_transforms);
+//}
 
 void ShadowSceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 	std::shared_ptr<MeshNode> pMeshNode = std::dynamic_pointer_cast<MeshNode>(scene_node);
-	std::shared_ptr<AnimatedMeshNode> pAnimMeshNode = std::dynamic_pointer_cast<AnimatedMeshNode>(scene_node);
+	//std::shared_ptr<AnimatedMeshNode> pAnimMeshNode = std::dynamic_pointer_cast<AnimatedMeshNode>(scene_node);
 	bool is_mesh_node = !!pMeshNode;
-	bool is_skin_node = !!pAnimMeshNode;
+	//bool is_skin_node = !!pAnimMeshNode;
 
 	if (is_mesh_node) {
 		if (pMeshNode->GetIsInstanced()) return;
@@ -60,36 +60,36 @@ void ShadowSceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 			}
 		}
 	}
-	else if (is_skin_node) {
-		if (pAnimMeshNode->GetIsInstanced()) return;
+	//else if (is_skin_node) {
+	//	if (pAnimMeshNode->GetIsInstanced()) return;
 
-		auto world = scene_node->Get().FullCumulativeToWorld();
-		m_shadow_pso.SetWorldMatrix(world);
-		m_shadow_pso.SetFinalBoneTransforms(pAnimMeshNode->GetFinalTransformList());
+	//	auto world = scene_node->Get().FullCumulativeToWorld();
+	//	m_shadow_pso.SetWorldMatrix(world);
+	//	m_shadow_pso.SetFinalBoneTransforms(pAnimMeshNode->GetFinalTransformList());
 
-		const MeshNode::MeshList& mesh_list = pAnimMeshNode->GetMeshes();
-		for (const auto& mesh : mesh_list) {
-			m_shadow_pso.Apply(m_command_list);
+	//	const MeshNode::MeshList& mesh_list = pAnimMeshNode->GetMeshes();
+	//	for (const auto& mesh : mesh_list) {
+	//		m_shadow_pso.Apply(m_command_list);
 
-			m_command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
+	//		m_command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
 
-			const Mesh::BufferMap& buffer_map = mesh->GetVertexBuffers();
-			for (auto vertex_buffer : buffer_map) {
-				m_command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
-			}
+	//		const Mesh::BufferMap& buffer_map = mesh->GetVertexBuffers();
+	//		for (auto vertex_buffer : buffer_map) {
+	//			m_command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
+	//		}
 
-			size_t index_count = mesh->GetIndexCount();
-			size_t vertex_count = mesh->GetVertexCount();
-			size_t instance_count = 1u;
-			size_t start_instance = 0u;
-			if (index_count > 0u) {
-				m_command_list.SetIndexBuffer(mesh->GetIndexBuffer());
-				m_command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
-			}
-			else if (vertex_count > 0u) {
-				m_command_list.Draw(vertex_count, instance_count, 0u, start_instance);
-			}
-		}
-	}
+	//		size_t index_count = mesh->GetIndexCount();
+	//		size_t vertex_count = mesh->GetVertexCount();
+	//		size_t instance_count = 1u;
+	//		size_t start_instance = 0u;
+	//		if (index_count > 0u) {
+	//			m_command_list.SetIndexBuffer(mesh->GetIndexBuffer());
+	//			m_command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
+	//		}
+	//		else if (vertex_count > 0u) {
+	//			m_command_list.Draw(vertex_count, instance_count, 0u, start_instance);
+	//		}
+	//	}
+	//}
 }
 

@@ -17,7 +17,7 @@ public:
     SceneVisitor(CommandList& command_list, std::shared_ptr<CameraNode> camera, EffectPSO& pso, bool transparent, std::shared_ptr<Texture> shadow_map_texture = nullptr);
 
     void ResetCamera();
-    void ResetBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms);
+    //void ResetBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms);
 
     virtual void Visit(std::shared_ptr<SceneNode> scene_node) override;
 

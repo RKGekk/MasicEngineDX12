@@ -12,6 +12,7 @@
 #include "../nodes/scene_visitor.h"
 #include "../nodes/scene_visitor_anim.h"
 #include "../nodes/shadow_scene_visitor.h"
+#include "../nodes/shadow_scene_anim_visitor.h"
 #include "../nodes/qualifier_node.h"
 #include "../nodes/light_manager.h"
 #include "../nodes/mesh_manager.h"
@@ -122,6 +123,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		const ShadowCameraNode::ShadowCameraProps& shadow_camera_props = shadow_camera->GetShadowProps();
 
 		if(!m_shadow_pso) m_shadow_pso = std::make_shared<EffectShadowPSO>(device, m_shadow_manager);
+		if(!m_shadow_anim_pso) m_shadow_anim_pso = std::make_shared<EffectShadowAnimPSO>(device, m_shadow_manager);
 		if(!m_shadow_instanced_pso) m_shadow_instanced_pso = std::make_shared<EffectShadowInstancedPSO>(device, m_shadow_manager);
 		if(!m_shadow_anim_instanced_pso) m_shadow_anim_instanced_pso = std::make_shared<EffectAnimShadowInstancedPSO>(device, m_shadow_manager);
 
@@ -133,6 +135,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		m_shadow_anim_instanced_pso->SetRenderTargetSize({ (float)shadow_camera_props.ShadowMapWidth, (float)shadow_camera_props.ShadowMapHeight });
 
 		ShadowSceneVisitor shadow_pass(*command_list, shadow_camera, *m_shadow_pso, false);
+		ShadowSceneAnimVisitor shadow_anim_pass(*command_list, shadow_camera, *m_shadow_anim_pso, false);
 
 		std::shared_ptr<Texture> shadow_target_depth = m_shadow_manager->GetShadowMapTexture();
 		command_list->ClearDepthStencilTexture(shadow_target_depth, D3D12_CLEAR_FLAG_DEPTH);
@@ -142,6 +145,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		command_list->SetRenderTarget(*m_shadow_manager->GetRT());
 
 		root_scene_node->Accept(shadow_pass);
+		root_scene_node->Accept(shadow_anim_pass);
 		m_shadow_instanced_pso->Apply(*command_list, delta);
 		m_shadow_anim_instanced_pso->Apply(*command_list, delta);
 

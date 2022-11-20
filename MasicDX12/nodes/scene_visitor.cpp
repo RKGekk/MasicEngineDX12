@@ -20,9 +20,9 @@ void SceneVisitor::ResetCamera() {
 	m_lighting_pso.SetProjectionMatrix(m_camera->GetProjection());
 }
 
-void SceneVisitor::ResetBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms) {
-	m_lighting_pso.SetFinalBoneTransforms(final_transforms);
-}
+//void SceneVisitor::ResetBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms) {
+//	m_lighting_pso.SetFinalBoneTransforms(final_transforms);
+//}
 
 void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 	std::shared_ptr<MeshNode> pMeshNode = std::dynamic_pointer_cast<MeshNode>(scene_node);

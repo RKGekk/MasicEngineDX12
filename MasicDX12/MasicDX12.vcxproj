@@ -157,6 +157,7 @@
     <ClCompile Include="actors\enemy_component.cpp" />
     <ClCompile Include="actors\base_scene_node_component.cpp" />
     <ClCompile Include="actors\animation_component.cpp" />
+    <ClCompile Include="graphics\effect_shadow_anim_pso.cpp" />
     <ClCompile Include="graphics\effect_anim_pso.cpp" />
     <ClCompile Include="graphics\effect_shadow_anim_instanced_pso.cpp" />
     <ClCompile Include="graphics\effect_anim_instanced_pso.cpp" />
@@ -282,6 +283,7 @@
     <ClCompile Include="nodes\shadow_manager.cpp" />
     <ClCompile Include="nodes\skinned_mesh_manager.cpp" />
     <ClCompile Include="nodes\scene_visitor_anim.cpp" />
+    <ClCompile Include="nodes\shadow_scene_anim_visitor.cpp" />
     <ClCompile Include="window_keycodes.cpp" />
     <ClCompile Include="window_surface.cpp" />
     <ClCompile Include="main.cpp" />
@@ -353,6 +355,7 @@
     <ClInclude Include="actors\light_component.h" />
     <ClInclude Include="actors\base_scene_node_component.h" />
     <ClInclude Include="actors\animation_component.h" />
+    <ClInclude Include="graphics\effect_shadow_anim_pso.h" />
     <ClInclude Include="graphics\effect_anim_pso.h" />
     <ClInclude Include="graphics\effect_shadow_anim_instanced_pso.h" />
     <ClInclude Include="graphics\effect_anim_instanced_pso.h" />
@@ -475,6 +478,7 @@
     <ClInclude Include="nodes\skinned_mesh_manager.h" />
     <ClInclude Include="engine\node_menu_ui.h" />
     <ClInclude Include="nodes\scene_visitor_anim.h" />
+    <ClInclude Include="nodes\shadow_scene_anim_visitor.h" />
     <ClInclude Include="window_keycodes.h" />
     <ClInclude Include="window_surface.h" />
     <ClInclude Include="tools\defines.h" />
@@ -693,6 +697,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="data\shaders\BasicShadowAnim_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="data\shaders\Base2_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

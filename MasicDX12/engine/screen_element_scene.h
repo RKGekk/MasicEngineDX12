@@ -13,6 +13,7 @@
 #include "../graphics/effect_instanced_pso.h"
 #include "../graphics/effect_anim_instanced_pso.h"
 #include "../graphics/effect_shadow_pso.h"
+#include "../graphics/effect_shadow_anim_pso.h"
 #include "../graphics/effect_shadow_instanced_pso.h"
 #include "../graphics/effect_shadow_anim_instanced_pso.h"
 #include "../events/i_event_data.h"
@@ -55,6 +56,7 @@ private:
 	std::shared_ptr<EffectInstancedPSO> m_lighting_instanced_pso;
 	std::shared_ptr<EffectAnimInstancedPSO> m_lighting_anim_instanced_pso;
 	std::shared_ptr<EffectShadowPSO> m_shadow_pso;
+	std::shared_ptr<EffectShadowAnimPSO> m_shadow_anim_pso;
 	std::shared_ptr<EffectShadowInstancedPSO> m_shadow_instanced_pso;
 	std::shared_ptr<EffectAnimShadowInstancedPSO> m_shadow_anim_instanced_pso;
 	std::shared_ptr<Texture> m_shadow_map_texture;
