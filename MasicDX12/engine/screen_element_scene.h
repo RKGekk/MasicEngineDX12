@@ -9,6 +9,7 @@
 #include "../nodes/scene_node.h"
 #include "../graphics/directx12_wrappers/render_target.h"
 #include "../graphics/effect_pso.h"
+#include "../graphics/effect_anim_pso.h"
 #include "../graphics/effect_instanced_pso.h"
 #include "../graphics/effect_anim_instanced_pso.h"
 #include "../graphics/effect_shadow_pso.h"
@@ -50,6 +51,7 @@ private:
 	uint32_t m_width;
 	uint32_t m_height;
 	std::shared_ptr<EffectPSO> m_lighting_pso;
+	std::shared_ptr<EffectAnimPSO> m_lighting_anim_pso;
 	std::shared_ptr<EffectInstancedPSO> m_lighting_instanced_pso;
 	std::shared_ptr<EffectAnimInstancedPSO> m_lighting_anim_instanced_pso;
 	std::shared_ptr<EffectShadowPSO> m_shadow_pso;

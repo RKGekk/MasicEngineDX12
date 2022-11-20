@@ -29,7 +29,6 @@ void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 	std::shared_ptr<AnimatedMeshNode> pAnimMeshNode = std::dynamic_pointer_cast<AnimatedMeshNode>(scene_node);
 	bool is_mesh_node = !!pMeshNode;
 	bool is_skin_node = !!pAnimMeshNode;
-	if ((!is_mesh_node) || (!is_skin_node)) return;
 
 	if (is_mesh_node) {
 		if (pMeshNode->GetIsInstanced()) return;
@@ -70,45 +69,45 @@ void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 			}
 		}
 	}
-	else if (is_skin_node) {
-		if (pAnimMeshNode->GetIsInstanced()) return;
+	//else if (is_skin_node) {
+	//	if (pAnimMeshNode->GetIsInstanced()) return;
 
-		//auto world = scene_node->Get().CumulativeToWorld();
-		auto world = scene_node->Get().FullCumulativeToWorld();
-		m_lighting_pso.SetWorldMatrix(world);
-		m_lighting_pso.SetFinalBoneTransforms(pAnimMeshNode->GetFinalTransformList());
+	//	//auto world = scene_node->Get().CumulativeToWorld();
+	//	auto world = scene_node->Get().FullCumulativeToWorld();
+	//	m_lighting_pso.SetWorldMatrix(world);
+	//	m_lighting_pso.SetFinalBoneTransforms(pAnimMeshNode->GetFinalTransformList());
 
-		const auto& mesh_list = pAnimMeshNode->GetMeshes();
-		for (const auto& mesh : mesh_list) {
-			auto material = mesh->GetMaterial();
-			if (material->IsTransparent() != m_transparent_pass) continue;
+	//	const auto& mesh_list = pAnimMeshNode->GetMeshes();
+	//	for (const auto& mesh : mesh_list) {
+	//		auto material = mesh->GetMaterial();
+	//		if (material->IsTransparent() != m_transparent_pass) continue;
 
-			m_lighting_pso.SetMaterial(material);
-			if (m_shadow_map_texture) {
-				m_lighting_pso.AddShadowTexture(m_shadow_map_texture);
-			}
+	//		m_lighting_pso.SetMaterial(material);
+	//		if (m_shadow_map_texture) {
+	//			m_lighting_pso.AddShadowTexture(m_shadow_map_texture);
+	//		}
 
-			m_lighting_pso.Apply(m_command_list);
+	//		m_lighting_pso.Apply(m_command_list);
 
-			m_command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
+	//		m_command_list.SetPrimitiveTopology(mesh->GetPrimitiveTopology());
 
-			const Mesh::BufferMap& buffer_map = mesh->GetVertexBuffers();
-			for (auto vertex_buffer : buffer_map) {
-				m_command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
-			}
+	//		const Mesh::BufferMap& buffer_map = mesh->GetVertexBuffers();
+	//		for (auto vertex_buffer : buffer_map) {
+	//			m_command_list.SetVertexBuffer(vertex_buffer.first, vertex_buffer.second);
+	//		}
 
-			size_t index_count = mesh->GetIndexCount();
-			size_t vertex_count = mesh->GetVertexCount();
-			size_t instance_count = 1u;
-			size_t start_instance = 0u;
-			if (index_count > 0u) {
-				m_command_list.SetIndexBuffer(mesh->GetIndexBuffer());
-				m_command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
-			}
-			else if (vertex_count > 0u) {
-				m_command_list.Draw(vertex_count, instance_count, 0u, start_instance);
-			}
-		}
-	}
+	//		size_t index_count = mesh->GetIndexCount();
+	//		size_t vertex_count = mesh->GetVertexCount();
+	//		size_t instance_count = 1u;
+	//		size_t start_instance = 0u;
+	//		if (index_count > 0u) {
+	//			m_command_list.SetIndexBuffer(mesh->GetIndexBuffer());
+	//			m_command_list.DrawIndexed(index_count, instance_count, 0u, 0u, start_instance);
+	//		}
+	//		else if (vertex_count > 0u) {
+	//			m_command_list.Draw(vertex_count, instance_count, 0u, start_instance);
+	//		}
+	//	}
+	//}
 }
 

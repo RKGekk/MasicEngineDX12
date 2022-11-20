@@ -48,7 +48,7 @@
       </TransformComponent>
       <AnimationComponent>
         <IsInvYNormalTexture>false</IsInvYNormalTexture>
-        <IsInstanced>true</IsInstanced>
+        <IsInstanced>false</IsInstanced>
         <Mesh>data\objects\Mr_Man_Walking.gltf</Mesh>
       </AnimationComponent>
     </Actor>

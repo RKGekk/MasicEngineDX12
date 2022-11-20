@@ -30,7 +30,6 @@ void ShadowSceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 	bool is_mesh_node = !!pMeshNode;
 	bool is_skin_node = !!pAnimMeshNode;
 
-	if ((!is_mesh_node) || (!is_skin_node)) return;
 	if (is_mesh_node) {
 		if (pMeshNode->GetIsInstanced()) return;
 

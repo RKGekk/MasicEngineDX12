@@ -149,7 +149,6 @@ void SkinnedMeshManager::UpdateInstancesBuffer(MeshName mesh_name) {
 		m_instance_map[mesh_name][i] = id;
 	}
 	ManageInstanceBufferMap(mesh_name);
-	
 }
 
 SkinnedMeshManager::InstanceMap& SkinnedMeshManager::GetInstanceMap() {

@@ -10,6 +10,7 @@
 #include "../graphics/directx12_wrappers/texture.h"
 #include "../graphics/directx12_wrappers/resource_state_tracker.h"
 #include "../nodes/scene_visitor.h"
+#include "../nodes/scene_visitor_anim.h"
 #include "../nodes/shadow_scene_visitor.h"
 #include "../nodes/qualifier_node.h"
 #include "../nodes/light_manager.h"
@@ -57,6 +58,7 @@ ScreenElementScene::ScreenElementScene() : Scene() {
 	m_render_target.AttachTexture(AttachmentPoint::DepthStencil, depth_texture);
 
 	m_lighting_pso = std::make_shared<EffectPSO>(device, true, false);
+	m_lighting_anim_pso = std::make_shared<EffectAnimPSO>(device, true, false);
 	m_lighting_instanced_pso = std::make_shared<EffectInstancedPSO>(device);
 	m_lighting_anim_instanced_pso = std::make_shared<EffectAnimInstancedPSO>(device);
 
@@ -144,6 +146,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		m_shadow_anim_instanced_pso->Apply(*command_list, delta);
 
 		m_lighting_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
+		m_lighting_anim_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
 		//m_shadow_manager->GetShadowMapTexture()->
 
 		if (!m_shadow_map_texture) {
@@ -181,8 +184,15 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	fog_anim_inst_props.FogRange = m_scene_config.FogRange;
 	fog_anim_inst_props.FogStart = m_scene_config.FogStart;
 
+	EffectAnimPSO::FogProperties fog_anim_props = {};
+	fog_anim_props.FogColor = m_scene_config.FogColor;
+	fog_anim_props.FogRange = m_scene_config.FogRange;
+	fog_anim_props.FogStart = m_scene_config.FogStart;
+
 	m_lighting_pso->SetFogProperties(fog_props);
 	m_lighting_pso->SetLightManager(m_light_manager);
+	m_lighting_anim_pso->SetFogProperties(fog_anim_props);
+	m_lighting_anim_pso->SetLightManager(m_light_manager);
 	m_lighting_instanced_pso->SetFogProperties(fog_inst_props);
 	m_lighting_anim_instanced_pso->SetFogProperties(fog_anim_inst_props);
 	m_lighting_instanced_pso->SetLightManager(m_light_manager);
@@ -197,6 +207,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	m_lighting_anim_instanced_pso->SetRenderTargetSize({ (float)m_width, (float)m_height });
 
 	SceneVisitor opaque_pass(*command_list, camera, *m_lighting_pso, false, m_shadow_map_texture);
+	SceneVisitorAnim opaque_anim_pass(*command_list, camera, *m_lighting_anim_pso, false, m_shadow_map_texture);
 
 	//FLOAT clear_color[] = { 0.4f, 0.6f, 0.9f, 1.0f };
 	//FLOAT clear_color[] = { 0.729412f, 0.72549f, 0.705882f, 1.0f };
@@ -214,6 +225,7 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 	command_list->SetRenderTarget(m_render_target);
 
 	root_scene_node->Accept(opaque_pass);
+	root_scene_node->Accept(opaque_anim_pass);
 	m_lighting_instanced_pso->Apply(*command_list, delta);
 	m_lighting_anim_instanced_pso->Apply(*command_list, delta);
 

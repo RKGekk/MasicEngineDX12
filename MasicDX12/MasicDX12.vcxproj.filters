@@ -657,6 +657,12 @@
     <ClCompile Include="engine\node_menu_ui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\effect_anim_pso.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="nodes\scene_visitor_anim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1361,6 +1367,12 @@
     <ClInclude Include="engine\node_menu_ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\effect_anim_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nodes\scene_visitor_anim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="application_options.xml">
@@ -1804,5 +1816,8 @@
     <FxCompile Include="data\shaders\BaseInstancedShadow_VS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstancedAnim_VS.hlsl" />
     <FxCompile Include="data\shaders\BaseInstancedShadowAnim_VS.hlsl" />
+    <FxCompile Include="data\shaders\BasicAnim_VS.hlsl" />
+    <FxCompile Include="data\shaders\Base2_PS.hlsl" />
+    <FxCompile Include="data\shaders\Lighting2_PS.hlsl" />
   </ItemGroup>
 </Project>

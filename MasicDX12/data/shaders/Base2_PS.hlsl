@@ -1,11 +1,12 @@
 struct PixelShaderInput {
-	float4 PositionHS  : SV_Position;
-	float4 PositionWS  : POSITION;
-	float3 NormalWS    : NORMAL;
-	float3 TangentWS   : TANGENT;
-	float3 BitangentWS : BITANGENT;
-	float2 TextureUV   : TEXCOORD;
+	float4 PositionVS  : POSITION;
+	float3 NormalVS    : NORMAL;
+	float3 TangentVS   : TANGENT;
+	float3 BitangentVS : BITANGENT;
+	float2 TexCoordTS  : TEXCOORD;
+    float4 PositionHS  : SV_Position;
     float4 ShadowPosHS : SHADOW;
+    //float4 PositionWS  : POSITION2;
 };
 
 struct Material {
@@ -22,7 +23,8 @@ struct Material {
 	float Opacity; // If Opacity < 1, then the material is transparent.
 	float SpecularPower;
 	float IndexOfRefraction; // For transparent materials, IOR > 0.
-	float BumpIntensity; // When using bump textures (height maps) we need to scale the height values so the normals are visible.
+	float BumpIntensity; // When using bump textures (height maps) we need
+                              // to scale the height values so the normals are visible.
     //------------------------------------ ( 16 bytes )
 	uint HasTexture;
 	uint Padding1;
@@ -32,6 +34,7 @@ struct Material {
     // Total:                              ( 16 * 7 = 112 bytes )
 };
 
+#if ENABLE_LIGHTING
 struct PointLight {
     float4 PositionWS; // Light position in world space.
     //----------------------------------- (16 byte boundary)
@@ -44,7 +47,6 @@ struct PointLight {
     float QuadraticAttenuation;
     float Padding1;
     //----------------------------------- (16 byte boundary)
-    
     float3 Ambient;
     float Padding2;
     //----------------------------------- (16 byte boundary)
@@ -92,30 +94,6 @@ struct LightProperties {
     uint NumDirectionalLights;
 };
 
-struct FogProperties {
-    float4 FogColor;
-    float  FogStart;
-    float  FogRange;
-};
-
-struct PerPassData {
-	matrix ViewMatrix;
-	matrix InverseTransposeViewMatrix;
-	
-	matrix ProjectionMatrix;
-	matrix InverseTransposeProjectionMatrix;
-	
-	matrix ViewProjectionMatrix;
-	matrix InverseTransposeViewProjectionMatrix;
-	
-	float2 RenderTargetSize;
-    float2 InverseRenderTargetSize;
-    float  NearZ;
-    float  FarZ;
-    float  TotalTime;
-    float  DeltaTime;
-};
-
 struct LightResult {
     float4 Diffuse;
     float4 Specular;
@@ -127,14 +105,21 @@ struct BlinnPhongSpecMaterial {
     float Shininess;
 };
 
-ConstantBuffer<PerPassData>        gPerPassData       : register(b0);
-ConstantBuffer<Material>           gMaterialData      : register(b0, space1);
-ConstantBuffer<LightProperties>    gLightPropertiesCB : register(b1);
-ConstantBuffer<FogProperties>      FogPropertiesCB    : register(b2);
+ConstantBuffer<LightProperties> LightPropertiesCB : register(b1);
 
-StructuredBuffer<PointLight>       PointLights        : register(t0);
-StructuredBuffer<SpotLight>        SpotLights         : register(t1);
-StructuredBuffer<DirectionalLight> DirectionalLights  : register(t2);
+StructuredBuffer<PointLight> PointLights : register(t0);
+StructuredBuffer<SpotLight> SpotLights : register(t1);
+StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
+#endif // ENABLE_LIGHTING
+
+struct FogProperties {
+    float4 FogColor;
+    float  FogStart;
+    float  FogRange;
+};
+
+ConstantBuffer<Material> MaterialCB           : register(b0, space1);
+ConstantBuffer<FogProperties> FogPropertiesCB : register(b2);
 
 // Textures
 Texture2D AmbientTexture       : register(t3);
@@ -152,26 +137,22 @@ Texture2D ShadowTexture        : register(t13);
 SamplerState TextureSampler          : register(s0);
 SamplerComparisonState ShadowSampler : register(s1);
 
-float3 LinearToSRGB(float3 x) {
+float3 LinearToSRGB(float3 color) {
     // This is exactly the sRGB curve
-    //return x < 0.0031308 ? 12.92 * x : 1.055 * pow(abs(x), 1.0 / 2.4) - 0.055;
+    //return color < 0.0031308f ? 12.92f * color : 1.055f * pow(abs(color), 1.0f / 2.4f) - 0.055f;
 
     // This is cheaper but nearly equivalent
-	return x < 0.0031308 ? 12.92 * x : 1.13005 * sqrt(abs(x - 0.00228)) - 0.13448 * x + 0.005719;
-    //return x < 0.0031308 ? 12.92 * x : 1.055 * pow(abs(x), 1.0 / 2.4) - 0.055;
+	return color < 0.0031308f ? 12.92f * color : 1.13005f * sqrt(abs(color - 0.00228f)) - 0.13448f * color + 0.005719f;
 }
 
-float3 SRGBToLinear(float3 x) {
-	return x < 0.04045f ? x / 12.92 : pow((x + 0.055) / 1.055, 2.4);
+#if ENABLE_LIGHTING
+float DoDiffuse(float3 n, float3 L) {
+    return max(0.0f, dot(n, L));
 }
 
-float DoDiffuse(float3 N, float3 L) {
-    return max(0, dot(N, L));
-}
-
-float DoSpecular(float3 V, float3 N, float3 L, float specular_power) {
-    float3 R = normalize(reflect(-L, N));
-    float r_dot_v = max(0, dot(R, V));
+float DoSpecular(float3 v, float3 n, float3 L, float specular_power) {
+    float3 r = normalize(reflect(-L, n));
+    float r_dot_v = max(0.0f, dot(r, v));
 
     return pow(r_dot_v, specular_power);
 }
@@ -185,11 +166,11 @@ float DoAttenuation(float c, float l, float q, float d) {
     return 1.0f / ( c + l * d + q * d * d );
 }
 
-float DoSpotCone(float3 spotDir, float3 L, float spotAngle) {
-    float minCos = cos(spotAngle);
-    float maxCos = (minCos + 1.0f) / 2.0f;
-    float cosAngle = dot(spotDir, -L);
-    return smoothstep(minCos, maxCos, cosAngle);
+float DoSpotCone(float3 spot_dir, float3 L, float spot_angle) {
+    float min_cos = cos(spot_angle);
+    float max_cos = (min_cos + 1.0f) / 2.0f;
+    float cos_angle = dot(spot_dir, -L);
+    return smoothstep(min_cos, max_cos, cos_angle);
 }
 
 // Schlick gives an approximation to Fresnel reflectance (see pg. 233 "Real-Time Rendering 3rd Ed.").
@@ -219,116 +200,111 @@ float3 BlinnPhongSpec(float3 light_direction_normal_ws, float3 normal, float3 to
     return spec_albedo;
 }
 
-LightResult DoPointLightWS(PointLight light, BlinnPhongSpecMaterial pbr, float3 position_ws, float3 normal_ws, float3 to_eye_ws) {
+LightResult DoPointLightVS(PointLight light, BlinnPhongSpecMaterial pbr, float3 v, float3 p, float3 n) {
     LightResult result;
     
-    float3 light_vec = (light.PositionVS.xyz - position_ws);
-    float d = length(light_vec);
-    float3 light_direction_normal_ws = light_vec / d;
+    float3 L = (light.PositionVS.xyz - p);
+    float d = length(L);
+    L = L / d;
 
     float attenuation = DoAttenuation(light.ConstantAttenuation, light.LinearAttenuation, light.QuadraticAttenuation, d);
 
-    result.Diffuse = light.Color * DoDiffuse(normal_ws, light_direction_normal_ws) * attenuation;
-    result.Specular = light.Color * float4(BlinnPhongSpec(light_direction_normal_ws, normal_ws, to_eye_ws, pbr), 0.0f) * attenuation;
+    result.Diffuse = light.Color * DoDiffuse(n, L) * attenuation;
+    //result.Specular = light.Color * DoSpecular(V, N, L, pbr.Shininess) * attenuation;
+    result.Specular = light.Color * float4(BlinnPhongSpec(L, n, v, pbr), 0.0f) * attenuation;
     result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
 
-LightResult DoSpotLightWS(SpotLight light, BlinnPhongSpecMaterial pbr, float3 position_ws, float3 normal_ws, float3 to_eye_ws) {
+LightResult DoSpotLightVS(SpotLight light, BlinnPhongSpecMaterial pbr, float3 v, float3 p, float3 n) {
     LightResult result;
     
-    float3 light_vec = (light.PositionVS.xyz - position_ws);
-    float d = length(light_vec);
-    float3 light_direction_normal_ws = light_vec / d;
+    float3 L = (light.PositionVS.xyz - p);
+    float d = length(L);
+    L = L / d;
 
     float attenuation = DoAttenuation(light.ConstantAttenuation, light.LinearAttenuation, light.QuadraticAttenuation, d);
-    
-    float spot_intensity = DoSpotCone(light.DirectionVS.xyz, light_direction_normal_ws, light.SpotAngle);
+    float spot_intensity = DoSpotCone(light.DirectionVS.xyz, L, light.SpotAngle);
 
-    result.Diffuse = light.Color * DoDiffuse(normal_ws, light_direction_normal_ws) * attenuation * spot_intensity;
-    result.Specular = light.Color * float4(BlinnPhongSpec(light_direction_normal_ws, normal_ws, to_eye_ws, pbr), 0.0f) * attenuation * spot_intensity;
+    result.Diffuse = light.Color * DoDiffuse(n, L) * attenuation * spot_intensity;
+    //result.Specular = DoSpecular(V, N, L, pbr.Shininess) * attenuation * spot_intensity * light.Color;
+    result.Specular = light.Color * float4(BlinnPhongSpec(L, n, v, pbr), 0.0f) * attenuation * spot_intensity;
     result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
 
-LightResult DoDirectionalLightWS(DirectionalLight light, BlinnPhongSpecMaterial pbr, float3 normal_ws, float3 to_eye_ws) {
+LightResult DoDirectionalLightVS(DirectionalLight light, BlinnPhongSpecMaterial pbr, float3 v, float3 p, float3 n) {
     LightResult result;
 
-    float3 light_direction_normal_ws = normalize(-light.DirectionWS.xyz);
+    float3 L = normalize(-light.DirectionVS.xyz);
 
-    result.Diffuse = light.Color * DoDiffuse(normal_ws, light_direction_normal_ws);
-    result.Specular = light.Color * float4(BlinnPhongSpec(light_direction_normal_ws, normal_ws, to_eye_ws, pbr), 0.0f);
+    result.Diffuse = light.Color * DoDiffuse(n, L);
+    //result.Specular = light.Color * DoSpecular(v, n, L, pbr.Shininess);
+    result.Specular = light.Color * float4(BlinnPhongSpec(L, n, v, pbr), 0.0f);
     result.Ambient = light.Color * float4(light.Ambient, 0.0f);
 
     return result;
 }
 
-LightResult DoLightingWS(float3 position_ws, float3 normal_ws, float3 to_eye_ws, BlinnPhongSpecMaterial pbr) {
+LightResult DoLighting(BlinnPhongSpecMaterial pbr, float3 p, float3 n) {
     uint i;
 
-    LightResult totalResult = (LightResult)0;
+    // Lighting is performed in view space.
+    float3 v = normalize(-p);
+
+    LightResult total_result = (LightResult)0;
 
     // Iterate point lights.
-    for (i = 0; i < gLightPropertiesCB.NumPointLights; ++i) {
-        LightResult result = DoPointLightWS(PointLights[i], pbr, position_ws, normal_ws, to_eye_ws);
+    for (i = 0; i < LightPropertiesCB.NumPointLights; ++i) {
+        LightResult result = DoPointLightVS(PointLights[i], pbr, v, p, n);
 
-        totalResult.Diffuse += result.Diffuse;
-        totalResult.Specular += result.Specular;
-        totalResult.Ambient += result.Ambient;
+        total_result.Diffuse += result.Diffuse;
+        total_result.Specular += result.Specular;
+        total_result.Ambient += result.Ambient;
     }
 
     // Iterate spot lights.
-    for (i = 0; i < gLightPropertiesCB.NumSpotLights; ++i) {
-        LightResult result = DoSpotLightWS(SpotLights[i], pbr, position_ws, normal_ws, to_eye_ws);
+    for (i = 0; i < LightPropertiesCB.NumSpotLights; ++i) {
+        LightResult result = DoSpotLightVS(SpotLights[i], pbr, v, p, n);
 
-        totalResult.Diffuse += result.Diffuse;
-        totalResult.Specular += result.Specular;
-        totalResult.Ambient += result.Ambient;
+        total_result.Diffuse += result.Diffuse;
+        total_result.Specular += result.Specular;
+        total_result.Ambient += result.Ambient;
     }
 
     // Iterate directinal lights
-    for (i = 0; i < gLightPropertiesCB.NumDirectionalLights; ++i) {
-        LightResult result = DoDirectionalLightWS(DirectionalLights[i], pbr, normal_ws, to_eye_ws);
+    for (i = 0; i < LightPropertiesCB.NumDirectionalLights; ++i) {
+        LightResult result = DoDirectionalLightVS(DirectionalLights[i], pbr, v, p, n);
 
-        totalResult.Diffuse += result.Diffuse;
-        totalResult.Specular += result.Specular;
-        totalResult.Ambient += result.Ambient;
+        total_result.Diffuse += result.Diffuse;
+        total_result.Specular += result.Specular;
+        total_result.Ambient += result.Ambient;
     }
 
-    totalResult.Diffuse = saturate(totalResult.Diffuse);
-    totalResult.Specular = saturate(totalResult.Specular);
-    totalResult.Ambient = saturate(totalResult.Ambient);
+    total_result.Diffuse = saturate(total_result.Diffuse);
+    total_result.Specular = saturate(total_result.Specular);
+    total_result.Ambient = saturate(total_result.Ambient);
 
-    return totalResult;
+    return total_result;
 }
-
+#endif // ENABLE_LIGHTING
 
 float3 ExpandNormal(float3 n) {
 	return n * 2.0f - 1.0f;
 }
 
-float3 DoNormalMapping(float3x3 tbn, float3 normal_map_sample) {
-	float3 normal_t = ExpandNormal(normal_map_sample);
+float3 DoNormalMapping(float3x3 TBN, Texture2D tex, float2 uv) {
+	float3 N = tex.Sample(TextureSampler, uv).xyz;
+	N = ExpandNormal(N);
 
     // Transform normal from tangent space to view space.
-	float3 bumped_normal = mul(normal_t, tbn);
-	return normalize(bumped_normal);
+	N = mul(N, TBN);
+	return normalize(N);
 }
 
-float3 DoNormalMapping(float3x3 tbn, Texture2D tex, float2 uv, bool need_inv_y) {
-	float3 normal_map_sample = tex.Sample(TextureSampler, uv).xyz;
-    //float3 normal_map_sample = LinearToSRGB(tex.Sample(TextureSampler, uv).xyz);
-	float3 normal_t = ExpandNormal(normal_map_sample);
-    if(need_inv_y) normal_t *= -1.0f;
-
-    // Transform normal from tangent space to view space.
-	float3 bumped_normal = mul(normal_t, tbn);
-	return normalize(bumped_normal);
-}
-
-float3 DoBumpMapping(float3x3 tbn, Texture2D tex, float2 uv, float bump_scale) {
+float3 DoBumpMapping(float3x3 TBN, Texture2D tex, float2 uv, float bump_scale) {
     // Sample the heightmap at the current texture coordinate.
 	float height_00 = tex.Sample(TextureSampler, uv).r * bump_scale;
     // Sample the heightmap in the U texture coordinate direction.
@@ -347,7 +323,7 @@ float3 DoBumpMapping(float3x3 tbn, Texture2D tex, float2 uv, float bump_scale) {
 	float3 normal = cross(tangent, bitangent);
 
     // Transform normal from tangent space to view space.
-	normal = mul(normal, tbn);
+	normal = mul(normal, TBN);
 
 	return normal;
 }
@@ -396,7 +372,7 @@ float CalcShadowFactor(float4 shadow_pos_hs) {
     return percent_lit / 9.0f;
 }
 
-float4 main(PixelShaderInput ps_in) : SV_Target {
+float4 main(PixelShaderInput IN) : SV_Target {
     const uint HAS_AMBIENT_TEXTURE        = 1u;
 	const uint HAS_EMISSIVE_TEXTURE       = 2u;
 	const uint HAS_DIFFUSE_TEXTURE        = 4u;
@@ -410,9 +386,8 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
     const uint HAS_NORMAL_INV_Y_TEXTURE   = 1024u;
     const uint HAS_SHADOW_TEXTURE         = 2048u;
     
-	Material material = gMaterialData;
-    
-    float2 texture_uv = ps_in.TextureUV.xy;
+	Material material = MaterialCB;
+    float2 texture_uv = IN.TexCoordTS.xy;
 
     // By default, use the alpha component of the diffuse color.
 	float alpha = material.Diffuse.a;
@@ -420,26 +395,30 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 		alpha = OpacityTexture.Sample(TextureSampler, texture_uv).r;
 	}
 
+#if ENABLE_DECAL
+    if ( alpha < 0.1f ) {
+        discard; // Discard the pixel if it is below a certain threshold.
+    }
+#endif // ENABLE_DECAL
+
 	float4 ambient = material.Ambient;
-    if (material.HasTexture & HAS_AMBIENT_TEXTURE) {
+	if (material.HasTexture & HAS_AMBIENT_TEXTURE) {
 		ambient = SampleTexture(AmbientTexture, texture_uv, ambient);
 	}
     
-	float4 emissive = material.Emissive;
-    if (material.HasTexture & HAS_EMISSIVE_TEXTURE) {
+    float4 emissive = material.Emissive;
+	if (material.HasTexture & HAS_EMISSIVE_TEXTURE) {
 		emissive = SampleTexture(EmissiveTexture, texture_uv, emissive);
 	}
     
-	float4 diffuse_albedo = material.Diffuse;
-    if (material.HasTexture & HAS_DIFFUSE_TEXTURE) {
+    float4 diffuse_albedo = material.Diffuse;
+	if (material.HasTexture & HAS_DIFFUSE_TEXTURE) {
 		diffuse_albedo = SampleTexture(DiffuseTexture, texture_uv, diffuse_albedo);
-        //diffuse_albedo.xyz = SRGBToLinear(diffuse_albedo.xyz);
-        //diffuse_albedo.xyz = LinearToSRGB(diffuse_albedo.xyz);
 	}
     
-	float specular_power = material.SpecularPower;
+    float specular_power = material.SpecularPower;
 	if (material.HasTexture & HAS_SPECULAR_POWER_TEXTURE) {
-		specular_power *= 1.0f - SpecularPowerTexture.Sample(TextureSampler, texture_uv).r; // aiTextureType_SHININESS->roughness
+		specular_power *= SpecularPowerTexture.Sample(TextureSampler, texture_uv).r;
 	}
     
     float k = (material.IndexOfRefraction - 1.0f) / (material.IndexOfRefraction + 1.0f);
@@ -450,50 +429,42 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
 		fresnelR0 = lerp(fresnelR0, diffuse_albedo.rgb, metalness_sample);
 	}
 
-	float3 normal_t_ws;
-    //normal_t_ws = normalize(ps_in.NormalWS);
+	float3 n;
     // Normal mapping
 	if (material.HasTexture & HAS_NORMAL_TEXTURE) {
-        float3 normal_ws = normalize(ps_in.NormalWS);
-        //float3 tangent_ws = normalize(ps_in.TangentWS - dot(ps_in.TangentWS, normal_ws) * normal_ws);
-		float3 tangent_ws = normalize(ps_in.TangentWS);
-		float3 bitangent_ws = normalize(ps_in.BitangentWS);
-        //float3 bitangent_ws = cross(normal_ws, tangent_ws);
-    
-		float3x3 tbn_ws = float3x3(tangent_ws, bitangent_ws, normal_ws);
-    
-		normal_t_ws = DoNormalMapping(tbn_ws, NormalTexture, texture_uv, material.HasTexture & HAS_NORMAL_INV_Y_TEXTURE);
+		float3 tangent = normalize(IN.TangentVS);
+		float3 bitangent = normalize(IN.BitangentVS);
+		float3 normal = normalize(IN.NormalVS);
+
+		float3x3 TBN = float3x3(tangent, bitangent, normal);
+
+		n = DoNormalMapping(TBN, NormalTexture, texture_uv);
 	}
 	else if (material.HasTexture & HAS_BUMP_TEXTURE) {
-		float3 tangent_ws = normalize(ps_in.TangentWS);
-		float3 bitangent_ws = normalize(ps_in.BitangentWS);
-        float3 normal_ws = normalize(ps_in.NormalWS);
-    
-		float3x3 tbn_ws = float3x3(tangent_ws, -bitangent_ws, normal_ws);
-    
-		normal_t_ws = DoBumpMapping(tbn_ws, BumpTexture, texture_uv, material.BumpIntensity);
+		float3 tangent = normalize(IN.TangentVS);
+		float3 bitangent = normalize(IN.BitangentVS);
+		float3 normal = normalize(IN.NormalVS);
+
+		float3x3 TBN = float3x3(tangent, -bitangent, normal);
+
+		n = DoBumpMapping(TBN, BumpTexture, texture_uv, material.BumpIntensity);
 	}
 	else {
-		normal_t_ws = normalize(ps_in.NormalWS);
+		n = normalize(IN.NormalVS);
 	}
 
 	float shadow = 1.0f;
-	if (material.HasTexture & HAS_SHADOW_TEXTURE) {
-        shadow = CalcShadowFactor(ps_in.ShadowPosHS);
+    if (material.HasTexture & HAS_SHADOW_TEXTURE) {
+        shadow = CalcShadowFactor(IN.ShadowPosHS);
 	}
     
 	float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    //float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._14_24_34;
-    float3 eye_position_w = gPerPassData.InverseTransposeViewMatrix._41_42_43;
-    float3 to_eye = eye_position_w - ps_in.PositionWS.xyz;
-    float distance_to_eye = length(to_eye);
-    float3 to_eye_normal_ws = normalize(to_eye);
-    
+#if ENABLE_LIGHTING
 	BlinnPhongSpecMaterial pbr = (BlinnPhongSpecMaterial)0.0f;
     pbr.FresnelR0 = fresnelR0;
     pbr.Shininess = specular_power;
-
-    LightResult lit = DoLightingWS(ps_in.PositionWS.xyz, normal_t_ws, to_eye_normal_ws, pbr);
+    
+    LightResult lit = DoLighting(pbr, IN.PositionVS.xyz, n);
     ambient *= diffuse_albedo * lit.Ambient;
     diffuse_albedo *= lit.Diffuse;
     // Specular power less than 1 doesn't really make sense.
@@ -505,13 +476,16 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
         }
         specular *= lit.Specular;
     }
+#else 
+	shadow = -n.z;
+#endif // ENABLE_LIGHTING
     
+    //float3 eye_position_w = IN.PositionVS - IN.PositionWS;
+    //float3 to_eye = eye_position_w - IN.PositionWS.xyz;
+    //float distance_to_eye = length(to_eye);
+    float distance_to_eye = length(IN.PositionVS.xyz);
+
     float4 result = float4(ambient.rgb + (emissive + diffuse_albedo + specular).rgb * shadow, alpha * material.Opacity);
-    //float fog_start = 1.0f;
-    //float fog_range = 3.0f;
-    //float3 fog_color = float3(0.729412f, 0.72549f, 0.705882f) * 0.5f;
-    //float fog_lerp = saturate((distance_to_eye - fog_start) / fog_range);
-    //result = float4(lerp(result.xyz, fog_color, fog_lerp), result.w);
     
     float fog_start = FogPropertiesCB.FogStart;
     float fog_range = FogPropertiesCB.FogRange;
@@ -520,5 +494,5 @@ float4 main(PixelShaderInput ps_in) : SV_Target {
     result = float4(lerp(result.xyz, fog_color, fog_lerp), result.w);
     
     return float4(LinearToSRGB(result.xyz), result.a);
-	//return result;
+	//return float4(ambient.rgb + (emissive + diffuse_albedo + specular).rgb * shadow, alpha * material.Opacity);
 }

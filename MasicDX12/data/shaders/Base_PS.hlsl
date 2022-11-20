@@ -99,6 +99,11 @@ struct LightResult {
     float4 Ambient;
 };
 
+struct BlinnPhongSpecMaterial {
+    float3 FresnelR0;
+    float Shininess;
+};
+
 ConstantBuffer<LightProperties> LightPropertiesCB : register(b1);
 
 StructuredBuffer<PointLight> PointLights : register(t0);
@@ -151,6 +156,11 @@ float DoSpecular(float3 V, float3 N, float3 L, float specularPower) {
     return pow(RdotV, specularPower);
 }
 
+float CalcLinearAttenuation(float d, float falloff_start, float falloff_end) {
+    // Linear falloff.
+    return saturate((falloff_end - d) / (falloff_end - falloff_start));
+}
+
 float DoAttenuation(float c, float l, float q, float d) {
     return 1.0f / ( c + l * d + q * d * d );
 }
@@ -160,6 +170,17 @@ float DoSpotCone(float3 spotDir, float3 L, float spotAngle) {
     float maxCos = (minCos + 1.0f) / 2.0f;
     float cosAngle = dot(spotDir, -L);
     return smoothstep(minCos, maxCos, cosAngle);
+}
+
+// Schlick gives an approximation to Fresnel reflectance (see pg. 233 "Real-Time Rendering 3rd Ed.").
+// R0 = ( (n-1)/(n+1) )^2, where n is the index of refraction.
+float3 SchlickFresnel(float3 R0, float3 normal, float3 light_direction_normal_ws) {
+    float cos_incident_angle = saturate(dot(normal, light_direction_normal_ws));
+
+    float f0 = 1.0f - cos_incident_angle;
+    float3 reflect_percent = R0 + (1.0f - R0) * (f0 * f0 * f0 * f0 * f0);
+
+    return reflect_percent;
 }
 
 LightResult DoPointLight(PointLight light, float3 V, float3 P, float3 N, float specularPower) {

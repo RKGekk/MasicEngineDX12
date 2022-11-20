@@ -65,7 +65,9 @@ void Scene::ManageAddNodes(std::shared_ptr<SceneNode> node) {
 		}
 	};
 	if (std::shared_ptr<AnimatedMeshNode> pAnimMesh = std::dynamic_pointer_cast<AnimatedMeshNode>(node)) {
-		m_skinned_mesh_manager->AddMesh(node);
+		if (pAnimMesh->GetIsInstanced()) {
+			m_skinned_mesh_manager->AddMesh(node);
+		}
 	};
 
 	for (auto& current_node : node->m_children) {

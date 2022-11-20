@@ -1,4 +1,4 @@
-#include "effect_pso.h"
+#include "effect_anim_pso.h"
 
 #include "directx12_wrappers/command_list.h"
 #include "directx12_wrappers/device.h"
@@ -18,21 +18,20 @@
 
 #include <array>
 
-EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal), m_need_transpose(true) {
+EffectAnimPSO::EffectAnimPSO(std::shared_ptr<Device> device, bool enable_lighting, bool enable_decal) : m_device(device), m_dirty_flags(DF_All), m_pPrevious_command_list(nullptr), m_enable_lighting(enable_lighting), m_enable_decal(enable_decal), m_need_transpose(true) {
     using namespace std::literals;
     m_pAligned_mvp = (MVP*)_aligned_malloc(sizeof(MVP), 16);
     m_pAligned_fbt = (FinalBoneTransforms*)_aligned_malloc(sizeof(FinalBoneTransforms), 16);
 
     Microsoft::WRL::ComPtr<ID3DBlob> vertex_shader_blob;
-    HRESULT hr = D3DReadFileToBlob(L"Basic_VS.cso", vertex_shader_blob.GetAddressOf());
+    HRESULT hr = D3DReadFileToBlob(L"BasicAnim_VS.cso", vertex_shader_blob.GetAddressOf());
     ThrowIfFailed(hr);
-    m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, "Basic_VS.cso"s);
+    m_vertex_shader = std::make_shared<VertexShader>(vertex_shader_blob, "main"s, "BasicAnim_VS.cso"s);
 
     Microsoft::WRL::ComPtr<ID3DBlob> pixel_shader_blob;
     std::string pixel_shader_name = ""s;
     if (enable_lighting)
         if (enable_decal) pixel_shader_name = "Decal_PS.cso";
-        //else pixel_shader_name = "Lighting_PS.cso";
         else pixel_shader_name = "Lighting2_PS.cso";
     else pixel_shader_name = "Unlit_PS.cso";
     hr = D3DReadFileToBlob(to_wstring(pixel_shader_name).c_str(), pixel_shader_blob.GetAddressOf());
@@ -111,7 +110,7 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     m_pixel_shader->SetRasterizerState(rasterizer_state);
     //m_pixel_shader->SetDepthStencilState();
     m_pixel_shader->SetSample(sample_desc);
-    
+
     m_pipeline_state_object = m_device->CreateGraphicsPipelineState("PSOFor"s + pixel_shader_name, m_root_signature, m_vertex_shader, m_pixel_shader);
 
     D3D12_SHADER_RESOURCE_VIEW_DESC default_srv;
@@ -130,17 +129,17 @@ EffectPSO::EffectPSO(std::shared_ptr<Device> device, bool enable_lighting, bool 
     m_fog_properties.FogRange = 10.0f;
 }
 
-EffectPSO::~EffectPSO() {
+EffectAnimPSO::~EffectAnimPSO() {
     _aligned_free(m_pAligned_mvp);
     _aligned_free(m_pAligned_fbt);
 }
 
-void EffectPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
+void EffectAnimPSO::SetLightManager(std::shared_ptr<LightManager> light_manager) {
     m_light_manager = light_manager;
     m_dirty_flags |= DF_PointLights | DF_SpotLights | DF_DirectionalLights;
 }
 
-inline void EffectPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
+inline void EffectAnimPSO::BindTexture(CommandList& command_list, uint32_t offset, const std::shared_ptr<Texture>& texture) {
     if (texture) {
         command_list.SetShaderResourceView(RootParameters::Textures, offset, texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     }
@@ -149,7 +148,7 @@ inline void EffectPSO::BindTexture(CommandList& command_list, uint32_t offset, c
     }
 }
 
-void EffectPSO::Apply(CommandList& command_list) {
+void EffectAnimPSO::Apply(CommandList& command_list) {
     command_list.SetPipelineState(m_pipeline_state_object);
     command_list.SetGraphicsRootSignature(m_root_signature);
 
@@ -216,12 +215,12 @@ void EffectPSO::Apply(CommandList& command_list) {
     m_dirty_flags = DF_None;
 }
 
-void EffectPSO::SetMaterial(const std::shared_ptr<Material>& material) {
+void EffectAnimPSO::SetMaterial(const std::shared_ptr<Material>& material) {
     m_material = material;
     m_dirty_flags |= DF_Material;
 }
 
-void EffectPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix) {
+void EffectAnimPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& final_transforms_matrix) {
     size_t sz = final_transforms_matrix.size();
     for (int i = 0; i < sz; ++i) {
         m_pAligned_fbt->BoneTransforms[i] = DirectX::XMLoadFloat4x4(&final_transforms_matrix[i]);
@@ -230,30 +229,30 @@ void EffectPSO::SetFinalBoneTransforms(const std::vector<DirectX::XMFLOAT4X4>& f
     m_dirty_flags |= DF_FinalBoneTransforms;
 }
 
-void EffectPSO::SetFogProperties(const FogProperties& fog_props) {
+void EffectAnimPSO::SetFogProperties(const FogProperties& fog_props) {
     m_fog_properties = fog_props;
 }
 
-void XM_CALLCONV EffectPSO::SetWorldMatrix(DirectX::FXMMATRIX world_matrix) {
+void XM_CALLCONV EffectAnimPSO::SetWorldMatrix(DirectX::FXMMATRIX world_matrix) {
     m_pAligned_mvp->World = world_matrix;
     m_dirty_flags |= DF_Matrices;
 }
 
-void XM_CALLCONV EffectPSO::SetViewMatrix(DirectX::FXMMATRIX view_matrix) {
+void XM_CALLCONV EffectAnimPSO::SetViewMatrix(DirectX::FXMMATRIX view_matrix) {
     m_pAligned_mvp->View = view_matrix;
     m_dirty_flags |= DF_Matrices;
 }
 
-void XM_CALLCONV EffectPSO::SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix) {
+void XM_CALLCONV EffectAnimPSO::SetProjectionMatrix(DirectX::FXMMATRIX projection_matrix) {
     m_pAligned_mvp->Projection = projection_matrix;
     m_dirty_flags |= DF_Matrices;
 }
 
-void XM_CALLCONV EffectPSO::SetShadowMatrix(DirectX::FXMMATRIX shadow_matrix) {
+void XM_CALLCONV EffectAnimPSO::SetShadowMatrix(DirectX::FXMMATRIX shadow_matrix) {
     m_pAligned_mvp->Shadow = shadow_matrix;
     m_dirty_flags |= DF_Matrices;
 }
 
-void EffectPSO::AddShadowTexture(std::shared_ptr<Texture> shadow_texture) {
+void EffectAnimPSO::AddShadowTexture(std::shared_ptr<Texture> shadow_texture) {
     m_material->SetTexture(Material::TextureType::Shadow, shadow_texture);
 }

@@ -26,6 +26,7 @@ struct VertexShaderOutput {
 	float2 TexCoordTS  : TEXCOORD;
 	float4 PositionHS  : SV_Position;
 	float4 ShadowPosHS : SHADOW;
+	//float4 PositionWS  : POSITION2;
 };
 
 VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture IN) {
