@@ -53,19 +53,6 @@
       </AnimationComponent>
     </Actor>
 
-    <Actor name="cake1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
-      <TransformComponent>
-        <Position x="0.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
-        <Scale x="0.01250" y="0.01250" z="0.01250" />
-      </TransformComponent>
-      <MeshComponent>
-        <IsInvYNormalTexture>false</IsInvYNormalTexture>
-        <IsInstanced>false</IsInstanced>
-        <Mesh>data\objects\cake.gltf</Mesh>
-      </MeshComponent>
-    </Actor>
-
     <Actor name="camera1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
         <Position x="0.000000" y="0.500000" z="-1.000000" />

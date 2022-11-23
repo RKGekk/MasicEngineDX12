@@ -1721,10 +1721,6 @@
     <None Include="data\textures\Topmat_specularGlossiness.png">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="data\objects\cake.bin">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="data\objects\cake.gltf" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">
