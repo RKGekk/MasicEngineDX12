@@ -86,7 +86,7 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 		}
 		if (ImGui::CollapsingHeader("Actors")) {
 			ImGui::Text(m_actor_name.c_str());
-			if (ImGui::InputInt("Actor ID", &m_actor_id)) {
+			if (ImGui::InputInt("ActID", &m_actor_id)) {
 				std::shared_ptr<Actor> act = Engine::GetEngine()->GetGameLogic()->VGetActor(m_actor_id).lock();
 				if (act) {
 					m_actor_name = act->GetName();
@@ -203,7 +203,9 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 					if (m_transform_exists && ImGui::InputFloat4("R3", ((float*)&m_transform) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 					if (m_transform_exists && ImGui::InputFloat4("R4", ((float*)&m_transform) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 
-					if (m_transform_exists && ImGui::SliderFloat3("Scale", ((float*)&m_scale), 0.0f, 3.0f)) {
+					if (m_transform_exists && ImGui::InputFloat4("Rq", ((float*)&m_rot_quat), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+
+					if (m_transform_exists && ImGui::SliderFloat3("Sc", ((float*)&m_scale), 0.0f, 3.0f)) {
 						if (tc) {
 							m_transform_exists = true;
 
@@ -227,7 +229,7 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						}
 					}
 
-					if (m_transform_exists && ImGui::SliderFloat3("Yaw Pith Roll", ((float*)&m_yaw_pith_roll), -180.0f, 180.0f)) {
+					if (m_transform_exists && ImGui::SliderFloat3("YPR", ((float*)&m_yaw_pith_roll), -180.0f, 180.0f)) {
 						if (tc) {
 							m_transform_exists = true;
 
@@ -251,7 +253,7 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						}
 					}
 
-					if (m_transform_exists && ImGui::SliderFloat3("Translation", ((float*)&m_translate), -8.0f, 8.0f)) {
+					if (m_transform_exists && ImGui::SliderFloat3("Tr", ((float*)&m_translate), -8.0f, 8.0f)) {
 						if (tc) {
 							m_transform_exists = true;
 
