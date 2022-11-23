@@ -239,7 +239,12 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 							DirectX::XMVECTOR translation_xm;
 							DirectX::XMMatrixDecompose(&scale_xm, &rotation_xm, &translation_xm, transform_xm);
 
-							DirectX::XMVECTOR roll_pith_yaw_xm = DirectX::XMVectorSet(m_yaw_pith_roll.z, m_yaw_pith_roll.y, m_yaw_pith_roll.x, 1.0f);
+							DirectX::XMVECTOR roll_pith_yaw_xm = DirectX::XMVectorSet(
+								DirectX::XMConvertToRadians(m_yaw_pith_roll.y),
+								DirectX::XMConvertToRadians(m_yaw_pith_roll.x),
+								DirectX::XMConvertToRadians(m_yaw_pith_roll.z),
+								1.0f
+							);
 
 							DirectX::XMMATRIX result_xm = DirectX::XMMatrixMultiply(
 								DirectX::XMMatrixMultiply(
