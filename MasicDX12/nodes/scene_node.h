@@ -36,19 +36,14 @@ public:
 	const SceneNodeProperties& Get() const;
 
 	void UpdateMergedAABB();
-
 	void UpdateCumulativeTransform();
-	void UpdateCumulativeScale();
 
-	void SetTransform4x4(const DirectX::XMFLOAT4X4* toWorld, const DirectX::XMFLOAT4X4* fromWorld);
-	void SetTransform(DirectX::FXMMATRIX toWorld, DirectX::CXMMATRIX fromWorld = DirectX::XMMatrixIdentity(), bool calulate_from = true);
+	void SetTransform4x4(const DirectX::XMFLOAT4X4* to_parent, const DirectX::XMFLOAT4X4* from_parent);
+	void SetTransform(DirectX::FXMMATRIX to_parent, DirectX::CXMMATRIX from_parent = DirectX::XMMatrixIdentity(), bool calulate_from = true);
 
-	void SetPosition(DirectX::XMVECTOR pos);
-	void SetPosition3(const DirectX::XMFLOAT3& pos);
-	void SetPosition4(const DirectX::XMFLOAT4& pos);
-
-	void SetScale(const DirectX::XMFLOAT3& scale);
-	void SetScale(DirectX::XMVECTOR scale);
+	void SetTranslation(DirectX::XMVECTOR pos);
+	void SetTranslation3(const DirectX::XMFLOAT3& pos);
+	void SetTranslation4(const DirectX::XMFLOAT4& pos);
 
 	void SetParent(std::shared_ptr<SceneNode> parent_node);
 	std::shared_ptr<SceneNode> GetParent();

@@ -31,7 +31,6 @@ ActorMenuUI::ActorMenuUI(std::shared_ptr<ProcessManager> pm) {
 	m_show_menu = true;
 	m_actor_id = 0;
 
-
 	Set(pm);
 }
 
@@ -96,17 +95,29 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 					if (tc) {
 						m_transform_exists = true;
 						m_transform = tc->GetTransform4x4f();
+
+						DirectX::XMMATRIX transform_xm = DirectX::XMLoadFloat4x4(&m_transform);
+						DirectX::XMVECTOR scale_xm;
+						DirectX::XMVECTOR rotation_xm;
+						DirectX::XMVECTOR translation_xm;
+						DirectX::XMMatrixDecompose(&scale_xm, &rotation_xm, &translation_xm, transform_xm);
+						
 						m_yaw_pith_roll = tc->GetYawPitchRoll3f();
 						m_yaw_pith_roll.x = DirectX::XMConvertToDegrees(m_yaw_pith_roll.x);
 						m_yaw_pith_roll.y = DirectX::XMConvertToDegrees(m_yaw_pith_roll.y);
 						m_yaw_pith_roll.z = DirectX::XMConvertToDegrees(m_yaw_pith_roll.z);
-						m_scale = tc->GetScale3f();
+
+						DirectX::XMStoreFloat3(&m_scale, scale_xm);
+						DirectX::XMStoreFloat4(&m_rot_quat, rotation_xm);
+						DirectX::XMStoreFloat3(&m_translate, translation_xm);
 					}
 					else {
 						m_transform_exists = false;
 						DirectX::XMStoreFloat4x4(&m_transform, DirectX::XMMatrixIdentity());
 						m_yaw_pith_roll = { 0.0f, 0.0f, 0.0f };
+						m_rot_quat = { 0.0f, 0.0f, 0.0f, 1.0f };
 						m_scale = { 1.0f, 1.0f, 1.0f };
+						m_translate = { 0.0f, 0.0f, 0.0f };
 					}
 
 					std::shared_ptr<ParticleComponent> pc = act->GetComponent<ParticleComponent>().lock();
@@ -187,32 +198,64 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						m_transform = tc->GetTransform4x4f();
 					}
 
-					if (m_transform_exists && ImGui::SliderFloat4("Transform row 1", ((float*)&m_transform) + 0, -8.0f, 8.0f)) {}
-					if (m_transform_exists && ImGui::SliderFloat4("Transform row 2", ((float*)&m_transform) + 4, -8.0f, 8.0f)) {}
-					if (m_transform_exists && ImGui::SliderFloat4("Transform row 3", ((float*)&m_transform) + 8, -8.0f, 8.0f)) {}
-					if (m_transform_exists && ImGui::SliderFloat4("Transform row 4", ((float*)&m_transform) + 12, -8.0f, 8.0f)) {
-						std::shared_ptr<ParticleComponent> pc = act->GetComponent<ParticleComponent>().lock();
-						if (pc) {
-							m_particle_exists = true;
-							m_transform_exists = true;
-							pc->VGetParticle().setPosition(m_transform._41, m_transform._42, m_transform._43);
-						}
-						else if (tc) {
-							m_transform_exists = true;
-							tc->SetTransform(m_transform);
-						}
+					if (m_transform_exists && ImGui::InputFloat4("R1", ((float*)&m_transform) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (m_transform_exists && ImGui::InputFloat4("R2", ((float*)&m_transform) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (m_transform_exists && ImGui::InputFloat4("R3", ((float*)&m_transform) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (m_transform_exists && ImGui::InputFloat4("R4", ((float*)&m_transform) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 
-					}
 					if (m_transform_exists && ImGui::SliderFloat3("Scale", ((float*)&m_scale), 0.0f, 3.0f)) {
 						if (tc) {
 							m_transform_exists = true;
-							tc->SetScale3f(m_scale);
+
+							DirectX::XMMATRIX transform_xm = DirectX::XMLoadFloat4x4(&m_transform);
+							DirectX::XMVECTOR scale_xm;
+							DirectX::XMVECTOR rotation_xm;
+							DirectX::XMVECTOR translation_xm;
+							DirectX::XMMatrixDecompose(&scale_xm, &rotation_xm, &translation_xm, transform_xm);
+
+							scale_xm = DirectX::XMVectorSet(m_scale.x, m_scale.y, m_scale.z, 1.0f);
+
+							DirectX::XMMATRIX result_xm = DirectX::XMMatrixMultiply(
+								DirectX::XMMatrixMultiply(
+									DirectX::XMMatrixScalingFromVector(scale_xm),
+									DirectX::XMMatrixRotationQuaternion(rotation_xm)
+								),
+								DirectX::XMMatrixTranslationFromVector(translation_xm)
+							);
+
+							tc->SetTransform(result_xm);
 						}
 					}
+
 					if (m_transform_exists && ImGui::SliderFloat3("Yaw Pith Roll", ((float*)&m_yaw_pith_roll), -180.0f, 180.0f)) {
 						if (tc) {
 							m_transform_exists = true;
-							tc->SetYawPitchRollDeg3f(m_yaw_pith_roll);
+
+							DirectX::XMMATRIX transform_xm = DirectX::XMLoadFloat4x4(&m_transform);
+							DirectX::XMVECTOR scale_xm;
+							DirectX::XMVECTOR rotation_xm;
+							DirectX::XMVECTOR translation_xm;
+							DirectX::XMMatrixDecompose(&scale_xm, &rotation_xm, &translation_xm, transform_xm);
+
+							DirectX::XMVECTOR roll_pith_yaw_xm = DirectX::XMVectorSet(m_yaw_pith_roll.z, m_yaw_pith_roll.y, m_yaw_pith_roll.x, 1.0f);
+
+							DirectX::XMMATRIX result_xm = DirectX::XMMatrixMultiply(
+								DirectX::XMMatrixMultiply(
+									DirectX::XMMatrixScalingFromVector(scale_xm),
+									DirectX::XMMatrixRotationRollPitchYawFromVector(roll_pith_yaw_xm)
+								),
+								DirectX::XMMatrixTranslationFromVector(translation_xm)
+							);
+
+							tc->SetTransform(result_xm);
+						}
+					}
+
+					if (m_transform_exists && ImGui::SliderFloat3("Translation", ((float*)&m_translate), -8.0f, 8.0f)) {
+						if (tc) {
+							m_transform_exists = true;
+
+							tc->SetTranslation3f(m_translate);
 						}
 					}
 

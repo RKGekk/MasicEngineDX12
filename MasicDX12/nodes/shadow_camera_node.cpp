@@ -48,7 +48,7 @@ void ShadowCameraNode::UpdateShadowTransform() {
     XMFLOAT3 scene_bounds_center = scene_radius_sphere.Center;
 
     XMVECTOR target_pos = XMLoadFloat3(&scene_bounds_center);
-    XMMATRIX view = Get().CumulativeFromWorld();
+    XMMATRIX view = Get().FromRoot();
 
     // Transform bounding sphere to light space.
     XMFLOAT3 sphere_center_vs;
@@ -77,10 +77,9 @@ void ShadowCameraNode::UpdateShadowTransform() {
     XMStoreFloat4x4(&m_shadow_transform, S);
 
     BoundingBox scene_aabb = root_node->Get().MergedAABB();
-    //m_frustum.Extents = XMFLOAT3(scene_bounds_radius, scene_bounds_radius, scene_bounds_radius);
     m_frustum.Extents = scene_aabb.Extents;
     m_frustum.Center = scene_bounds_center;
-    XMStoreFloat4(&m_frustum.Orientation, XMQuaternionRotationMatrix(Get().CumulativeToWorld()));
+    XMStoreFloat4(&m_frustum.Orientation, XMQuaternionRotationMatrix(Get().ToRoot()));
 }
 
 void ShadowCameraNode::SetProjection(const DirectX::BoundingOrientedBox& frustum) {

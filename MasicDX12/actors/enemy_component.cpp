@@ -41,7 +41,7 @@ void EnemyComponent::VUpdate(const GameTimerDelta& delta) {
 	std::shared_ptr<TransformComponent> tc = MakeStrongPtr(act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")));
 	std::shared_ptr<ParticleComponent> pc = MakeStrongPtr(act->GetComponent<ParticleComponent>(ActorComponent::GetIdFromName("ParticleComponent")));
 	std::shared_ptr<TransformComponent> target_tc = MakeStrongPtr(pTargetActor->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")));
-	XMVECTOR direction = XMVector3Normalize(target_tc->GetPosition() - tc->GetPosition());
+	XMVECTOR direction = XMVector3Normalize(target_tc->GetTranslation() - tc->GetTranslation());
 	if (pc) {
 		Particle& particle = pc->VGetParticle();
 		particle.clearAccumulator();
@@ -49,7 +49,7 @@ void EnemyComponent::VUpdate(const GameTimerDelta& delta) {
 		particle.integrate(deltaMs);
 	}
 	else {
-		tc->SetPosition3(tc->GetPosition() + direction * deltaMs);
+		tc->SetTranslation3(tc->GetTranslation() + direction * deltaMs);
 	}
 }
 

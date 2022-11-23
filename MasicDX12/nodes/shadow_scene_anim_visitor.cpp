@@ -31,7 +31,7 @@ void ShadowSceneAnimVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 	if (is_skin_node) {
 		if (pAnimMeshNode->GetIsInstanced()) return;
 
-		auto world = scene_node->Get().FullCumulativeToWorld();
+		auto world = scene_node->Get().ToRoot();
 		m_shadow_pso.SetWorldMatrix(world);
 		m_shadow_pso.SetFinalBoneTransforms(pAnimMeshNode->GetFinalTransformList());
 

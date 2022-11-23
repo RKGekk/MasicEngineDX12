@@ -1,12 +1,10 @@
 #include "scene_node_properties.h"
 
 SceneNodeProperties::SceneNodeProperties() {
-	DirectX::XMStoreFloat4x4(&m_to_world, DirectX::XMMatrixIdentity());
-	DirectX::XMStoreFloat4x4(&m_to_world_cumulative, DirectX::XMMatrixIdentity());
-	DirectX::XMStoreFloat4x4(&m_from_world, DirectX::XMMatrixIdentity());
-	DirectX::XMStoreFloat4x4(&m_from_world_cumulative, DirectX::XMMatrixIdentity());
-	m_scale = { 1.0f, 1.0f, 1.0f };
-	m_scale_cumulative = { 1.0f, 1.0f, 1.0f };
+	DirectX::XMStoreFloat4x4(&m_to_parent, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_to_root, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_from_parent, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_from_root, DirectX::XMMatrixIdentity());
 	m_active = true;
 	m_dirty_flags = to_underlying(SceneNodeProperties::DirtyFlags::DF_All);
 	m_generation = 0u;
@@ -17,124 +15,68 @@ SceneNodeProperties::SceneNodeProperties() {
 	DirectX::BoundingSphere::CreateFromBoundingBox(m_sphere_cumulative, m_AABB_cumulative);
 }
 
-DirectX::XMMATRIX SceneNodeProperties::ToWorld() const {
-	return DirectX::XMLoadFloat4x4(&m_to_world);
+DirectX::XMMATRIX SceneNodeProperties::ToParent() const {
+	return DirectX::XMLoadFloat4x4(&m_to_parent);
 }
 
-DirectX::XMMATRIX SceneNodeProperties::ToWorldT() const {
-	return DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_to_world));
+DirectX::XMMATRIX SceneNodeProperties::ToParentT() const {
+	return DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_to_parent));
 }
 
-const DirectX::XMFLOAT4X4& SceneNodeProperties::ToWorld4x4() const {
-	return m_to_world;
+const DirectX::XMFLOAT4X4& SceneNodeProperties::ToParent4x4() const {
+	return m_to_parent;
 }
 
-DirectX::XMFLOAT4X4 SceneNodeProperties::ToWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::ToParent4x4T() const {
 	DirectX::XMFLOAT4X4 res;
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(ToWorld()));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(ToParent()));
 	return res;
 }
 
-DirectX::XMMATRIX SceneNodeProperties::FullToWorld() const {
-	//return DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world), DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z));
-	return DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z), DirectX::XMLoadFloat4x4(&m_to_world));
+DirectX::XMMATRIX SceneNodeProperties::ToRoot() const {
+	return DirectX::XMLoadFloat4x4(&m_to_root);
 }
 
-DirectX::XMMATRIX SceneNodeProperties::FullToWorldT() const {
-	//return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world), DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z)));
-	return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z), DirectX::XMLoadFloat4x4(&m_to_world)));
+DirectX::XMMATRIX SceneNodeProperties::ToRootT() const {
+	return DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_to_root));
 }
 
-DirectX::XMFLOAT4X4 SceneNodeProperties::FullToWorld4x4() const {
-	DirectX::XMFLOAT4X4 res = {};
-	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world);
-	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(transformXM, scaleXM));
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(scaleXM, transformXM));
-	return res;
+const DirectX::XMFLOAT4X4& SceneNodeProperties::ToRoot4x4() const {
+	return m_to_root;
 }
 
-DirectX::XMFLOAT4X4 SceneNodeProperties::FullToWorld4x4T() const {
-	DirectX::XMFLOAT4X4 res = {};
-	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world_cumulative);
-	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z);
-	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(transformXM, scaleXM)));
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(scaleXM, transformXM)));
-	return res;
-}
-
-DirectX::XMMATRIX SceneNodeProperties::CumulativeToWorld() const {
-	return DirectX::XMLoadFloat4x4(&m_to_world_cumulative);
-}
-
-DirectX::XMMATRIX SceneNodeProperties::CumulativeToWorldT() const {
-	return DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_to_world_cumulative));
-}
-
-const DirectX::XMFLOAT4X4& SceneNodeProperties::CumulativeToWorld4x4() const {
-	return m_to_world_cumulative;
-}
-
-DirectX::XMFLOAT4X4 SceneNodeProperties::CumulativeToWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::ToRoot4x4T() const {
 	DirectX::XMFLOAT4X4 res;
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(CumulativeToWorld()));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(ToRoot()));
 	return res;
 }
 
-DirectX::XMMATRIX SceneNodeProperties::FullCumulativeToWorld() const {
-	//return DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world_cumulative), DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z));
-	return DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z), DirectX::XMLoadFloat4x4(&m_to_world_cumulative));
+DirectX::XMVECTOR SceneNodeProperties::ToParentTranslation() const {
+	return DirectX::XMVectorSet(m_to_parent.m[3][0], m_to_parent.m[3][1], m_to_parent.m[3][2], 1.0f);
 }
 
-DirectX::XMMATRIX SceneNodeProperties::FullCumulativeToWorldT() const {
-	//return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&m_to_world_cumulative), DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z)));
-	return DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z), DirectX::XMLoadFloat4x4(&m_to_world_cumulative)));
+DirectX::XMFLOAT4 SceneNodeProperties::ToParentTranslation4() const {
+	return DirectX::XMFLOAT4(m_to_parent.m[3][0], m_to_parent.m[3][1], m_to_parent.m[3][2], 1.0f);
 }
 
-DirectX::XMFLOAT4X4 SceneNodeProperties::FullCumulativeToWorld4x4() const {
-	DirectX::XMFLOAT4X4 res = {};
-	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world_cumulative);
-	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z);
-	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(transformXM, scaleXM));
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixMultiply(scaleXM, transformXM));
-	return res;
+DirectX::XMFLOAT3 SceneNodeProperties::ToParentTranslation3() const {
+	return DirectX::XMFLOAT3(m_to_parent.m[3][0], m_to_parent.m[3][1], m_to_parent.m[3][2]);
 }
 
-DirectX::XMFLOAT4X4 SceneNodeProperties::FullCumulativeToWorld4x4T() const {
-	DirectX::XMFLOAT4X4 res = {};
-	DirectX::XMMATRIX transformXM = DirectX::XMLoadFloat4x4(&m_to_world_cumulative);
-	DirectX::XMMATRIX scaleXM = DirectX::XMMatrixScaling(m_scale_cumulative.x, m_scale_cumulative.y, m_scale_cumulative.z);
-	//DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(transformXM, scaleXM)));
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(DirectX::XMMatrixMultiply(scaleXM, transformXM)));
-	return res;
+DirectX::XMVECTOR SceneNodeProperties::ToRootTranslation() const {
+	return DirectX::XMVectorSet(m_to_root.m[3][0], m_to_root.m[3][1], m_to_root.m[3][2], 1.0f);
 }
 
-DirectX::XMVECTOR SceneNodeProperties::Position() const {
-	return DirectX::XMVectorSet(m_to_world.m[3][0], m_to_world.m[3][1], m_to_world.m[3][2], 1.0f);
+DirectX::XMFLOAT4 SceneNodeProperties::ToRootTranslation4() const {
+	return DirectX::XMFLOAT4(m_to_root.m[3][0], m_to_root.m[3][1], m_to_root.m[3][2], 1.0f);
 }
 
-DirectX::XMFLOAT4 SceneNodeProperties::Position4() const {
-	return DirectX::XMFLOAT4(m_to_world.m[3][0], m_to_world.m[3][1], m_to_world.m[3][2], 1.0f);
+DirectX::XMFLOAT3 SceneNodeProperties::ToRootTranslation3() const {
+	return DirectX::XMFLOAT3(m_to_root.m[3][0], m_to_root.m[3][1], m_to_root.m[3][2]);
 }
 
-DirectX::XMFLOAT3 SceneNodeProperties::Position3() const {
-	return DirectX::XMFLOAT3(m_to_world.m[3][0], m_to_world.m[3][1], m_to_world.m[3][2]);
-}
-
-DirectX::XMVECTOR SceneNodeProperties::CumulativePosition() const {
-	return DirectX::XMVectorSet(m_to_world_cumulative.m[3][0], m_to_world_cumulative.m[3][1], m_to_world_cumulative.m[3][2], 1.0f);
-}
-
-DirectX::XMFLOAT4 SceneNodeProperties::CumulativePosition4() const {
-	return DirectX::XMFLOAT4(m_to_world_cumulative.m[3][0], m_to_world_cumulative.m[3][1], m_to_world_cumulative.m[3][2], 1.0f);
-}
-
-DirectX::XMFLOAT3 SceneNodeProperties::CumulativePosition3() const {
-	return DirectX::XMFLOAT3(m_to_world_cumulative.m[3][0], m_to_world_cumulative.m[3][1], m_to_world_cumulative.m[3][2]);
-}
-
-DirectX::XMVECTOR SceneNodeProperties::Direction() const {
-	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_world;
+DirectX::XMVECTOR SceneNodeProperties::ToParentDirection() const {
+	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_parent;
 	just_rot4x4.m[3][0] = 0.0f;
 	just_rot4x4.m[3][1] = 0.0f;
 	just_rot4x4.m[3][2] = 0.0f;
@@ -145,14 +87,14 @@ DirectX::XMVECTOR SceneNodeProperties::Direction() const {
 	return DirectX::XMVector4Transform(forward, just_rot);
 }
 
-DirectX::XMFLOAT3 SceneNodeProperties::Direction3f() const {
+DirectX::XMFLOAT3 SceneNodeProperties::ToParentDirection3f() const {
 	DirectX::XMFLOAT3 result;
-	DirectX::XMStoreFloat3(&result, Direction());
+	DirectX::XMStoreFloat3(&result, ToParentDirection());
 	return result;
 }
 
-DirectX::XMVECTOR SceneNodeProperties::Up() const {
-	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_world;
+DirectX::XMVECTOR SceneNodeProperties::ToParentUp() const {
+	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_parent;
 	just_rot4x4.m[3][0] = 0.0f;
 	just_rot4x4.m[3][1] = 0.0f;
 	just_rot4x4.m[3][2] = 0.0f;
@@ -163,14 +105,14 @@ DirectX::XMVECTOR SceneNodeProperties::Up() const {
 	return DirectX::XMVector4Transform(up, just_rot);
 }
 
-DirectX::XMFLOAT3 SceneNodeProperties::Up3f() const {
+DirectX::XMFLOAT3 SceneNodeProperties::ToParentUp3f() const {
 	DirectX::XMFLOAT3 result;
-	DirectX::XMStoreFloat3(&result, Up());
+	DirectX::XMStoreFloat3(&result, ToParentUp());
 	return result;
 }
 
-DirectX::XMVECTOR SceneNodeProperties::CumulativeDirection() const {
-	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_world_cumulative;
+DirectX::XMVECTOR SceneNodeProperties::ToRootDirection() const {
+	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_root;
 	just_rot4x4.m[3][0] = 0.0f;
 	just_rot4x4.m[3][1] = 0.0f;
 	just_rot4x4.m[3][2] = 0.0f;
@@ -181,14 +123,14 @@ DirectX::XMVECTOR SceneNodeProperties::CumulativeDirection() const {
 	return DirectX::XMVector4Transform(forward, just_rot);
 }
 
-DirectX::XMFLOAT3 SceneNodeProperties::CumulativeDirection3f() const {
+DirectX::XMFLOAT3 SceneNodeProperties::ToRootDirection3f() const {
 	DirectX::XMFLOAT3 result;
-	DirectX::XMStoreFloat3(&result, CumulativeDirection());
+	DirectX::XMStoreFloat3(&result, ToRootDirection());
 	return result;
 }
 
-DirectX::XMVECTOR SceneNodeProperties::CumulativeUp() const {
-	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_world_cumulative;
+DirectX::XMVECTOR SceneNodeProperties::ToRootUp() const {
+	DirectX::XMFLOAT4X4 just_rot4x4 = m_to_root;
 	just_rot4x4.m[3][0] = 0.0f;
 	just_rot4x4.m[3][1] = 0.0f;
 	just_rot4x4.m[3][2] = 0.0f;
@@ -199,67 +141,37 @@ DirectX::XMVECTOR SceneNodeProperties::CumulativeUp() const {
 	return DirectX::XMVector4Transform(up, just_rot);
 }
 
-DirectX::XMFLOAT3 SceneNodeProperties::CumulativeUp3f() const {
+DirectX::XMFLOAT3 SceneNodeProperties::ToRootUp3f() const {
 	DirectX::XMFLOAT3 result;
-	DirectX::XMStoreFloat3(&result, CumulativeUp());
+	DirectX::XMStoreFloat3(&result, ToRootUp());
 	return result;
 }
 
-const DirectX::XMFLOAT3& SceneNodeProperties::Scale3() const {
-	return m_scale;
+DirectX::XMMATRIX SceneNodeProperties::FromParent() const {
+	return DirectX::XMLoadFloat4x4(&m_from_parent);
 }
 
-DirectX::XMVECTOR SceneNodeProperties::Scale() const {
-	return DirectX::XMLoadFloat3(&m_scale);
+const DirectX::XMFLOAT4X4& SceneNodeProperties::FromParent4x4() const {
+	return m_from_parent;
 }
 
-float SceneNodeProperties::MaxScale() const {
-	float scale = m_scale.x;
-	scale = scale > m_scale.y ? scale : m_scale.y;
-	scale = scale > m_scale.z ? scale : m_scale.z;
-	return scale;
-}
-
-const DirectX::XMFLOAT3& SceneNodeProperties::CumulativeScale3() const {
-	return m_scale_cumulative;
-}
-
-DirectX::XMVECTOR SceneNodeProperties::CumulativeScale() const {
-	return DirectX::XMLoadFloat3(&m_scale_cumulative);
-}
-
-float SceneNodeProperties::CumulativeMaxScale() const {
-	float scale = m_scale_cumulative.x;
-	scale = scale > m_scale_cumulative.y ? scale : m_scale_cumulative.y;
-	scale = scale > m_scale_cumulative.z ? scale : m_scale_cumulative.z;
-	return scale;
-}
-
-DirectX::XMMATRIX SceneNodeProperties::FromWorld() const {
-	return DirectX::XMLoadFloat4x4(&m_from_world);
-}
-
-const DirectX::XMFLOAT4X4& SceneNodeProperties::FromWorld4x4() const {
-	return m_from_world;
-}
-
-DirectX::XMFLOAT4X4 SceneNodeProperties::FromWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::FromParent4x4T() const {
 	DirectX::XMFLOAT4X4 res;
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(FromWorld()));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(FromParent()));
 	return res;
 }
 
-DirectX::XMMATRIX SceneNodeProperties::CumulativeFromWorld() const {
-	return DirectX::XMLoadFloat4x4(&m_from_world_cumulative);
+DirectX::XMMATRIX SceneNodeProperties::FromRoot() const {
+	return DirectX::XMLoadFloat4x4(&m_from_root);
 }
 
-const DirectX::XMFLOAT4X4& SceneNodeProperties::CumulativeFromWorld4x4() const {
-	return m_from_world_cumulative;
+const DirectX::XMFLOAT4X4& SceneNodeProperties::FromRoot4x4() const {
+	return m_from_root;
 }
 
-DirectX::XMFLOAT4X4 SceneNodeProperties::CumulativeFromWorld4x4T() const {
+DirectX::XMFLOAT4X4 SceneNodeProperties::FromRoot4x4T() const {
 	DirectX::XMFLOAT4X4 res;
-	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(CumulativeFromWorld()));
+	DirectX::XMStoreFloat4x4(&res, DirectX::XMMatrixTranspose(FromRoot()));
 	return res;
 }
 

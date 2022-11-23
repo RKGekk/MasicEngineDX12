@@ -323,27 +323,35 @@ void ImportMaterial(MaterialList& material_list, CommandList& command_list, cons
     }
 }
 
-std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* aiNode, const std::string& file_name) {
-    if (!aiNode) return nullptr;
+std::shared_ptr<SceneNode> ImportSceneNode(MeshList mesh_list, std::shared_ptr<SceneNode> parent, const aiNode* ai_node, const std::string& file_name) {
+    if (!ai_node) return nullptr;
 
-    DirectX::XMMATRIX transform(&(aiNode->mTransformation.a1));
+    std::string node_name(ai_node->mName.C_Str());
+
+    std::shared_ptr<SceneNode> node = nullptr;
+
+    DirectX::XMMATRIX transform(&(ai_node->mTransformation.a1));
     transform = DirectX::XMMatrixTranspose(transform);
-    auto node = std::make_shared<MeshNode>(file_name + aiNode->mName.C_Str(), transform);
-    node->SetParent(parent);
 
-    /*if (aiNode->mName.length > 0) {
-        node->SetName(aiNode->mName.C_Str());
-    }*/
+    if (ai_node->mNumMeshes) {
+        std::shared_ptr<MeshNode> mesh_node = std::make_shared<MeshNode>(file_name + node_name, transform);
+        mesh_node->SetParent(parent);
 
-    for (unsigned int i = 0; i < aiNode->mNumMeshes; ++i) {
-        assert(aiNode->mMeshes[i] < mesh_list.size());
+        for (unsigned int i = 0; i < ai_node->mNumMeshes; ++i) {
+            assert(ai_node->mMeshes[i] < mesh_list.size());
 
-        std::shared_ptr<Mesh> pMesh = mesh_list[aiNode->mMeshes[i]];
-        node->AddMesh(pMesh);
+            std::shared_ptr<Mesh> pMesh = mesh_list[ai_node->mMeshes[i]];
+            mesh_node->AddMesh(pMesh);
+        }
+        node = mesh_node;
+    }
+    else {
+        node = std::make_shared<SceneNode>(file_name + node_name, transform);
+        node->SetParent(parent);
     }
 
-    for (unsigned int i = 0; i < aiNode->mNumChildren; ++i) {
-        auto child = ImportSceneNode(mesh_list, node, aiNode->mChildren[i], file_name);
+    for (unsigned int i = 0; i < ai_node->mNumChildren; ++i) {
+        auto child = ImportSceneNode(mesh_list, node, ai_node->mChildren[i], file_name);
         node->VAddChild(child);
     }
 

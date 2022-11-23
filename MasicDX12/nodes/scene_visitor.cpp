@@ -34,7 +34,7 @@ void SceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 		if (pMeshNode->GetIsInstanced()) return;
 
 		//auto world = scene_node->Get().CumulativeToWorld();
-		auto world = scene_node->Get().FullCumulativeToWorld();
+		auto world = scene_node->Get().ToRoot();
 		m_lighting_pso.SetWorldMatrix(world);
 
 		const MeshNode::MeshList& mesh_list = pMeshNode->GetMeshes();

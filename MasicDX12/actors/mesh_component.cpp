@@ -117,8 +117,8 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_in
 
     gs_node_map[file_path_str] = loaded_scene;
     m_loaded_scene_node = DeepCopyNode(loaded_scene, is_instanced);
-    std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(m_loaded_scene_node);
-    mesh_node->SetIsInstanced(is_instanced);
+    //std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(m_loaded_scene_node);
+    //mesh_node->SetIsInstanced(is_instanced);
     gs_copy_counter_map[file_path_str]++;
 
     return true;
@@ -126,12 +126,20 @@ bool MeshComponent::LoadModel(const std::filesystem::path& file_name, bool is_in
 
 std::shared_ptr<SceneNode> MeshComponent::DeepCopyNode(const std::shared_ptr<SceneNode>& node, bool is_instanced) {
     if (!node) return nullptr;
+    const auto& node_props = node->Get();
+    std::shared_ptr<SceneNode> node_copy = nullptr;
     std::shared_ptr<MeshNode> mesh_node = std::dynamic_pointer_cast<MeshNode>(node);
 
-    const auto& node_props = node->Get();
-    const auto& mesh_list = mesh_node->GetMeshes();
-    auto node_copy = std::make_shared<MeshNode>(node_props.Name(), node_props.ToWorld4x4(), mesh_list);
-    node_copy->SetIsInstanced(is_instanced);
+    if (!mesh_node) {
+        node_copy = std::make_shared<SceneNode>(node_props.Name(), &node_props.ToParent4x4());
+    }
+    else {
+        const auto& mesh_list = mesh_node->GetMeshes();
+        std::shared_ptr<MeshNode> temp_node_copy = std::make_shared<MeshNode>(node_props.Name(), node_props.ToParent4x4(), mesh_list);
+        temp_node_copy->SetIsInstanced(is_instanced);
+
+        node_copy = temp_node_copy;
+    }
 
     for (const auto& child_to_copy : node->VGetChildren()) {
         auto child_to_copy_node_copy = DeepCopyNode(child_to_copy, is_instanced);

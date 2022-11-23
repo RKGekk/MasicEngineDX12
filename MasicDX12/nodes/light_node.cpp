@@ -46,11 +46,11 @@ void LightNode::SetAmbient(DirectX::XMFLOAT3 ambient) {
 SpotLight LightNode::GetSpotLight(DirectX::FXMMATRIX view) {
 	SpotLight res = SpotLight();
 	
-	DirectX::XMVECTOR positionWS_xm = Get().CumulativePosition();
+	DirectX::XMVECTOR positionWS_xm = Get().ToRootTranslation();
 	DirectX::XMStoreFloat4(&res.PositionWS, positionWS_xm);
 	DirectX::XMStoreFloat4(&res.PositionVS, DirectX::XMVector4Transform(positionWS_xm, view));
 
-	DirectX::XMVECTOR directionWS_xm = Get().CumulativeDirection();
+	DirectX::XMVECTOR directionWS_xm = Get().ToRootDirection();
 	DirectX::XMStoreFloat4(&res.DirectionWS, directionWS_xm);
 	DirectX::XMStoreFloat4(&res.DirectionVS, DirectX::XMVector4Transform(directionWS_xm, view));
 
@@ -67,7 +67,7 @@ SpotLight LightNode::GetSpotLight(DirectX::FXMMATRIX view) {
 PointLight LightNode::GetPointLight(DirectX::FXMMATRIX view) {
 	PointLight res = PointLight();
 
-	DirectX::XMVECTOR positionWS_xm = Get().CumulativePosition();
+	DirectX::XMVECTOR positionWS_xm = Get().ToRootTranslation();
 	DirectX::XMStoreFloat4(&res.PositionWS, positionWS_xm);
 	DirectX::XMStoreFloat4(&res.PositionVS, DirectX::XMVector4Transform(positionWS_xm, view));
 
@@ -83,7 +83,7 @@ PointLight LightNode::GetPointLight(DirectX::FXMMATRIX view) {
 DirectionalLight LightNode::GetDirectionalLight(DirectX::FXMMATRIX view) {
 	DirectionalLight res = DirectionalLight();
 
-	DirectX::XMVECTOR directionWS_xm = Get().CumulativeDirection();
+	DirectX::XMVECTOR directionWS_xm = Get().ToRootDirection();
 	DirectX::XMStoreFloat4(&res.DirectionWS, directionWS_xm);
 	DirectX::XMStoreFloat4(&res.DirectionVS, DirectX::XMVector4Transform(directionWS_xm, view));
 

@@ -16,8 +16,6 @@ private:
     DirectX::XMFLOAT4 m_up;
     DirectX::XMFLOAT4 m_right;
 
-    DirectX::XMFLOAT4 m_scale;
-
     uint32_t m_generation;
 
 public:
@@ -33,7 +31,6 @@ public:
 
     uint32_t GetGeneration();
 
-    // transform functions
     const DirectX::XMFLOAT4X4& GetTransform4x4f() const;
     DirectX::XMFLOAT4X4 GetTransform4x4T() const;
     DirectX::XMMATRIX GetTransform() const;
@@ -41,35 +38,18 @@ public:
     DirectX::XMFLOAT4X4 GetInvTransform4x4f() const;
     DirectX::XMMATRIX GetInvTransform() const;
 
-    DirectX::XMFLOAT4X4 GetFullTransform4x4f() const;
-    DirectX::XMFLOAT4X4 GetFullTransform4x4T() const;
-    DirectX::XMMATRIX GetFullTransform() const;
-    DirectX::XMMATRIX GetFullTransformT() const;
-    DirectX::XMFLOAT4X4 GetFullInvTransform4x4f() const;
-    DirectX::XMMATRIX GetFullInvTransform() const;
-
     void SetTransform(const DirectX::XMFLOAT4X4& newTransform);
     void SetTransform(DirectX::FXMMATRIX newTransform);
 
-    DirectX::XMFLOAT3 GetPosition3f() const;
-    DirectX::XMFLOAT4 GetPosition4f() const;
-    DirectX::XMVECTOR GetPosition() const;
+    DirectX::XMFLOAT3 GetTranslation3f() const;
+    DirectX::XMFLOAT4 GetTranslation4f() const;
+    DirectX::XMVECTOR GetTranslation() const;
 
-    DirectX::XMFLOAT3 GetScale3f() const;
-    DirectX::XMVECTOR GetScale() const;
-
-    void SetPosition3f(const DirectX::XMFLOAT3& pos);
-    void SetPosition4f(const DirectX::XMFLOAT4& pos);
-    void SetPosition4x4f(const DirectX::XMFLOAT4X4& pos);
-    void SetPosition3(DirectX::FXMVECTOR pos);
-    void SetPosition4(DirectX::FXMVECTOR pos);
-
-    void SetYawPitchRoll3f(const DirectX::XMFLOAT3& ypr);
-    void SetYawPitchRollDeg3f(const DirectX::XMFLOAT3& ypr);
-
-    void SetScale3f(const DirectX::XMFLOAT3& sclae);
-    void SetScale4f(const DirectX::XMFLOAT4& sclae);
-    void SetScale(DirectX::FXMVECTOR scale);
+    void SetTranslation3f(const DirectX::XMFLOAT3& pos);
+    void SetTranslation4f(const DirectX::XMFLOAT4& pos);
+    void SetTranslation4x4f(const DirectX::XMFLOAT4X4& pos);
+    void SetTranslation3(DirectX::FXMVECTOR pos);
+    void SetTranslation4(DirectX::FXMVECTOR pos);
 
     DirectX::XMFLOAT3 GetLookAt3f() const;
     DirectX::XMVECTOR GetLookAt() const;

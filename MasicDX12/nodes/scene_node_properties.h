@@ -15,21 +15,21 @@ class SceneNodeProperties {
 
 protected:
 	std::string m_name;
-	DirectX::XMFLOAT4X4 m_to_world;
-	DirectX::XMFLOAT4X4 m_from_world;
-	DirectX::XMFLOAT4X4 m_to_world_cumulative;
-	DirectX::XMFLOAT4X4 m_from_world_cumulative;
+	DirectX::XMFLOAT4X4 m_to_parent;
+	DirectX::XMFLOAT4X4 m_from_parent;
+	DirectX::XMFLOAT4X4 m_to_root;
+	DirectX::XMFLOAT4X4 m_from_root;
 
-	DirectX::XMFLOAT3 m_scale;
-	DirectX::XMFLOAT3 m_scale_cumulative;
 	uint32_t m_dirty_flags;
 	uint32_t m_generation;
 	uint32_t m_group_id;
 
 	DirectX::BoundingBox m_AABB;
 	DirectX::BoundingSphere m_sphere;
+
 	DirectX::BoundingBox m_AABB_cumulative;
 	DirectX::BoundingSphere m_sphere_cumulative;
+
 	DirectX::BoundingBox m_AABB_merged;
 	DirectX::BoundingSphere m_sphere_merged;
 	
@@ -47,59 +47,41 @@ public:
 
 	SceneNodeProperties();
 
-	DirectX::XMMATRIX ToWorld() const;
-	DirectX::XMMATRIX ToWorldT() const;
-	const DirectX::XMFLOAT4X4& ToWorld4x4() const;
-	DirectX::XMFLOAT4X4 ToWorld4x4T() const;
+	DirectX::XMMATRIX ToParent() const;
+	DirectX::XMMATRIX ToParentT() const;
+	const DirectX::XMFLOAT4X4& ToParent4x4() const;
+	DirectX::XMFLOAT4X4 ToParent4x4T() const;
 
-	DirectX::XMMATRIX FullToWorld() const;
-	DirectX::XMMATRIX FullToWorldT() const;
-	DirectX::XMFLOAT4X4 FullToWorld4x4() const;
-	DirectX::XMFLOAT4X4 FullToWorld4x4T() const;
+	DirectX::XMMATRIX ToRoot() const;
+	DirectX::XMMATRIX ToRootT() const;
+	const DirectX::XMFLOAT4X4& ToRoot4x4() const;
+	DirectX::XMFLOAT4X4 ToRoot4x4T() const;
 
-	DirectX::XMMATRIX CumulativeToWorld() const;
-	DirectX::XMMATRIX CumulativeToWorldT() const;
-	const DirectX::XMFLOAT4X4& CumulativeToWorld4x4() const;
-	DirectX::XMFLOAT4X4 CumulativeToWorld4x4T() const;
+	DirectX::XMVECTOR ToParentTranslation() const;
+	DirectX::XMFLOAT4 ToParentTranslation4() const;
+	DirectX::XMFLOAT3 ToParentTranslation3() const;
 
-	DirectX::XMMATRIX FullCumulativeToWorld() const;
-	DirectX::XMMATRIX FullCumulativeToWorldT() const;
-	DirectX::XMFLOAT4X4 FullCumulativeToWorld4x4() const;
-	DirectX::XMFLOAT4X4 FullCumulativeToWorld4x4T() const;
+	DirectX::XMVECTOR ToRootTranslation() const;
+	DirectX::XMFLOAT4 ToRootTranslation4() const;
+	DirectX::XMFLOAT3 ToRootTranslation3() const;
 
-	DirectX::XMVECTOR Position() const;
-	DirectX::XMFLOAT4 Position4() const;
-	DirectX::XMFLOAT3 Position3() const;
+	DirectX::XMVECTOR ToParentDirection() const;
+	DirectX::XMFLOAT3 ToParentDirection3f() const;
+	DirectX::XMVECTOR ToParentUp() const;
+	DirectX::XMFLOAT3 ToParentUp3f() const;
 
-	DirectX::XMVECTOR CumulativePosition() const;
-	DirectX::XMFLOAT4 CumulativePosition4() const;
-	DirectX::XMFLOAT3 CumulativePosition3() const;
+	DirectX::XMVECTOR ToRootDirection() const;
+	DirectX::XMFLOAT3 ToRootDirection3f() const;
+	DirectX::XMVECTOR ToRootUp() const;
+	DirectX::XMFLOAT3 ToRootUp3f() const;
 
-	DirectX::XMVECTOR Direction() const;
-	DirectX::XMFLOAT3 Direction3f() const;
-	DirectX::XMVECTOR Up() const;
-	DirectX::XMFLOAT3 Up3f() const;
+	DirectX::XMMATRIX FromParent() const;
+	const DirectX::XMFLOAT4X4& FromParent4x4() const;
+	DirectX::XMFLOAT4X4 FromParent4x4T() const;
 
-	DirectX::XMVECTOR CumulativeDirection() const;
-	DirectX::XMFLOAT3 CumulativeDirection3f() const;
-	DirectX::XMVECTOR CumulativeUp() const;
-	DirectX::XMFLOAT3 CumulativeUp3f() const;
-
-	const DirectX::XMFLOAT3& Scale3() const;
-	DirectX::XMVECTOR Scale() const;
-	float MaxScale() const;
-
-	const DirectX::XMFLOAT3& CumulativeScale3() const;
-	DirectX::XMVECTOR CumulativeScale() const;
-	float CumulativeMaxScale() const;
-
-	DirectX::XMMATRIX FromWorld() const;
-	const DirectX::XMFLOAT4X4& FromWorld4x4() const;
-	DirectX::XMFLOAT4X4 FromWorld4x4T() const;
-
-	DirectX::XMMATRIX CumulativeFromWorld() const;
-	const DirectX::XMFLOAT4X4& CumulativeFromWorld4x4() const;
-	DirectX::XMFLOAT4X4 CumulativeFromWorld4x4T() const;
+	DirectX::XMMATRIX FromRoot() const;
+	const DirectX::XMFLOAT4X4& FromRoot4x4() const;
+	DirectX::XMFLOAT4X4 FromRoot4x4T() const;
 
 	const char* NameCstr() const;
 	const std::string& Name() const;

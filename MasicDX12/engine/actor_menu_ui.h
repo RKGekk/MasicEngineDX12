@@ -48,6 +48,8 @@ private:
 	DirectX::XMFLOAT4X4 m_transform;
 	DirectX::XMFLOAT3 m_scale;
 	DirectX::XMFLOAT3 m_yaw_pith_roll;
+	DirectX::XMFLOAT4 m_rot_quat;
+	DirectX::XMFLOAT3 m_translate;
 	std::string m_actor_name;
 
 	bool m_particle_exists;

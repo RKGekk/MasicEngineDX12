@@ -45,7 +45,6 @@ void BaseSceneNodeComponent::VUpdate(const GameTimerDelta& delta) {
 	if (tc && (tc_gen > m_generation)) {
 		std::shared_ptr<SceneNode> scene_node = VGetSceneNode();
 		scene_node->SetTransform(tc->GetTransform());
-		scene_node->SetScale(tc->GetScale3f());
 		m_generation = tc_gen;
 		m_current_gen_updated = true;
 		std::shared_ptr<EvtData_Modified_Scene_Component> pEvent(new EvtData_Modified_Scene_Component(m_pOwner->GetId(), VGetId(), scene_node));

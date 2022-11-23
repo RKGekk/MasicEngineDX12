@@ -43,7 +43,7 @@ void CameraNode::SetProjection(const DirectX::XMFLOAT4X4& proj) {
 }
 
 DirectX::XMMATRIX CameraNode::GetWorldViewProjection(DirectX::FXMMATRIX world) const {
-	DirectX::XMMATRIX view = Get().CumulativeFromWorld();
+	DirectX::XMMATRIX view = Get().FromRoot();
 	DirectX::XMMATRIX world_view = DirectX::XMMatrixMultiply(world, view);
 	return DirectX::XMMatrixMultiply(world_view, DirectX::XMLoadFloat4x4(&m_projection));
 }
@@ -78,7 +78,7 @@ DirectX::XMFLOAT4X4 CameraNode::GetWorldViewProjection4x4T(const DirectX::XMFLOA
 }
 
 DirectX::XMMATRIX CameraNode::GetViewProjection() const {
-	DirectX::XMMATRIX view = Get().CumulativeFromWorld();
+	DirectX::XMMATRIX view = Get().FromRoot();
 	return DirectX::XMMatrixMultiply(view, DirectX::XMLoadFloat4x4(&m_projection));
 }
 
@@ -110,13 +110,13 @@ DirectX::XMFLOAT4X4 CameraNode::GetProjection4x4fT() const {
 }
 
 DirectX::XMMATRIX CameraNode::GetView() const {
-	return Get().CumulativeFromWorld();
+	return Get().FromRoot();
 }
 
 const DirectX::XMFLOAT4X4& CameraNode::GetView4x4f() const {
-	return Get().CumulativeFromWorld4x4();
+	return Get().FromRoot4x4();
 }
 
 DirectX::XMFLOAT4X4 CameraNode::GetView4x4fT() const {
-	return Get().CumulativeFromWorld4x4T();
+	return Get().FromRoot4x4T();
 }

@@ -75,7 +75,8 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture IN) {
 	OUT.BitangentVS = mul((float3x3) MatricesCB.InverseTransposeModelViewMatrix, bitangent_ls);
 	OUT.TexCoordTS = IN.TextureUV.xy;
 	OUT.PositionHS = mul(MatricesCB.ModelViewProjectionMatrix, float4(pos_ls, 1.0f));
-	OUT.ShadowPosHS = mul(MatricesCB.ShadowTransformMatrix, mul(float4(pos_ls, 1.0f), MatricesCB.ModelMatrix));
+	//OUT.ShadowPosHS = mul(MatricesCB.ShadowTransformMatrix, mul(float4(pos_ls, 1.0f), MatricesCB.ModelMatrix));
+	OUT.ShadowPosHS = mul(mul(float4(pos_ls, 1.0f), MatricesCB.ModelMatrix), MatricesCB.ShadowTransformMatrix);
 	//OUT.PositionWS = mul(MatricesCB.ModelMatrix, float4(pos_ls, 1.0f));
 
 	return OUT;

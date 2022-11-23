@@ -52,8 +52,8 @@ void OrientationRelationComponent::VUpdate(const GameTimerDelta& delta) {
 		std::shared_ptr<Actor> related_act = MakeStrongPtr(VGetRelatedToActor());
 		std::shared_ptr<TransformComponent> related_tc = MakeStrongPtr(related_act->GetComponent<TransformComponent>(ActorComponent::GetIdFromName("TransformComponent")));
 
-		XMVECTOR pos = tc->GetPosition();
-		XMVECTOR center = related_tc->GetPosition();
+		XMVECTOR pos = tc->GetTranslation();
+		XMVECTOR center = related_tc->GetTranslation();
 		XMVECTOR direction = pos - center;
 		XMVectorSetW(direction, 0.0f);
 		XMVECTOR normal = XMVector3Normalize(direction);
@@ -68,8 +68,7 @@ void OrientationRelationComponent::VUpdate(const GameTimerDelta& delta) {
 		XMStoreFloat4(&m_up, up);
 		XMStoreFloat4(&m_right, right);
 
-		XMFLOAT3 sc = tc->GetScale3f();
-		XMFLOAT3 p = tc->GetPosition3f();
+		XMFLOAT3 p = tc->GetTranslation3f();
 
 		XMMATRIX rot{
 			m_right.x, m_right.y, m_right.z, 0.0f,
@@ -82,10 +81,7 @@ void OrientationRelationComponent::VUpdate(const GameTimerDelta& delta) {
 		DirectX::XMStoreFloat4x4(
 			&transform,
 			DirectX::XMMatrixMultiply(
-				DirectX::XMMatrixMultiply(
-					rot,
-					DirectX::XMMatrixScaling(sc.x, sc.y, sc.z)
-				),
+				rot,
 				XMMatrixTranslation(p.x, p.y, p.z)
 			)
 		);
@@ -100,8 +96,8 @@ void OrientationRelationComponent::VUpdate(const GameTimerDelta& delta) {
 		std::shared_ptr<ParticleComponent> pc = MakeStrongPtr(act->GetComponent<ParticleComponent>(ActorComponent::GetIdFromName("ParticleComponent")));
 		std::shared_ptr<EnemyComponent> ec = MakeStrongPtr(act->GetComponent<EnemyComponent>(ActorComponent::GetIdFromName("EnemyComponent")));
 
-		XMVECTOR pos = tc->GetPosition();
-		XMVECTOR center = related_tc->GetPosition();
+		XMVECTOR pos = tc->GetTranslation();
+		XMVECTOR center = related_tc->GetTranslation();
 		XMVECTOR direction = pos - center;
 		XMVectorSetW(direction, 0.0f);
 		XMVECTOR normal = XMVector3Normalize(direction);
@@ -129,8 +125,7 @@ void OrientationRelationComponent::VUpdate(const GameTimerDelta& delta) {
 		XMStoreFloat4(&m_up, up);
 		XMStoreFloat4(&m_right, right);
 
-		XMFLOAT3 sc = tc->GetScale3f();
-		XMFLOAT3 p = tc->GetPosition3f();
+		XMFLOAT3 p = tc->GetTranslation3f();
 
 		XMMATRIX rot{
 			m_right.x, m_right.y, m_right.z, 0.0f,
@@ -143,10 +138,7 @@ void OrientationRelationComponent::VUpdate(const GameTimerDelta& delta) {
 		DirectX::XMStoreFloat4x4(
 			&transform,
 			DirectX::XMMatrixMultiply(
-				DirectX::XMMatrixMultiply(
-					rot,
-					DirectX::XMMatrixScaling(sc.x, sc.y, sc.z)
-				),
+				rot,
 				XMMatrixTranslation(p.x, p.y, p.z)
 			)
 		);

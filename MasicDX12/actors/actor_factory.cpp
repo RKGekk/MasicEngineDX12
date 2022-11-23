@@ -67,7 +67,7 @@ std::shared_ptr<Actor> ActorFactory::CreateActor(const std::string& actor_resour
 
     std::shared_ptr<TransformComponent> pTransform_component = MakeStrongPtr(pActor->GetComponent<TransformComponent>(TransformComponent::g_Name));
     if (pInitial_transform && pTransform_component) {
-        pTransform_component->SetPosition4x4f(*pInitial_transform);
+        pTransform_component->SetTransform(*pInitial_transform);
     }
 
     pActor->PostInit();

@@ -6,11 +6,11 @@
 #include "../application.h"
 
 BasicCameraNode::BasicCameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, float fovy, float aspect, float near_clip, float far_clip) : CameraNode(name, camera_transform), m_fovy(fovy), m_aspect(aspect) {
-	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
+	SetData(DirectX::XMLoadFloat4x4(&Get().ToRoot4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
 }
 
 BasicCameraNode::BasicCameraNode(const std::string& name, const DirectX::XMFLOAT4X4& camera_transform, const DirectX::XMFLOAT4X4& proj) : CameraNode(name, camera_transform) {
-	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMLoadFloat4x4(&proj));
+	SetData(DirectX::XMLoadFloat4x4(&Get().ToRoot4x4()), DirectX::XMLoadFloat4x4(&proj));
 }
 
 BasicCameraNode::BasicCameraNode(const std::string& name, const DirectX::BoundingFrustum& frustum) : CameraNode(name) {
@@ -18,11 +18,11 @@ BasicCameraNode::BasicCameraNode(const std::string& name, const DirectX::Boundin
 }
 
 BasicCameraNode::BasicCameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, float fovy, float aspect, float near_clip, float far_clip) : CameraNode(name, camera_transform), m_fovy(fovy), m_aspect(aspect) {
-	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
+	SetData(DirectX::XMLoadFloat4x4(&Get().ToRoot4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
 }
 
 BasicCameraNode::BasicCameraNode(const std::string& name, DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj) : CameraNode(name, camera_transform) {
-	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), proj);
+	SetData(DirectX::XMLoadFloat4x4(&Get().ToRoot4x4()), proj);
 }
 
 HRESULT BasicCameraNode::VOnRestore() {
@@ -30,7 +30,7 @@ HRESULT BasicCameraNode::VOnRestore() {
 	if (m_aspect == new_aspect) return S_OK;
 
 	m_aspect = new_aspect;
-	SetData(m_props.CumulativeToWorld(), DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
+	SetData(m_props.ToRoot(), DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
 
 	CameraNode::VOnRestore();
 
@@ -55,14 +55,14 @@ const DirectX::BoundingFrustum& BasicCameraNode::GetFrustum() const {
 }
 
 void BasicCameraNode::UpdateFrustum() {
-	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMLoadFloat4x4(&m_projection));
+	SetData(DirectX::XMLoadFloat4x4(&Get().ToRoot4x4()), DirectX::XMLoadFloat4x4(&m_projection));
 }
 
 void BasicCameraNode::SetFovYRad(float fovy) {
 	if (m_fovy == fovy) return;
 
 	m_fovy = fovy;
-	SetData(m_props.CumulativeToWorld(), DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
+	SetData(m_props.ToRoot(), DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspect, m_frustum.Near, m_frustum.Far));
 }
 
 void BasicCameraNode::SetFovYDeg(float fovy) {
@@ -96,7 +96,7 @@ void BasicCameraNode::SetProjection(const DirectX::BoundingFrustum& frustum) {
 }
 
 void BasicCameraNode::SetProjection(float fovy, float aspect, float near_clip, float far_clip) {
-	SetData(DirectX::XMLoadFloat4x4(&Get().CumulativeToWorld4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
+	SetData(DirectX::XMLoadFloat4x4(&Get().ToRoot4x4()), DirectX::XMMatrixPerspectiveFovLH(fovy, aspect, near_clip, far_clip));
 }
 
 void BasicCameraNode::SetData(DirectX::FXMMATRIX camera_transform, DirectX::CXMMATRIX proj) {
@@ -113,7 +113,7 @@ void BasicCameraNode::SetData(DirectX::FXMMATRIX camera_transform, DirectX::CXMM
 void BasicCameraNode::SetData(DirectX::BoundingFrustum frustum) {
 	DirectX::XMMATRIX view_rot = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&frustum.Orientation));
 	SetTransform(view_rot, DirectX::XMMatrixIdentity(), true);
-	SetPosition3(frustum.Origin);
+	SetTranslation3(frustum.Origin);
 
 	m_fovy = 2.0f * atanf(frustum.TopSlope);
 	m_aspect = frustum.TopSlope / frustum.RightSlope;

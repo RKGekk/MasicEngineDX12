@@ -23,18 +23,18 @@ MovementController::MovementController(std::shared_ptr<Actor> object, float init
 	if (mc) {
 		std::shared_ptr<SceneNode> scene_node = mc->VGetSceneNode();
 		if (scene_node) {
-			m_mat_to_world = scene_node->Get().ToWorld4x4();
-			m_mat_from_world = scene_node->Get().FromWorld4x4();
+			m_mat_to_parent = scene_node->Get().ToParent4x4();
+			m_mat_from_parent = scene_node->Get().FromParent4x4();
 		}
 	}
 	else {
 		if (tc) {
-			m_mat_to_world = tc->GetTransform4x4f();
-			m_mat_from_world = tc->GetInvTransform4x4f();
+			m_mat_to_parent = tc->GetTransform4x4f();
+			m_mat_from_parent = tc->GetInvTransform4x4f();
 		}
 		else {
-			DirectX::XMStoreFloat4x4(&m_mat_to_world, DirectX::XMMatrixIdentity());
-			DirectX::XMStoreFloat4x4(&m_mat_from_world, DirectX::XMMatrixIdentity());
+			DirectX::XMStoreFloat4x4(&m_mat_to_parent, DirectX::XMMatrixIdentity());
+			DirectX::XMStoreFloat4x4(&m_mat_from_parent, DirectX::XMMatrixIdentity());
 		}
 	}
 
@@ -45,10 +45,10 @@ MovementController::MovementController(std::shared_ptr<Actor> object, float init
 	m_current_speed = 0.0f;
 
 	DirectX::XMStoreFloat4x4(&m_mat_position, DirectX::XMMatrixIdentity());
-	m_mat_position._41 = m_mat_to_world._41;
-	m_mat_position._42 = m_mat_to_world._42;
-	m_mat_position._43 = m_mat_to_world._43;
-	m_mat_position._44 = m_mat_to_world._44;
+	m_mat_position._41 = m_mat_to_parent._41;
+	m_mat_position._42 = m_mat_to_parent._42;
+	m_mat_position._43 = m_mat_to_parent._43;
+	m_mat_position._44 = m_mat_to_parent._44;
 
 	POINT ptCursor;
 	GetCursorPos(&ptCursor);
@@ -94,7 +94,7 @@ void MovementController::OnUpdate(const GameTimerDelta& delta) {
 			at.z *= -1.0f;
 		}
 		DirectX::XMVECTOR at_xm = DirectX::XMLoadFloat4(&at);
-		DirectX::XMStoreFloat4(&atWorld, DirectX::XMVector4Transform(at_xm, DirectX::XMLoadFloat4x4(&m_mat_to_world)));
+		DirectX::XMStoreFloat4(&atWorld, DirectX::XMVector4Transform(at_xm, DirectX::XMLoadFloat4x4(&m_mat_to_parent)));
 		bTranslating = true;
 	}
 
@@ -106,7 +106,7 @@ void MovementController::OnUpdate(const GameTimerDelta& delta) {
 			right.z *= -1.0f;
 		}
 		DirectX::XMVECTOR right_xm = DirectX::XMLoadFloat4(&right);
-		DirectX::XMStoreFloat4(&rightWorld, DirectX::XMVector4Transform(right_xm, DirectX::XMLoadFloat4x4(&m_mat_to_world)));
+		DirectX::XMStoreFloat4(&rightWorld, DirectX::XMVector4Transform(right_xm, DirectX::XMLoadFloat4x4(&m_mat_to_parent)));
 		bTranslating = true;
 	}
 
@@ -129,15 +129,15 @@ void MovementController::OnUpdate(const GameTimerDelta& delta) {
 
 		DirectX::XMMATRIX mat_rot = DirectX::XMMatrixRotationRollPitchYaw(DirectX::XMConvertToRadians(m_fPitch), DirectX::XMConvertToRadians(-m_fYaw), 0.0f);
 		mat_rot.r[3] = DirectX::XMVectorSet(m_mat_position._41, m_mat_position._42, m_mat_position._43, m_mat_position._44);
-		DirectX::XMStoreFloat4x4(&m_mat_to_world, mat_rot);
-		DirectX::XMStoreFloat4x4(&m_mat_from_world, DirectX::XMMatrixInverse(nullptr, mat_rot));
+		DirectX::XMStoreFloat4x4(&m_mat_to_parent, mat_rot);
+		DirectX::XMStoreFloat4x4(&m_mat_from_parent, DirectX::XMMatrixInverse(nullptr, mat_rot));
 		if (tc) {
-			tc->SetTransform(m_mat_to_world);
+			tc->SetTransform(m_mat_to_parent);
 		}
 		else {
 			if (mc) {
 				std::shared_ptr<SceneNode> scene_node = mc->VGetSceneNode();
-				if(scene_node) scene_node->SetTransform4x4(&m_mat_to_world, &m_mat_from_world);
+				if(scene_node) scene_node->SetTransform4x4(&m_mat_to_parent, &m_mat_from_parent);
 			}
 		}
 	}
@@ -157,18 +157,18 @@ void MovementController::OnUpdate(const GameTimerDelta& delta) {
 		m_mat_position._42 = DirectX::XMVectorGetY(pos);
 		m_mat_position._43 = DirectX::XMVectorGetZ(pos);
 
-		m_mat_to_world._41 = DirectX::XMVectorGetX(pos);
-		m_mat_to_world._42 = DirectX::XMVectorGetY(pos);
-		m_mat_to_world._43 = DirectX::XMVectorGetZ(pos);
+		m_mat_to_parent._41 = DirectX::XMVectorGetX(pos);
+		m_mat_to_parent._42 = DirectX::XMVectorGetY(pos);
+		m_mat_to_parent._43 = DirectX::XMVectorGetZ(pos);
 
-		DirectX::XMStoreFloat4x4(&m_mat_from_world, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&m_mat_to_world)));
+		DirectX::XMStoreFloat4x4(&m_mat_from_parent, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&m_mat_to_parent)));
 		if (tc) {
-			tc->SetTransform(m_mat_to_world);
+			tc->SetTransform(m_mat_to_parent);
 		}
 		else {
 			if (mc) {
 				std::shared_ptr<SceneNode> scene_node = mc->VGetSceneNode();
-				if (scene_node) scene_node->SetTransform4x4(&m_mat_to_world, &m_mat_from_world);
+				if (scene_node) scene_node->SetTransform4x4(&m_mat_to_parent, &m_mat_from_parent);
 			}
 		}
 	}
@@ -243,17 +243,17 @@ bool MovementController::VOnKeyUp(const BYTE c) {
 }
 
 const DirectX::XMFLOAT4X4& MovementController::GetToWorld4x4() {
-	return m_mat_to_world;
+	return m_mat_to_parent;
 }
 
 DirectX::XMMATRIX MovementController::GetToWorld() {
-	return DirectX::XMLoadFloat4x4(&m_mat_to_world);
+	return DirectX::XMLoadFloat4x4(&m_mat_to_parent);
 }
 
 const DirectX::XMFLOAT4X4& MovementController::GetFromWorld4x4() {
-	return m_mat_from_world;
+	return m_mat_from_parent;
 }
 
 DirectX::XMMATRIX MovementController::GetFromWorld() {
-	return DirectX::XMLoadFloat4x4(&m_mat_from_world);
+	return DirectX::XMLoadFloat4x4(&m_mat_from_parent);
 }

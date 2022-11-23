@@ -32,8 +32,8 @@ public:
 	DirectX::XMMATRIX GetFromWorld();
 
 protected:
-	DirectX::XMFLOAT4X4 m_mat_from_world;
-	DirectX::XMFLOAT4X4 m_mat_to_world;
+	DirectX::XMFLOAT4X4 m_mat_from_parent;
+	DirectX::XMFLOAT4X4 m_mat_to_parent;
 	DirectX::XMFLOAT4X4 m_mat_position;
 
 	int m_last_mouse_pos_x;

@@ -29,7 +29,7 @@ void SkinnedMeshManager::AddMesh(std::shared_ptr<SceneNode> node) {
 			mesh_list.push_back(mesh_node);
 			const auto& props = mesh_node->Get();
 			InstanceData id = {};
-			id.World = props.FullCumulativeToWorld4x4T();
+			id.World = props.ToRoot4x4T();
 			XMMATRIX world = XMLoadFloat4x4(&id.World);
 			XMMATRIX inv_world_t = XMMatrixTranspose(XMMatrixInverse(nullptr, world));
 			XMStoreFloat4x4(&id.InverseTransposeWorld, inv_world_t);
@@ -121,7 +121,7 @@ void SkinnedMeshManager::UpdateInstancesBuffer() {
 			const auto& mesh_node = mesh_list[i];
 			const auto& props = mesh_node->Get();
 			InstanceData id = {};
-			id.World = props.FullCumulativeToWorld4x4T();
+			id.World = props.ToRoot4x4T();
 			XMMATRIX world = XMLoadFloat4x4(&id.World);
 			XMMATRIX inv_world_t = XMMatrixTranspose(XMMatrixInverse(nullptr, world));
 			XMStoreFloat4x4(&id.InverseTransposeWorld, inv_world_t);
@@ -141,7 +141,7 @@ void SkinnedMeshManager::UpdateInstancesBuffer(MeshName mesh_name) {
 		const auto& mesh_node = mesh_list[i];
 		const auto& props = mesh_node->Get();
 		InstanceData id = {};
-		id.World = props.FullCumulativeToWorld4x4T();
+		id.World = props.ToRoot4x4T();
 		XMMATRIX world = XMLoadFloat4x4(&id.World);
 		XMMATRIX inv_world_t = XMMatrixTranspose(XMMatrixInverse(nullptr, world));
 		XMStoreFloat4x4(&id.InverseTransposeWorld, inv_world_t);

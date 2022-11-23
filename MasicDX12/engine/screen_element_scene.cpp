@@ -149,10 +149,13 @@ HRESULT ScreenElementScene::VOnRender(const GameTimerDelta& delta, std::shared_p
 		m_shadow_instanced_pso->Apply(*command_list, delta);
 		m_shadow_anim_instanced_pso->Apply(*command_list, delta);
 
-		m_lighting_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
-		m_lighting_anim_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
-		//m_shadow_manager->GetShadowMapTexture()->
-
+		//m_lighting_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
+		////m_lighting_pso->SetShadowMatrix(DirectX::XMMatrixTranspose(shadow_camera->GetShadowTranform()));
+		//m_lighting_anim_pso->SetShadowMatrix(shadow_camera->GetShadowTranform());
+		////m_shadow_manager->GetShadowMapTexture()->
+		m_lighting_pso->SetShadowMatrix(DirectX::XMMatrixTranspose(shadow_camera->GetShadowTranform()));
+		m_lighting_anim_pso->SetShadowMatrix(DirectX::XMMatrixTranspose(shadow_camera->GetShadowTranform()));
+		
 		if (!m_shadow_map_texture) {
 			//DXGI_SAMPLE_DESC sample_desc = device->GetMultisampleQualityLevels(m_back_buffer_format);
 			DXGI_SAMPLE_DESC sample_desc = { 1, 0 };

@@ -56,7 +56,7 @@ bool ParticleComponent::VInit(const pugi::xml_node& data) {
 void ParticleComponent::VPostInit() {
     std::shared_ptr<TransformComponent> pTransformComponent = MakeStrongPtr(m_pOwner->GetComponent<TransformComponent>(TransformComponent::g_Name));
     if (pTransformComponent) {
-        m_particle.setPosition3f(pTransformComponent->GetPosition3f());
+        m_particle.setPosition3f(pTransformComponent->GetTranslation3f());
     }
 
     std::shared_ptr<EvtData_New_Particle_Component> pEvent(new EvtData_New_Particle_Component(m_pOwner->GetId(), &m_particle));

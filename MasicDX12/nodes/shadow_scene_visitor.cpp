@@ -33,7 +33,7 @@ void ShadowSceneVisitor::Visit(std::shared_ptr<SceneNode> scene_node) {
 	if (is_mesh_node) {
 		if (pMeshNode->GetIsInstanced()) return;
 
-		auto world = scene_node->Get().FullCumulativeToWorld();
+		auto world = scene_node->Get().ToRoot();
 		m_shadow_pso.SetWorldMatrix(world);
 
 		const MeshNode::MeshList& mesh_list = pMeshNode->GetMeshes();
