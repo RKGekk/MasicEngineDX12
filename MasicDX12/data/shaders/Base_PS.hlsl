@@ -434,7 +434,7 @@ float4 main(PixelShaderInput IN) : SV_Target {
 	float4 specular = 0;
 #if ENABLE_LIGHTING
     LightResult lit = DoLighting( IN.PositionVS.xyz, N, specularPower );
-    ambient *= diffuse * lit.Ambient;
+    ambient = ambient * 0.5f + diffuse * lit.Ambient * 0.5f;
     diffuse *= lit.Diffuse;
     // Specular power less than 1 doesn't really make sense.
     // Ignore specular on materials with a specular power less than 1.

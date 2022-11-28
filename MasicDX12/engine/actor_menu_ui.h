@@ -70,6 +70,13 @@ private:
 	float m_spot;
 	DirectX::XMFLOAT3 m_ambient;
 
+	bool m_shadow_exists;
+	int m_shadow_map_width;
+	int m_shadow_map_height;
+	int m_depth_bias;
+	float m_depth_bias_clamp;
+	float m_slope_scaled_depth_bias;
+
 	bool m_mesh_exists;
 	std::string m_mesh_name;
 

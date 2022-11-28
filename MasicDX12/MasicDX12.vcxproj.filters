@@ -1721,6 +1721,19 @@
     <None Include="data\textures\Topmat_specularGlossiness.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="data\textures\Texture_3.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Texture_3_NRM.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\textures\Texture_3_OCC.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\objects\fhouse2.gltf" />
+    <None Include="data\objects\fhouse2.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="data\shaders\vertex_shader_smoke.hlsl">

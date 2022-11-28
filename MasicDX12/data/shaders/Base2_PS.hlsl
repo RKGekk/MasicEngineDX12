@@ -465,7 +465,7 @@ float4 main(PixelShaderInput IN) : SV_Target {
     pbr.Shininess = specular_power;
     
     LightResult lit = DoLighting(pbr, IN.PositionVS.xyz, n);
-    ambient *= diffuse_albedo * lit.Ambient;
+    ambient = ambient * 0.5f + diffuse_albedo * lit.Ambient * 0.5f;
     diffuse_albedo *= lit.Diffuse;
     // Specular power less than 1 doesn't really make sense.
     // Ignore specular on materials with a specular power less than 1.

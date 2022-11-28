@@ -110,6 +110,26 @@ DirectX::XMFLOAT4X4 ShadowCameraNode::GetShadowTranform4x4T() const {
     return res;
 }
 
+void ShadowCameraNode::SetSMapWidth(int width) {
+    m_shadow_camera_props.ShadowMapWidth = width;
+}
+
+void ShadowCameraNode::SetSMapHeight(int height) {
+    m_shadow_camera_props.ShadowMapHeight = height;
+}
+
+void ShadowCameraNode::SetDepthBias(int depth_bias) {
+    m_shadow_camera_props.DepthBias = depth_bias;
+}
+
+void ShadowCameraNode::SetDepthBiasClamp(float depth_bias_clamp) {
+    m_shadow_camera_props.DepthBiasClamp = depth_bias_clamp;
+}
+
+void ShadowCameraNode::SetSlopeScaledDepthBias(float slope_scaled_depth_bias) {
+    m_shadow_camera_props.SlopeScaledDepthBias = slope_scaled_depth_bias;
+}
+
 const ShadowCameraNode::ShadowCameraProps& ShadowCameraNode::GetShadowProps() const {
     return m_shadow_camera_props;
 }

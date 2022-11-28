@@ -213,81 +213,81 @@ void ImportMaterial(MaterialList& material_list, CommandList& command_list, cons
 
     if (material.GetTextureCount(aiTextureType_AMBIENT_OCCLUSION) > 0 && material.GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Ambient, texture);
     }
     else if (material.GetTextureCount(aiTextureType_AMBIENT) > 0 && material.GetTexture(aiTextureType_AMBIENT, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Ambient, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_EMISSIVE) > 0 && material.GetTexture(aiTextureType_EMISSIVE, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Emissive, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_BASE_COLOR) > 0 && material.GetTexture(aiTextureType_BASE_COLOR, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Diffuse, texture);
     }
     else if (material.GetTextureCount(aiTextureType_DIFFUSE) > 0 && material.GetTexture(aiTextureType_DIFFUSE, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Diffuse, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_SPECULAR) > 0 && material.GetTexture(aiTextureType_SPECULAR, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Specular, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS) > 0 && material.GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::SpecularPower, texture);
     }
     else if (material.GetTextureCount(aiTextureType_SHININESS) > 0 && material.GetTexture(aiTextureType_SHININESS, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::SpecularPower, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_OPACITY) > 0 && material.GetTexture(aiTextureType_OPACITY, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Opacity, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_NORMALS) > 0 && material.GetTexture(aiTextureType_NORMALS, 0, &aiTexture_path) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Normal, texture);
     }
     else if (material.GetTextureCount(aiTextureType_HEIGHT) > 0 && material.GetTexture(aiTextureType_HEIGHT, 0, &aiTexture_path, nullptr, nullptr, &blend_factor) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         Material::TextureType texture_type = (texture->BitsPerPixel() >= 24) ? Material::TextureType::Normal : Material::TextureType::Bump;
         pMaterial->SetTexture(texture_type, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_DISPLACEMENT) > 0 && material.GetTexture(aiTextureType_DISPLACEMENT, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Displacement, texture);
     }
 
     if (material.GetTextureCount(aiTextureType_METALNESS) > 0 && material.GetTexture(aiTextureType_METALNESS, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Metalness, texture);
     }
     else if (material.GetTextureCount(aiTextureType_REFLECTION) > 0 && material.GetTexture(aiTextureType_REFLECTION, 0, &aiTexture_path, nullptr, nullptr, &blend_factor, &aiBlend_operation) == aiReturn_SUCCESS) {
         std::filesystem::path texture_path(aiTexture_path.C_Str());
-        auto texture = GetTexture2(command_list, texture_path, parent_path);;
+        auto texture = GetTexture2(command_list, texture_path, parent_path);
         pMaterial->SetTexture(Material::TextureType::Metalness, texture);
     }
 

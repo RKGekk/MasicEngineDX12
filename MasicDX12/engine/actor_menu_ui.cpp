@@ -6,8 +6,10 @@
 #include "../actors/particle_component.h"
 #include "../actors/camera_component.h"
 #include "../actors/light_component.h"
+#include "../actors/shadow_camera_component.h"
 #include "../nodes/light_node.h"
 #include "../nodes/camera_node.h"
+#include "../nodes/shadow_camera_node.h"
 #include "../actors/mesh_component.h"
 #include "../graphics/d3d12_renderer.h"
 #include "../graphics/i_renderer.h"
@@ -173,6 +175,25 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						m_range = 1.0f;
 						m_spot = 1.0f;
 						m_ambient = DirectX::XMFLOAT3(0.01f, 0.01f, 0.01f);
+					}
+
+					std::shared_ptr<ShadowCameraComponent> sc = act->GetComponent<ShadowCameraComponent>().lock();
+					if (sc) {
+						m_shadow_exists = true;
+						const ShadowCameraNode::ShadowCameraProps& sp = sc->VGetCameraNode()->GetShadowProps();
+
+						m_shadow_map_width = sp.ShadowMapWidth;
+						m_shadow_map_height = sp.ShadowMapHeight;
+						m_depth_bias = sp.DepthBias;
+						m_depth_bias_clamp = sp.DepthBiasClamp;
+						m_slope_scaled_depth_bias = sp.SlopeScaledDepthBias;
+					}
+					else {
+						m_shadow_map_width = 1.0f;
+						m_shadow_map_height = 1.0f;
+						m_depth_bias = 1;
+						m_depth_bias_clamp = 0.1f;
+						m_slope_scaled_depth_bias = 1.0f;
 					}
 
 					std::shared_ptr<MeshComponent> mc = act->GetComponent<MeshComponent>().lock();
@@ -385,6 +406,47 @@ HRESULT ActorMenuUI::VOnRender(const GameTimerDelta& delta, std::shared_ptr<Comm
 						if (lc) {
 							m_light_exists = true;
 							lc->VGetLightNode()->SetAmbient(m_ambient);
+						}
+					}
+
+					if (m_shadow_exists && ImGui::SliderInt("Shadow map width", ((int*)&m_shadow_map_width), 1, 4096)) {
+						m_shadow_exists = true;
+						std::shared_ptr<ShadowCameraComponent> sc = act->GetComponent<ShadowCameraComponent>().lock();
+						if (sc) {
+							m_shadow_exists = true;
+							sc->VGetCameraNode()->SetSMapWidth(m_shadow_map_width);
+						}
+					}
+					if (m_shadow_exists && ImGui::SliderInt("Shadow map height", ((int*)&m_shadow_map_height), 1, 4096)) {
+						m_shadow_exists = true;
+						std::shared_ptr<ShadowCameraComponent> sc = act->GetComponent<ShadowCameraComponent>().lock();
+						if (sc) {
+							m_shadow_exists = true;
+							sc->VGetCameraNode()->SetSMapHeight(m_shadow_map_height);
+						}
+					}
+					if (m_shadow_exists && ImGui::SliderInt("Depth bias", ((int*)&m_depth_bias), 10000, 1000000)) {
+						m_shadow_exists = true;
+						std::shared_ptr<ShadowCameraComponent> sc = act->GetComponent<ShadowCameraComponent>().lock();
+						if (sc) {
+							m_shadow_exists = true;
+							sc->VGetCameraNode()->SetDepthBias(m_depth_bias);
+						}
+					}
+					if (m_shadow_exists && ImGui::SliderFloat("Depth bias clamp", ((float*)&m_depth_bias_clamp), 0.01f, 1.0f)) {
+						m_shadow_exists = true;
+						std::shared_ptr<ShadowCameraComponent> sc = act->GetComponent<ShadowCameraComponent>().lock();
+						if (sc) {
+							m_shadow_exists = true;
+							sc->VGetCameraNode()->SetDepthBiasClamp(m_depth_bias_clamp);
+						}
+					}
+					if (m_shadow_exists && ImGui::SliderFloat("Slope scaled depth bias", ((float*)&m_slope_scaled_depth_bias), 0.1f, 2.0f)) {
+						m_shadow_exists = true;
+						std::shared_ptr<ShadowCameraComponent> sc = act->GetComponent<ShadowCameraComponent>().lock();
+						if (sc) {
+							m_shadow_exists = true;
+							sc->VGetCameraNode()->SetSlopeScaledDepthBias(m_slope_scaled_depth_bias);
 						}
 					}
 

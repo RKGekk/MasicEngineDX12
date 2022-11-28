@@ -34,6 +34,12 @@ public:
 	const DirectX::XMFLOAT4X4& GetShadowTranform4x4() const;
 	DirectX::XMFLOAT4X4 GetShadowTranform4x4T() const;
 
+	void SetSMapWidth(int width);
+	void SetSMapHeight(int height);
+	void SetDepthBias(int depth_bias);
+	void SetDepthBiasClamp(float depth_bias_clamp);
+	void SetSlopeScaledDepthBias(float slope_scaled_depth_bias);
+
 	const ShadowCameraProps& GetShadowProps() const;
 
 protected:

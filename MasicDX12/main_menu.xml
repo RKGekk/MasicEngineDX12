@@ -1,48 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <World>
   <Actors>
+    
     <Actor name="building1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="1.000000" z="1.000000" />
+        <Position x="0.000000" y="0.000000" z="0.000000" />
+        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
+        <Scale x="0.100000" y="0.100000" z="0.100000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\fhouse2.gltf</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="building2" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="0.000000" y="0.000000" z="1.300000" />
+        <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
+        <Scale x="0.100000" y="0.100000" z="0.100000" />
+      </TransformComponent>
+      <MeshComponent>
+        <IsInvYNormalTexture>false</IsInvYNormalTexture>
+        <IsInstanced>true</IsInstanced>
+        <Mesh>data\objects\fhouse2.gltf</Mesh>
+      </MeshComponent>
+    </Actor>
+
+    <Actor name="building3" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+      <TransformComponent>
+        <Position x="-1.200000" y="0.000000" z="0.200000" />
         <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
-        <Scale x="1.000000" y="1.000000" z="1.000000" />
+        <Scale x="0.100000" y="0.100000" z="0.100000" />
       </TransformComponent>
       <MeshComponent>
         <IsInvYNormalTexture>false</IsInvYNormalTexture>
         <IsInstanced>true</IsInstanced>
-        <Mesh>data\objects\lpAsianTowerBlock.obj</Mesh>
+        <Mesh>data\objects\fhouse2.gltf</Mesh>
       </MeshComponent>
     </Actor>
 
-    <Actor name="road1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+    <Actor name="building4" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="-1.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
-        <Scale x="1.000000" y="1.000000" z="1.000000" />
+        <Position x="-1.200000" y="0.000000" z="1.300000" />
+        <YawPitchRoll x="-90.000000" y="0.000000" z="0.000000" />
+        <Scale x="0.100000" y="0.100000" z="0.100000" />
       </TransformComponent>
       <MeshComponent>
         <IsInvYNormalTexture>false</IsInvYNormalTexture>
         <IsInstanced>true</IsInstanced>
-        <Mesh>data\objects\road_traffic_sign.obj</Mesh>
+        <Mesh>data\objects\fhouse2.gltf</Mesh>
       </MeshComponent>
     </Actor>
 
-    <Actor name="road2" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
+    <Actor name="building5" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="1.000000" y="0.000000" z="0.000000" />
-        <YawPitchRoll x="90.000000" y="0.000000" z="0.000000" />
-        <Scale x="1.000000" y="1.000000" z="1.000000" />
+        <Position x="-1.300000" y="0.000000" z="-1.000000" />
+        <YawPitchRoll x="180.000000" y="0.000000" z="0.000000" />
+        <Scale x="0.100000" y="0.100000" z="0.100000" />
       </TransformComponent>
       <MeshComponent>
         <IsInvYNormalTexture>false</IsInvYNormalTexture>
         <IsInstanced>true</IsInstanced>
-        <Mesh>data\objects\road_traffic_sign.obj</Mesh>
+        <Mesh>data\objects\fhouse2.gltf</Mesh>
       </MeshComponent>
     </Actor>
 
     <Actor name="character1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="0.000000" z="0.000000" />
+        <Position x="0.430000" y="0.250000" z="0.000000" />
         <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="0.001250" y="0.001250" z="0.001250" />
       </TransformComponent>

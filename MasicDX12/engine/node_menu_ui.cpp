@@ -214,12 +214,30 @@ void DrawNodes(const std::shared_ptr<SceneNode>& current_node) {
 			float spot = light_props.m_spot;
 			DirectX::XMFLOAT3 ambient = light_props.m_ambient;
 
-			ImGui::LabelText("LightType", light_type_str.c_str());
 			if (ImGui::ColorEdit3("Strength", ((float*)&(strength)), ImGuiColorEditFlags_Float)) {}
 			if (ImGui::InputFloat3("Attenuation", ((float*)&(attenuation)), "%.3f", ImGuiInputTextFlags_ReadOnly)) {}
 			if (ImGui::InputFloat("Range", ((float*)&(range)), 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly)) {}
 			if (ImGui::InputFloat("Spot", ((float*)&(spot)), 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly)) {}
 			if (ImGui::ColorEdit3("Ambient", ((float*)&(ambient)), ImGuiColorEditFlags_Float)) {}
+
+			ImGui::TreePop();
+		}
+
+		if (pShadowCamera && ImGui::TreeNode("ShadowProps")) {
+			const ShadowCameraNode::ShadowCameraProps& shadow_props = pShadowCamera->GetShadowProps();
+			int shadow_map_width = shadow_props.ShadowMapWidth;
+			int shadow_map_height = shadow_props.ShadowMapHeight;
+			int depth_bias = shadow_props.DepthBias;
+			float depth_bias_clamp = shadow_props.DepthBiasClamp;
+			float slope_scaled_depth_bias = shadow_props.SlopeScaledDepthBias;
+
+			
+			ImGui::LabelText("Bias fn", "DepthBias * r + SlopeScaledDepthBias * MaxDepthSlope");
+			if (ImGui::InputInt("Shadowmap width", ((int*)&(shadow_map_width)), 1, 2, ImGuiInputTextFlags_ReadOnly)) {}
+			if (ImGui::InputInt("Shadowmap height", ((int*)&(shadow_map_height)), 1, 2, ImGuiInputTextFlags_ReadOnly)) {}
+			if (ImGui::InputInt("Depth bias", ((int*)&(depth_bias)), 1, 2, ImGuiInputTextFlags_ReadOnly)) {}
+			if (ImGui::InputFloat("Depth bias clamp", ((float*)&(depth_bias_clamp)), 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly)) {}
+			if (ImGui::InputFloat("Slope scaled depth bias", ((float*)&(slope_scaled_depth_bias)), 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly)) {}
 
 			ImGui::TreePop();
 		}
