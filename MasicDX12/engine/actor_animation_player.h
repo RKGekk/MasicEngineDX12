@@ -11,27 +11,6 @@
 
 class ActorAnimationPlayer {
 public:
-	enum class AnimState {
-		Playing,
-		Stoped
-	};
-
-	ActorAnimationPlayer();
-	~ActorAnimationPlayer();
-
-	bool Initialize(const pugi::xml_node& pLevel_data);
-	void Update(const GameTimerDelta& delta);
-
-	void Pause();
-	void Stop();
-	void Play();
-	void SetDuration(float t);
-	void SetDuration(const GameTimerDelta& duration);
-
-	float GetTotalAnimationTime();
-	float GetCurrentAnimationTime();
-	
-private:
 	struct KeyframeTranslation {
 		KeyframeTranslation();
 		~KeyframeTranslation();
@@ -70,10 +49,34 @@ private:
 		std::vector<KeyframeRotation> RotationKeyframes;
 	};
 
+	using AnimMap = std::unordered_map<StrongActorPtr, ActorAnimation>;
+
+	enum class AnimState {
+		Playing,
+		Stoped
+	};
+
+	ActorAnimationPlayer();
+	~ActorAnimationPlayer();
+
+	bool Initialize(const pugi::xml_node& pLevel_data);
+	void Update(const GameTimerDelta& delta);
+
+	void Pause();
+	void Stop();
+	void Play();
+	void SetDuration(float t);
+	void SetDuration(const GameTimerDelta& duration);
+
+	float GetTotalAnimationTime();
+	float GetCurrentAnimationTime();
+	AnimMap& GetAnimMap();
+	
+private:
 	void RegisterAllDelegates();
 	void AddActorAnimation(const pugi::xml_node& pAnim_data);
 
-	std::unordered_map<StrongActorPtr, ActorAnimation> m_actors_animation_map;
+	AnimMap m_actors_animation_map;
 	GameTimerDelta m_time;
 	AnimState m_animation_state;
 	float m_total_animation_time;

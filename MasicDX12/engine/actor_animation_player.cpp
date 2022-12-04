@@ -105,6 +105,10 @@ float ActorAnimationPlayer::GetCurrentAnimationTime() {
 	return m_time.fGetTotalSeconds();
 }
 
+ActorAnimationPlayer::AnimMap& ActorAnimationPlayer::GetAnimMap() {
+	return m_actors_animation_map;
+}
+
 void ActorAnimationPlayer::RegisterAllDelegates() {
 	IEventManager* pGlobalEventManager = IEventManager::Get();
 }

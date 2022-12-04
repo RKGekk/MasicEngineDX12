@@ -114,41 +114,41 @@ void DrawNodes(const std::shared_ptr<SceneNode>& current_node) {
 			DirectX::BoundingSphere sphere_merged = props.MergedSphere();
 			if (ImGui::TreeNode("Matrix")) {
 				if (ImGui::TreeNode("ToParent")) {
-					if (ImGui::InputFloat4("R1", ((float*)&to_parent) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R2", ((float*)&to_parent) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R3", ((float*)&to_parent) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R4", ((float*)&to_parent) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("TR1", ((float*)&to_parent) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("TR2", ((float*)&to_parent) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("TR3", ((float*)&to_parent) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("TR4", ((float*)&to_parent) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 
-					if (ImGui::InputFloat3("Sc", ((float*)&to_parent_scale), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("Rq", ((float*)&to_parent_rotation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat3("Tr", ((float*)&to_parent_translation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat3("TSc", ((float*)&to_parent_scale), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("TRq", ((float*)&to_parent_rotation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat3("TTr", ((float*)&to_parent_translation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("FromParent")) {
-					if (ImGui::InputFloat4("R1", ((float*)&from_parent) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R2", ((float*)&from_parent) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R3", ((float*)&from_parent) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R4", ((float*)&from_parent) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FR1", ((float*)&from_parent) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FR2", ((float*)&from_parent) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FR3", ((float*)&from_parent) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FR4", ((float*)&from_parent) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("ToRoot")) {
-					if (ImGui::InputFloat4("R1", ((float*)&to_root) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R2", ((float*)&to_root) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R3", ((float*)&to_root) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R4", ((float*)&to_root) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("RR1", ((float*)&to_root) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("RR2", ((float*)&to_root) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("RR3", ((float*)&to_root) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("RR4", ((float*)&to_root) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 
-					if (ImGui::InputFloat3("Sc", ((float*)&to_root_scale), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("Rq", ((float*)&to_root_rotation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat3("Tr", ((float*)&to_root_translation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat3("RSc", ((float*)&to_root_scale), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("RRq", ((float*)&to_root_rotation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat3("RTr", ((float*)&to_root_translation), "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 
 					ImGui::TreePop();
 				}
 				if (ImGui::TreeNode("FromRoot")) {
-					if (ImGui::InputFloat4("R1", ((float*)&from_root) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R2", ((float*)&from_root) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R3", ((float*)&from_root) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
-					if (ImGui::InputFloat4("R4", ((float*)&from_root) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FRR1", ((float*)&from_root) + 0, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FRR2", ((float*)&from_root) + 4, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FRR3", ((float*)&from_root) + 8, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
+					if (ImGui::InputFloat4("FRR4", ((float*)&from_root) + 12, "%.4f", ImGuiInputTextFlags_ReadOnly)) {}
 					ImGui::TreePop();
 				}
 				ImGui::TreePop();
