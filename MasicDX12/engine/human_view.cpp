@@ -35,6 +35,8 @@ HumanView::HumanView() {
 		VPushElement(m_actor_menu_ui);
 		m_node_menu_ui = std::make_shared<NodeMenuUI>(m_process_manager);
 		VPushElement(m_node_menu_ui);
+		m_anim_menu_ui = std::make_shared<AnimMenuUI>(m_process_manager);
+		VPushElement(m_anim_menu_ui);
 	}
 
 	RegisterAllDelegates();

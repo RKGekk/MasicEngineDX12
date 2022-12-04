@@ -68,6 +68,10 @@ void GameTimer::Reset() {
     m_paused_time = ZERO_DURATION;
 }
 
+GameTimePoint GameTimer::GetCurrentTime() const {
+    return m_curent_time;
+}
+
 GameTimerDelta::GameTimerDelta() {
     m_delta_time_duration = {};
     m_total_time = {};
@@ -109,6 +113,11 @@ const GameClockDuration& GameTimerDelta::GetDeltaDuration() const {
     return m_delta_time_duration;
 }
 
+void GameTimerDelta::AddDeltaDuration(float delta_sec) {
+    m_delta_time_duration = std::chrono::round<std::chrono::nanoseconds>(std::chrono::duration<float>{ delta_sec });
+    m_total_time += m_delta_time_duration;
+}
+
 void GameTimerDelta::AddDeltaDuration(const GameClockDuration& delta) {
     m_total_time += delta;
     m_delta_time_duration = delta;
@@ -118,6 +127,11 @@ void GameTimerDelta::AddDeltaDuration(const GameTimerDelta& delta) {
     GameClockDuration d = delta.GetDeltaDuration();
     m_total_time += d;
     m_delta_time_duration = d;
+}
+
+void GameTimerDelta::ResetDuration() {
+    m_total_time = ZERO_DURATION;
+    m_delta_time_duration = ZERO_DURATION;
 }
 
 double GameTimerDelta::GetTotalNanoseconds() const {

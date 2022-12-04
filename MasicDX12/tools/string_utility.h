@@ -107,3 +107,5 @@ DirectX::XMFLOAT3 posfromattr3f(const pugi::xml_node& node_with_pos);
 DirectX::XMFLOAT3 posfromattr3f(const pugi::xml_node& node_with_pos, DirectX::XMFLOAT3 def);
 DirectX::XMFLOAT3 anglesfromattr3f(const pugi::xml_node& node_with_angles);
 DirectX::XMFLOAT3 anglesfromattr3f(const pugi::xml_node& node_with_angles, DirectX::XMFLOAT3 def);
+DirectX::XMVECTOR anglesfromattr(const pugi::xml_node& node_with_angles);
+DirectX::XMVECTOR anglesfromattr(const pugi::xml_node& node_with_angles, DirectX::XMFLOAT3 def);

@@ -24,8 +24,10 @@ public:
     float fGetDeltaSeconds() const;
 
     const GameClockDuration& GetDeltaDuration() const;
+    void AddDeltaDuration(float delta_sec);
     void AddDeltaDuration(const GameClockDuration& delta);
     void AddDeltaDuration(const GameTimerDelta& delta);
+    void ResetDuration();
 
     double GetTotalNanoseconds() const;
     double GetTotalMicroseconds() const;
@@ -52,6 +54,8 @@ public:
     void Start();
     void Stop();
     void Reset();
+
+    GameTimePoint GetCurrentTime() const;
 
 private:
     GameTimePoint m_curent_time;

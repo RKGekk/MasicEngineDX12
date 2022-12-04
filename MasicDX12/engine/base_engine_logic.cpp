@@ -30,6 +30,7 @@ BaseEngineLogic::BaseEngineLogic() {
 	m_life_time = {};
 	m_level_manager = std::make_unique<LevelManager>();
 	m_level_manager->Initialize();
+	m_animation_player = std::make_shared<ActorAnimationPlayer>();
 	//m_physics = std::make_unique<XPhysics>();
 	//m_physics->VInitialize();
 }
@@ -169,6 +170,10 @@ std::shared_ptr<CameraNode> BaseEngineLogic::GetActiveCamera() {
 	return m_active_camera;
 }
 
+std::shared_ptr<ActorAnimationPlayer> BaseEngineLogic::GetAnimationPlayer(){
+	return m_animation_player;
+}
+
 const LevelManager& BaseEngineLogic::GetLevelManager() {
 	return *m_level_manager;
 }
@@ -203,6 +208,8 @@ bool BaseEngineLogic::VLoadGame(const std::string& level_resource) {
 			pHumanView->LoadGame(world_node);
 		}
 	}
+
+	m_animation_player->Initialize(world_node);
 
 	if (!VLoadGameDelegate(world_node)) { return false; }
 
@@ -268,6 +275,8 @@ void BaseEngineLogic::VOnUpdate(const GameTimerDelta& delta) {
 	for (GameViewList::iterator it = m_game_views.begin(); it != m_game_views.end(); ++it) {
 		(*it)->VOnUpdate(delta);
 	}
+
+	m_animation_player->Update(delta);
 }
 
 void BaseEngineLogic::VChangeState(BaseEngineState newState) {

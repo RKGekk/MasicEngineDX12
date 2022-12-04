@@ -7,6 +7,7 @@
 
 #include <DirectXMath.h>
 
+#include "actor_animation_player.h"
 #include "../actors/actor.h"
 #include "level_manager.h"
 #include "i_engine_logic.h"
@@ -54,6 +55,8 @@ public:
 
 	std::shared_ptr<CameraNode> GetActiveCamera();
 
+	std::shared_ptr<ActorAnimationPlayer> GetAnimationPlayer();
+
 	const LevelManager& GetLevelManager();
 	virtual std::shared_ptr<IEnginePhysics> VGetGamePhysics() override;
 	virtual bool VLoadGame(const std::string& level_resource) override;
@@ -94,6 +97,7 @@ protected:
 	std::unique_ptr<ActorFactory> m_actor_factory;
 	std::shared_ptr<IEnginePhysics> m_physics;
 	std::unique_ptr<LevelManager> m_level_manager;
+	std::shared_ptr<ActorAnimationPlayer> m_animation_player;
 	MTRandom m_random;
 	ActorMap m_actors;
 	ComponentsMap m_components;

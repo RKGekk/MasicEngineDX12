@@ -157,6 +157,8 @@
     <ClCompile Include="actors\enemy_component.cpp" />
     <ClCompile Include="actors\base_scene_node_component.cpp" />
     <ClCompile Include="actors\animation_component.cpp" />
+    <ClCompile Include="engine\anim_menu_ui.cpp" />
+    <ClCompile Include="engine\actor_animation_player.cpp" />
     <ClCompile Include="graphics\effect_shadow_anim_pso.cpp" />
     <ClCompile Include="graphics\effect_anim_pso.cpp" />
     <ClCompile Include="graphics\effect_shadow_anim_instanced_pso.cpp" />
@@ -355,6 +357,8 @@
     <ClInclude Include="actors\light_component.h" />
     <ClInclude Include="actors\base_scene_node_component.h" />
     <ClInclude Include="actors\animation_component.h" />
+    <ClInclude Include="engine\anim_menu_ui.h" />
+    <ClInclude Include="engine\actor_animation_player.h" />
     <ClInclude Include="graphics\effect_shadow_anim_pso.h" />
     <ClInclude Include="graphics\effect_anim_pso.h" />
     <ClInclude Include="graphics\effect_shadow_anim_instanced_pso.h" />

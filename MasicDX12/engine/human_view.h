@@ -16,6 +16,7 @@
 #include "../nodes/camera_node.h"
 #include "../nodes/basic_camera_node.h"
 #include "screen_element_scene.h"
+#include "anim_menu_ui.h"
 #include "actor_menu_ui.h"
 #include "node_menu_ui.h"
 #include "movement_controller.h"
@@ -91,6 +92,7 @@ protected:
 	std::wstring m_gameplay_text;
 	std::shared_ptr<ActorMenuUI> m_actor_menu_ui;
 	std::shared_ptr<NodeMenuUI> m_node_menu_ui;
+	std::shared_ptr<AnimMenuUI> m_anim_menu_ui;
 
 	std::shared_ptr<MovementController> m_pFree_camera_controller;
 	std::weak_ptr<Actor> m_pTeapot;

@@ -291,3 +291,13 @@ DirectX::XMFLOAT3 anglesfromattr3f(const pugi::xml_node& node_with_angles, Direc
 
 	return angles;
 }
+
+DirectX::XMVECTOR anglesfromattr(const pugi::xml_node& node_with_angles) {
+	DirectX::XMFLOAT3 angles = anglesfromattr3f(node_with_angles);
+	return DirectX::XMLoadFloat3(&angles);
+}
+
+DirectX::XMVECTOR anglesfromattr(const pugi::xml_node& node_with_angles, DirectX::XMFLOAT3 def) {
+	DirectX::XMFLOAT3 angles = anglesfromattr3f(node_with_angles, def);
+	return DirectX::XMLoadFloat3(&angles);
+}

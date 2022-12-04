@@ -669,6 +669,12 @@
     <ClCompile Include="nodes\shadow_scene_anim_visitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="engine\actor_animation_player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\anim_menu_ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\engine.h">
@@ -1383,6 +1389,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\effect_shadow_anim_pso.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\actor_animation_player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\anim_menu_ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

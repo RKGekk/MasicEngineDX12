@@ -69,7 +69,7 @@
 
     <Actor name="character1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.430000" y="0.250000" z="0.000000" />
+        <Position x="-0.430000" y="0.250000" z="0.000000" />
         <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="0.001250" y="0.001250" z="0.001250" />
       </TransformComponent>
@@ -82,7 +82,7 @@
 
     <Actor name="camera1" type="BasicTransformComponent" resource="data\actors\BasicTransformComponent.xml">
       <TransformComponent>
-        <Position x="0.000000" y="0.500000" z="-1.000000" />
+        <Position x="-0.300000" y="0.500000" z="-1.000000" />
         <YawPitchRoll x="0.000000" y="0.000000" z="0.000000" />
         <Scale x="1.000000" y="1.000000" z="1.000000" />
       </TransformComponent>
@@ -127,5 +127,21 @@
       <FogRange>4.0</FogRange>
       <FogColor r="0.490196" g="0.486875" b="0.466667" a="1.000000"/>;
     </Fog>
+    <ActorAnimations TotalTimeSec="10">
+      <ActorAnimation>
+        <AnimationForActorName>character1</AnimationForActorName>
+        <RelativeKeyframe>
+          <TimePosSec>6.0</TimePosSec>
+          <Translation x="-0.430000" y="0.500000" z="0.000000" />
+        </RelativeKeyframe>
+      </ActorAnimation>
+      <ActorAnimation>
+        <AnimationForActorName>character1</AnimationForActorName>
+        <RelativeKeyframe>
+          <TimePosSec>6.0</TimePosSec>
+          <YawPitchRoll x="0.000000" y="90.000000" z="0.000000" />
+        </RelativeKeyframe>
+      </ActorAnimation>
+    </ActorAnimations>
   </Scene>
 </World>
